@@ -16,7 +16,7 @@ const Topbar = ({page}: {page: string}) => {
             <h1 className="hidden nt-sm:block h1 font-bold">{page}</h1> 
             {/* ÍCONE DE HAMBURGUER PARA MENU MOBILE */}
             <button className='nt-sm:hidden' onClick={() => setMenuOpen(true)}>
-                <IoMenu className='text-[38px] bg-dark-grey text-light-green flex justify-center items-center p-2 w-max rounded-full hover:scale-110 transition-all duration-[200ms]' />
+                <Icon icon={<IoMenu className='text-[18px] tb:text-[22px]' />} />
             </button>
             {/* LOGO PARA MOBILE */}
             <div className='nt-sm:hidden relative w-[130px] h-[30px] mb-lg:w-[150px] mb-lg:h-[35px] tb:w-[170px] tb:h-[40px]'>

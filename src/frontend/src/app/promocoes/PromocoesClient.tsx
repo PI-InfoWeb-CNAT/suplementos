@@ -16,8 +16,14 @@ export default function PromocoesClient() {
     }
 
     return (
-        <section>
+        <section className="space-y-10">
+            <h2 className="h2 lg:hidden">Promoções</h2>
             <div className="productsContainer">
+                {produtos.map(produto => (
+                    produto.porcentagem_desconto > 0 && (
+                        <ProductCard key={produto.id} product={produto} />
+                    )
+                ))}
                 {produtos.map(produto => (
                     produto.porcentagem_desconto > 0 && (
                         <ProductCard key={produto.id} product={produto} />

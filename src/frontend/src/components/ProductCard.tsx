@@ -1,11 +1,17 @@
 import Link from "next/link";
 
+import { CiHeart } from "react-icons/ci";
+
 import { ProductProps } from "@/types/products";
 import { Button } from "@/components/ui/button";
+import Icon from "./Icon";
 
 const ProductCard = ({ product }: {product: ProductProps}) => {
     return (
-        <div className="flex flex-col w-[220px]">
+        <div className="relative flex flex-col tb:w-[220px] w-[200px]">
+            <div className="absolute top-3 right-3 z-20">
+                <Icon icon={<CiHeart className='text-[18px] tb:text-[24px]' />} />
+            </div>
             <div className="z-10">
                 <img
                 src={product.imagem}
@@ -15,7 +21,7 @@ const ProductCard = ({ product }: {product: ProductProps}) => {
             </div>
             <div className="flex flex-col flex-grow bg-white rounded-b-3xl shadow-lg px-5 pt-12 pb-5 -mt-7 z-0">
                 <div>
-                    <h5 className="tb:text-xl text-lg font-semibold line-clamp-1">{product.nome}</h5>
+                    <h5 className="tb:text-xl text-lg font-semibold line-clamp-2">{product.nome}</h5>
                     <div className="flex justify-between items-center mt-2">
                         <div>
                             {product.porcentagem_desconto > 0 && (
@@ -33,6 +39,7 @@ const ProductCard = ({ product }: {product: ProductProps}) => {
                     </div>
                 </div>
                 <div className="w-full flex justify-center mt-5">
+                    {/* BOTÃO DO SHADCN */}
                     <Button asChild className="tb:text-[17px] text-base px-8 py-5 bg-dark-grey text-light-green rounded-sm">
                         <Link href="#">Comprar</Link>
                     </Button>

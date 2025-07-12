@@ -1,26 +1,15 @@
 'use client';
 
-import Link from "next/link";
-
 import { FaMagnifyingGlass, FaBottleWater, FaShirt } from "react-icons/fa6";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { GiKnifeFork } from "react-icons/gi";
 import { FaChevronDown } from "react-icons/fa";
 
+import Category from "@/components/Category";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import ProductCard from "@/components/ProductCard";
 import { useProdutos } from '@/context/ProductContext';
-import { CategoryProps } from "@/types/index";
 import LoadingSpinner from "@/components/LoadingSpinner";
-
-const Category = ({href, icon, name, isEven}: CategoryProps) => {
-  return (
-    <Link href={`/categorias/${href}`} className={`group flex justify-center items-center gap-5 w-full menu:w-[45%] nt-lg:w-[48%] dt:w-1/5 h-15 menu:h-20 text-base md:text-xl text-white p-4 rounded-lg shadow-[0_0_10px_0_rgba(0,0,0,0.6)] transition-all duration-300 ${isEven ? 'bg-dark-grey hover:bg-dark-green' : 'bg-dark-green hover:bg-dark-grey'}`}>
-        {icon}
-        {name}
-    </Link>
-  )
-}
 
 export default function HomeClient() { 
     const { produtos, loading } = useProdutos()
@@ -75,10 +64,10 @@ export default function HomeClient() {
                 <section className="space-y-8">
                     <h2 className="h2">Categorias</h2>
                     <div className="flex justify-between items-center flex-wrap gap-y-5">
-                        <Category href="acessorios" icon={<FaBottleWater className="text-light-green text-3xl md:text-4xl group-hover:text-black" />} name="Acessórios" isEven={true} />
-                        <Category href="alimentos" icon={<GiKnifeFork className="text-black text-3xl md:text-4xl group-hover:text-light-green" />} name="Alimentos" isEven={false} />
-                        <Category href="roupas" icon={<FaShirt className="text-light-green text-3xl md:text-4xl group-hover:text-black" />} name="Roupas" isEven={true} />
-                        <Category href="suplementos" icon={<BsFillLightningChargeFill className="text-black text-3xl md:text-4xl group-hover:text-light-green" />} name="Suplementos" isEven={false} />
+                        <Category href="acessorios" icon={<FaBottleWater className="text-light-green text-3xl md:text-4xl" />} name="Acessórios" isEven={true} />
+                        <Category href="alimentos" icon={<GiKnifeFork className="text-black text-3xl md:text-4xl" />} name="Alimentos" isEven={false} />
+                        <Category href="roupas" icon={<FaShirt className="text-light-green text-3xl md:text-4xl" />} name="Roupas" isEven={true} />
+                        <Category href="suplementos" icon={<BsFillLightningChargeFill className="text-black text-3xl md:text-4xl" />} name="Suplementos" isEven={false} />
                     </div>
                 </section>
                 <section className="space-y-8">

@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className='flex flex-col'>
-      <div className="relative flex gap-15 dt:px-48 nt-lg:px-24 tb:px-15 mb-lg:px-8 px-5 dt:py-16 py-12">
+      <div className="relative flex gap-15 bodyPadding dt:py-16 py-12">
         <Sidebar />
 
         {menuOpen && (

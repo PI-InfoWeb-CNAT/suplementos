@@ -9,10 +9,12 @@ export const pageList: Record<string, string> = {
 
 export interface IconProps {
     icon: React.ReactNode;
-    href: string;
+    href?: string;
 }
 
-export interface NavLinkProps extends IconProps {
+export interface NavLinkProps {
+    href: string;
+    icon: React.ReactNode;
     name: string;
 }
 
