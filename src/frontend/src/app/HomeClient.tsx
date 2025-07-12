@@ -1,7 +1,6 @@
 'use client';
 
 import Link from "next/link";
-import { useProdutos } from '@/context/ProductContext';
 
 import { FaMagnifyingGlass, FaBottleWater, FaShirt } from "react-icons/fa6";
 import { BsFillLightningChargeFill } from "react-icons/bs";
@@ -10,7 +9,9 @@ import { FaChevronDown } from "react-icons/fa";
 
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import ProductCard from "@/components/ProductCard";
+import { useProdutos } from '@/context/ProductContext';
 import { CategoryProps } from "@/types/index";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const Category = ({href, icon, name, isEven}: CategoryProps) => {
   return (
@@ -25,7 +26,7 @@ export default function HomeClient() {
     const { produtos, loading } = useProdutos()
     
     return (
-        <main className="flex flex-col mb-sm:gap-10 gap-7">
+        <>
             <section>
                 <form action="">
                     <div className="relative">
@@ -88,11 +89,19 @@ export default function HomeClient() {
                             <FaChevronDown className="text-dark-green text-lg mb-lg:text-xl rotate-180-smooth" />
                         </a>
                     </div>
-                    <div className="productsContainer">
-                        {produtos.map(produto => (
-                            <ProductCard key={produto.id} product={produto} />
-                        ))}
-                    </div>
+                    {loading ? (
+                        <div className="flex justify-center items-center h-64">
+                            <LoadingSpinner />
+                        </div>
+                    ) : (
+                        <div className="productsContainer">
+                            {produtos.map(produto => (
+                                produto.porcentagem_desconto > 0 && (
+                                    <ProductCard key={produto.id} product={produto} />
+                                )
+                            ))}
+                        </div>
+                    )}
                 </section>
                 <section className="space-y-8">
                     <div className="flex justify-between items-center">
@@ -102,13 +111,19 @@ export default function HomeClient() {
                             <FaChevronDown className="text-dark-green text-lg mb-lg:text-xl rotate-180-smooth" />
                         </a>
                     </div>
-                    <div className="productsContainer">
-                        {produtos.map(produto => (
-                            <ProductCard key={produto.id} product={produto} />
-                        ))}
-                    </div>
+                    {loading ? (
+                        <div className="flex justify-center items-center h-64">
+                            <LoadingSpinner />
+                        </div>
+                    ) : (
+                        <div className="productsContainer">
+                            {produtos.map(produto => (
+                                <ProductCard key={produto.id} product={produto} />
+                            ))}
+                        </div>
+                    )}
                 </section>
             </div>
-        </main>
+        </>
     );
 }

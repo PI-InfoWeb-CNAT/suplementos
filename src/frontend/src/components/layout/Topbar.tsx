@@ -11,11 +11,14 @@ const Topbar = ({page}: {page: string}) => {
     const { setMenuOpen } = useMenu();
 
     return (
-        <div className="flex items-center justify-between">
+        <header className="flex items-center justify-between">
+            {/* TÍTULO DO DESKTOP */}
             <h1 className="hidden nt-sm:block h1 font-bold">{page}</h1> 
+            {/* ÍCONE DE HAMBURGUER PARA MENU MOBILE */}
             <button className='nt-sm:hidden' onClick={() => setMenuOpen(true)}>
-                <Icon icon={<IoMenu className='text-[18px] tb:text-[22px]' />} href="/" />
+                <IoMenu className='text-[38px] bg-dark-grey text-light-green flex justify-center items-center p-2 w-max rounded-full hover:scale-110 transition-all duration-[200ms]' />
             </button>
+            {/* LOGO PARA MOBILE */}
             <div className='nt-sm:hidden relative w-[130px] h-[30px] mb-lg:w-[150px] mb-lg:h-[35px] tb:w-[170px] tb:h-[40px]'>
                 <Image src="/Logo-preta-longa.webp" fill alt="Logo preta da PowerUP" />
             </div>
@@ -31,7 +34,7 @@ const Topbar = ({page}: {page: string}) => {
                     </Link>
                 </div>
             </div>
-        </div>
+        </header>
     );
 }
 

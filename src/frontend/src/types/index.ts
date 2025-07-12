@@ -21,6 +21,11 @@ export interface CategoryProps extends NavLinkProps {
 }
 
 export interface MenuContextType {
-    menuOpen: boolean
-    setMenuOpen: (open: boolean) => void
+    menuOpen: boolean;
+    setMenuOpen: (open: boolean) => void;
+}
+
+export interface LoadingSpinnerProps {
+    size?: number;
+    color?: string;
 }

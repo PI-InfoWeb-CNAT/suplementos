@@ -27,7 +27,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
         <div className="relative z-1 flex-1 flex flex-col gap-15">
           <Topbar page={pageName} />
-          <main className="flex-1">
+          <main className="flex-1 flex flex-col mb-sm:gap-10 gap-7">
             {children}
           </main>
         </div>
