@@ -7,6 +7,8 @@ import { useProdutos } from '@/context/ProductContext';
 export default function PromocoesClient() {
     const { produtos, loading } = useProdutos()
 
+    const produtos_promocoes = produtos.filter(produto => produto.porcentagem_desconto > 0)
+
     if (loading) {
         return (
             <section className="flex justify-center items-center h-64">
@@ -18,13 +20,15 @@ export default function PromocoesClient() {
     return (
         <section className="space-y-10">
             <h2 className="h2 lg:hidden">Promoções</h2>
-            <div className="productsContainer">
-                {produtos.map(produto => (
-                    produto.porcentagem_desconto > 0 && (
+            {produtos_promocoes.length > 0 ? (
+                <div className="productsContainer">
+                    {produtos_promocoes.map(produto => (
                         <ProductCard key={produto.id} product={produto} />
-                    )
-                ))}
-            </div>
+                    ))}
+                </div>
+            ) : (
+                <p className="text-dark-grey text-2xl font-semibold">Nenhum produto em promoção no momento.</p>
+            )}
         </section>
     )
 }
