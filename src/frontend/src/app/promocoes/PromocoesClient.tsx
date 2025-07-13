@@ -24,11 +24,6 @@ export default function PromocoesClient() {
                         <ProductCard key={produto.id} product={produto} />
                     )
                 ))}
-                {produtos.map(produto => (
-                    produto.porcentagem_desconto > 0 && (
-                        <ProductCard key={produto.id} product={produto} />
-                    )
-                ))}
             </div>
         </section>
     )
