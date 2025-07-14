@@ -81,7 +81,7 @@ export default function HomeClient() {
                             ))}
                         </div>
                     ) : (
-                        <p className="text-center text-gray-400">Nenhum produto encontrado.</p>
+                        <p className="notFound">Nenhum produto encontrado.</p>
                     )}
                 </section>
             ) : (

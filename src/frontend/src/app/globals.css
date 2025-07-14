@@ -91,6 +91,10 @@
   .productsContainer {
     @apply flex flex-wrap dt:gap-11 gap-8 nt-sm:justify-start justify-center;
   }
+
+  .notFound {
+    @apply text-dark-grey text-2xl font-semibold;
+  }
 }
 
 @layer base {
