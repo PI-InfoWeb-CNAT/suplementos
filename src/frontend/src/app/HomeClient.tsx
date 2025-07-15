@@ -15,6 +15,7 @@ import { ProductProps } from '@/types/products';
 
 export default function HomeClient() {
     const { produtos, loading } = useProdutos();
+    const produtos_promocoes = produtos.filter(produto => produto.porcentagem_desconto > 0)
     const [pesquisarProduto, setPesquisarProduto] = useState('');
     const [resultado, setResultado] = useState<ProductProps[]>([]);
     const [showResults, setShowResults] = useState(false);
@@ -114,28 +115,28 @@ export default function HomeClient() {
                             </div>
                         </section>
 
-                        <section className="space-y-8">
-                            <div className="flex justify-between items-center">
-                                <h2 className="h2">Ofertas Especiais</h2>
-                                <a href="/promocoes" className="group flex items-center gap-2">
-                                    <p className="font-bold tb:text-lg">Ver mais</p>
-                                    <FaChevronDown className="text-dark-green text-lg mb-lg:text-xl rotate-180-smooth" />
-                                </a>
-                            </div>
-                            {loading ? (
-                                <div className="flex justify-center items-center h-64">
-                                    <LoadingSpinner />
+                        {produtos_promocoes.length > 0 && (
+                            <section className="space-y-8">
+                                <div className="flex justify-between items-center">
+                                    <h2 className="h2">Ofertas Especiais</h2>
+                                    <a href="/promocoes" className="group flex items-center gap-2">
+                                        <p className="font-bold tb:text-lg">Ver mais</p>
+                                        <FaChevronDown className="text-dark-green text-lg mb-lg:text-xl rotate-180-smooth" />
+                                    </a>
                                 </div>
-                            ) : (
-                                <div className="productsContainer">
-                                    {produtos.map(produto =>
-                                        produto.porcentagem_desconto > 0 && (
+                                {loading ? (
+                                    <div className="flex justify-center items-center h-64">
+                                        <LoadingSpinner />
+                                    </div>
+                                ) : (
+                                    <div className="productsContainer">
+                                        {produtos_promocoes.slice(0,5).map(produto =>
                                             <ProductCard key={produto.id} product={produto} />
-                                        )
-                                    )}
-                                </div>
-                            )}
-                        </section>
+                                        )}
+                                    </div>
+                                )}
+                            </section>
+                        )}
 
                         <section className="space-y-8">
                             <div className="flex justify-between items-center">
@@ -151,7 +152,7 @@ export default function HomeClient() {
                                 </div>
                             ) : (
                                 <div className="productsContainer">
-                                    {produtos.map(produto => (
+                                    {produtos.slice(0,5).map(produto => (
                                         <ProductCard key={produto.id} product={produto} />
                                     ))}
                                 </div>

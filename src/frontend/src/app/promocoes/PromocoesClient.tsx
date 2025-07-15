@@ -14,9 +14,7 @@ export default function PromocoesClient() {
     const { produtos, loading } = useProdutos();
     const [ordenacao, setOrdenacao] = useState("");
 
-    const produtos_promocoes = produtos.filter(
-        (produto) => produto.porcentagem_desconto > 0
-    );
+    const produtos_promocoes = produtos.filter(produto => produto.porcentagem_desconto > 0)
 
     const produtos_ordenados = [...produtos_promocoes].sort((a, b) => {
         switch (ordenacao) {
