@@ -9,6 +9,11 @@ export interface ProductProps {
   preco_calculado: number; 
 }
 
+export interface FilterProps {
+  ordenacao: string;
+  setOrdenacao: (value: string) => void;
+}
+
 export interface ProductContextType {
   produtos: ProductProps[];
   loading: boolean;
