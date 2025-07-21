@@ -20,7 +20,7 @@ const Footer = () => {
     ]
 
     return (
-        <footer className="w-full flex flex-col md:flex-row gap-y-10 justify-between items-center dt:px-48 nt-lg:px-24 tb:px-15 mb-lg:px-8 px-5 py-10 bg-dark-grey text-white rounded-t-[15px]">
+        <footer className="w-full flex flex-col md:flex-row gap-y-10 justify-between items-center bodyPadding py-10 bg-dark-grey text-white rounded-t-[15px]">
             <Image src={logo} width={170} height={60} alt="Logo branca da PowerUP" />
             <nav className="w-full flex justify-center">
                 <ul className="md:w-[80%] xl:w-full flex flex-wrap justify-center items-center gap-x-10 gap-y-5 text-base lg:text-lg">

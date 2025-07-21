@@ -4,6 +4,7 @@ import "./globals.css";
 
 import Layout from "@/components/layout/Layout";
 import { MenuProvider } from "@/context/MenuContext";
+import { ProdutosProvider } from "@/context/ProductContext";
 
 const baiJamjuree = Bai_Jamjuree({
   subsets: ["latin"],
@@ -34,9 +35,11 @@ export default function RootLayout({ children }:
       </head>
       <body className={`${baiJamjuree.className} antialiased`}>
         <MenuProvider>
-          <Layout>
-            {children}
-          </Layout>
+          <ProdutosProvider>
+            <Layout>
+              {children}
+            </Layout>
+          </ProdutosProvider>
         </MenuProvider>
       </body>
     </html>

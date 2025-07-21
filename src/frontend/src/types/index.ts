@@ -9,10 +9,12 @@ export const pageList: Record<string, string> = {
 
 export interface IconProps {
     icon: React.ReactNode;
-    href: string;
+    href?: string;
 }
 
-export interface NavLinkProps extends IconProps {
+export interface NavLinkProps {
+    href: string;
+    icon: React.ReactNode;
     name: string;
 }
 
@@ -21,6 +23,11 @@ export interface CategoryProps extends NavLinkProps {
 }
 
 export interface MenuContextType {
-    menuOpen: boolean
-    setMenuOpen: (open: boolean) => void
+    menuOpen: boolean;
+    setMenuOpen: (open: boolean) => void;
+}
+
+export interface LoadingSpinnerProps {
+    size?: number;
+    color?: string;
 }

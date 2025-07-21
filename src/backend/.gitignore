@@ -1,31 +1,31 @@
-# Ambiente virtual Python
+# Ambiente virtual
 venv/
+.env
+*.env
 
-# Cache do Python
+# Arquivos de banco de dados
+db.sqlite3
+*.sqlite3
+
+# Arquivos do Django
 __pycache__/
 *.py[cod]
-
-# Arquivo principal do banco SQLite
-db.sqlite3
-db.sqlite
-
-# Arquivos temporários do SQLite
-*.sqlite3-shm
-*.sqlite3-wal
-
-# Arquivos de configuração de ambiente
-.env
-
-# Cache do mypy e pytest
-.mypy_cache/
-.pytest_cache/
-
-# Logs
 *.log
+*.pot
+*.pyc
 
-# Editor/IDE
+# Arquivos do VSCode/PyCharm
 .vscode/
 .idea/
 
-# Arquivos temporários
-*.tmp
+# Arquivos temporários do sistema
+.DS_Store
+Thumbs.db
+
+# Migrations (opcional: deixe se for gerar sempre do zero)
+**/migrations/__pycache__/
+**/migrations/*.pyc
+**/migrations/*.pyo
+**/migrations/*.log
+# Descomente se quiser ignorar os arquivos de migração
+# **/migrations/*.py
