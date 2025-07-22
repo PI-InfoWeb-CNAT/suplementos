@@ -19,7 +19,7 @@ export interface NavLinkProps {
 }
 
 export interface CategoryProps extends NavLinkProps {
-    isEven: boolean;
+    isEven?: boolean;
 }
 
 export interface MenuContextType {

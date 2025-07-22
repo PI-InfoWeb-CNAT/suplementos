@@ -40,7 +40,7 @@ const ProductCard = ({ product }: {product: ProductProps}) => {
                 </div>
                 <div className="w-full flex justify-center mt-5">
                     {/* BOTÃO DO SHADCN */}
-                    <Button asChild className="tb:text-[17px] text-base px-8 py-5 bg-dark-grey text-light-green rounded-sm">
+                    <Button asChild variant="submit" size="submit">
                         <Link href="#">Comprar</Link>
                     </Button>
                 </div>

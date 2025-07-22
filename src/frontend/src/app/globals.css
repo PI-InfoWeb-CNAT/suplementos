@@ -95,6 +95,10 @@
   .notFound {
     @apply text-dark-grey text-2xl font-semibold;
   }
+
+  .input {
+    @apply px-3 py-2.5 rounded-md border-2 border-dark-green outline-none;
+  }
 }
 
 @layer base {

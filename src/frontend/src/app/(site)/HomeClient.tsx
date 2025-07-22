@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
+
 import { FaMagnifyingGlass, FaBottleWater, FaShirt } from "react-icons/fa6";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { GiKnifeFork } from "react-icons/gi";
@@ -93,10 +95,12 @@ export default function HomeClient() {
                             <CarouselContent>
                                 {['imagem1', 'imagem2', 'imagem3', 'imagem4'].map((img, index) => (
                                     <CarouselItem key={index}>
-                                        <img
-                                        src={`/carrossel/${img}_carrossel.webp`}
-                                        alt={`Imagem ${index + 1}`}
-                                        className="w-full object-cover nt-sm:rounded-[30px] mb:rounded-[15px] rounded-[10px]"
+                                        <Image
+                                            src={`/carrossel/${img}_carrossel.png`}
+                                            alt={`Imagem ${index + 1}`}
+                                            width={1300}
+                                            height={550}
+                                            className="object-cover nt-sm:rounded-[30px] mb:rounded-[15px] rounded-[10px]"
                                         />
                                     </CarouselItem>
                                 ))}
@@ -109,9 +113,9 @@ export default function HomeClient() {
                             <h2 className="h2">Categorias</h2>
                             <div className="flex justify-between items-center flex-wrap gap-y-5">
                                 <Category href="acessorios" icon={<FaBottleWater className="text-light-green text-3xl md:text-4xl" />} name="Acessórios" isEven />
-                                <Category href="alimentos" icon={<GiKnifeFork className="text-black text-3xl md:text-4xl" />} name="Alimentos" isEven={false} />
+                                <Category href="alimentos" icon={<GiKnifeFork className="text-black text-3xl md:text-4xl" />} name="Alimentos" />
                                 <Category href="roupas" icon={<FaShirt className="text-light-green text-3xl md:text-4xl" />} name="Roupas" isEven />
-                                <Category href="suplementos" icon={<BsFillLightningChargeFill className="text-black text-3xl md:text-4xl" />} name="Suplementos" isEven={false} />
+                                <Category href="suplementos" icon={<BsFillLightningChargeFill className="text-black text-3xl md:text-4xl" />} name="Suplementos" />
                             </div>
                         </section>
 
