@@ -2,7 +2,7 @@
 
 import { LoadingSpinnerProps } from "@/types";
 
-const LoadingSpinner = ({ size = 40, color = 'border-dark-green' }: LoadingSpinnerProps) => {
+const LoadingSpinner = ({ size = 40, color = 'border-green' }: LoadingSpinnerProps) => {
   const dimension = `${size}px`;
 
   return (

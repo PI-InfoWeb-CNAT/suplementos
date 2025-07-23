@@ -6,8 +6,9 @@
 
 @theme inline {
   --color-light-green: #20E500;
-  --color-dark-green: #1bc800; 
-  --color-light-grey: #e9e9e9; 
+  --color-green: #1BC800; 
+  --color-dark-green: #117C00;
+  --color-light-grey: #E9E9E9; 
   --color-dark-grey: #404040;
 
   --breakpoint-dt: 1900px;
@@ -97,7 +98,7 @@
   }
 
   .input {
-    @apply px-3 py-2.5 mb-lg:text-base text-sm rounded-md border-2 border-dark-green outline-none;
+    @apply px-3 py-2.5 mb-lg:text-base text-sm rounded-md border-2 border-green outline-none;
   }
 }
 

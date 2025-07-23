@@ -22,11 +22,11 @@ export default function CadastroPage() {
                             Criar
                         </Button>
                     </form>
-                    <a href="/login" className="text-center mb-lg:text-lg font-semibold text-[#117C00] hover:underline">
+                    <a href="/login" className="text-center mb-lg:text-lg font-semibold text-dark-green hover:underline">
                         Já tem uma conta? Faça login
                     </a>
                 </div>
-                <p className="absolute top-10 left-1/2 -translate-x-1/2 text-[#117C00] mb-lg:text-xl text-lg font-semibold">
+                <p className="absolute top-10 left-1/2 -translate-x-1/2 text-dark-green mb-lg:text-xl text-lg font-semibold">
                     Cadastro
                 </p>
             </section>
@@ -37,7 +37,7 @@ export default function CadastroPage() {
                 </a>
             </section>
             <a href="/" className="absolute tb:top-7 top-9 right-10 z-20">
-                <button className="text-[#117C00] hover:brightness-70 transition-all duration-300 cursor-pointer">
+                <button className="text-dark-green hover:brightness-70 transition-all duration-300 cursor-pointer">
                     <X className="tb:w-10 w-8 h-auto" /> 
                 </button>
             </a>

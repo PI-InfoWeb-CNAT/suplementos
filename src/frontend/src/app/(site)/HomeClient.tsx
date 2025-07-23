@@ -125,7 +125,7 @@ export default function HomeClient() {
                                     <h2 className="h2">Ofertas Especiais</h2>
                                     <a href="/promocoes" className="group flex items-center gap-2">
                                         <p className="font-bold tb:text-lg">Ver mais</p>
-                                        <FaChevronDown className="text-dark-green text-lg mb-lg:text-xl rotate-180-smooth" />
+                                        <FaChevronDown className="text-green text-lg mb-lg:text-xl rotate-180-smooth" />
                                     </a>
                                 </div>
                                 {loading ? (
@@ -147,7 +147,7 @@ export default function HomeClient() {
                                 <h2 className="h2">Mais Vendidos</h2>
                                 <a href="/promocoes" className="group flex items-center gap-2">
                                     <p className="font-bold tb:text-lg">Ver mais</p>
-                                    <FaChevronDown className="text-dark-green text-lg mb-lg:text-xl rotate-180-smooth" />
+                                    <FaChevronDown className="text-green text-lg mb-lg:text-xl rotate-180-smooth" />
                                 </a>
                             </div>
                             {loading ? (

@@ -25,7 +25,7 @@ const NavLink = ({href, icon, name}: NavLinkProps) => {
         <li>
             <Link href={href} 
             className={`flex items-center gap-3 mb-lg:text-lg text-base font-semibold pl-3
-            ${isActive ? 'text-dark-green border-l-2 border-dark-green transition-border-fast' : 'text-dark-grey hover:text-dark-green transition-color-slow'}`}
+            ${isActive ? 'text-green border-l-2 border-green transition-border-fast' : 'text-dark-grey hover:text-green transition-color-slow'}`}
             >
                 {icon}
                 {name}
