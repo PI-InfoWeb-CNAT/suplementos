@@ -26,10 +26,10 @@ const Topbar = ({page}: {page: string}) => {
                 <Icon icon={<IoMdCart className='text-[18px] tb:text-[22px]' />} href="/carrinho" />
                 {/* DESKTOP */}
                 <div className='hidden nt-sm:flex items-center gap-2'>
-                    <Link href="/login" className=" bg-dark-grey py-2 px-4 text-white text-base rounded-tl-[10px] rounded-br-[10px] hover:text-light-green transition-color-slow">
+                    <Link href="/login" className=" bg-dark-grey py-2 px-4 font-medium text-white text-base rounded-tl-[10px] rounded-br-[10px] hover:text-light-green transition-color-slow">
                         Entrar
                     </Link>
-                    <Link href="/cadastro" className=" bg-dark-grey py-2 px-4 text-white text-base rounded-tl-[10px] rounded-br-[10px] hover:text-light-green transition-color-slow">
+                    <Link href="/cadastro" className=" bg-dark-grey py-2 px-4 font-medium text-white text-base rounded-tl-[10px] rounded-br-[10px] hover:text-light-green transition-color-slow">
                         Cadastrar
                     </Link>
                 </div>

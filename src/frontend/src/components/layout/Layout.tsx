@@ -1,17 +1,11 @@
 'use client'
 
-import { usePathname } from 'next/navigation';
-
 import Sidebar from './Sidebar'
-import Topbar from './Topbar'
 import Footer from './Footer'
 import { useMenu } from '@/context/MenuContext';
-import { pageList } from '@/types/index';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { menuOpen, setMenuOpen } = useMenu();
-  const pathname = usePathname();
-  const pageName = pageList[pathname] || 'Página Inicial';
 
   return (
     <div className='flex flex-col'>
@@ -26,10 +20,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         )}
 
         <div className="relative z-1 flex-1 flex flex-col gap-15">
-          <Topbar page={pageName} />
-          <main className="flex-1 flex flex-col mb-sm:gap-10 gap-7">
-            {children}
-          </main>
+          {children}
         </div>
       </div>
       <Footer />

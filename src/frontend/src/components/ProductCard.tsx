@@ -28,7 +28,7 @@ const ProductCard = ({ product }: {product: ProductProps}) => {
                                 <p className="text-sm line-through">{product.preco} R$</p>
                             )}
                             <p className="tb:text-xl text-lg font-semibold">
-                                {product.preco_calculado.toFixed(2)} R$
+                                {product.preco_calculado} R$
                             </p>
                         </div>
                         {product.porcentagem_desconto > 0 && (
@@ -41,7 +41,7 @@ const ProductCard = ({ product }: {product: ProductProps}) => {
                 <div className="w-full flex justify-center mt-5">
                     {/* BOTÃO DO SHADCN */}
                     <Button asChild variant="submit" size="submit">
-                        <Link href={`produto/${product.id}`}>Comprar</Link>
+                        <Link href={`/produto/${product.id}`}>Comprar</Link>
                     </Button>
                 </div>
             </div>

@@ -65,8 +65,10 @@ const Sidebar = () => {
             {/* DESKTOP SIDEBAR */}
             <aside className="hidden nt-sm:flex flex-col justify-between w-max h-auto">
                 <div className='flex flex-col gap-15'>
-                    <Link href="/">
-                        <Image src={logo} width={170} height={60} alt="Logo preta da PowerUP" />
+                    <Link href="/" className="block">
+                        <div className="relative w-[170px] h-[40px]">
+                            <Image src={logo} alt="Logo preta da PowerUP" fill sizes='170px' />
+                        </div>
                     </Link>
                     <nav>
                         <ul className="flex flex-col gap-6">
