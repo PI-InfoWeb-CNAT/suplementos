@@ -9,4 +9,5 @@ class ProdutoSerializer(serializers.ModelSerializer):
         fields = ['id', 'nome', 'preco', 'descricao', 'imagem', 'porcentagem_desconto', 'categoria', 'preco_calculado']
 
     def get_preco_calculado(self, obj):
-        return obj.preco_calculado()
+        preco = obj.preco_calculado()
+        return f'{preco:.2f}'

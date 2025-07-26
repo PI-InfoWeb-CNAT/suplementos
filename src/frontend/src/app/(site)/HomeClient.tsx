@@ -12,8 +12,10 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import Category from "@/components/Category";
 import ProductCard from "@/components/ProductCard";
 import { useProdutos } from '@/context/ProductContext';
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import { ProductProps } from '@/types/products';
+import PageWrapper from '@/components/layout/PageWrapper';
+import LoadingContainer from '@/components/loading/LoadingContainer';
 
 export default function HomeClient() {
     const { produtos, loading } = useProdutos();
@@ -49,7 +51,7 @@ export default function HomeClient() {
     }, [pesquisarProduto]);
 
     return (
-        <>
+        <PageWrapper pageName='Página Inicial'>
             <section>
                 <form onSubmit={handleSearch}>
                     <div className="relative">
@@ -73,19 +75,17 @@ export default function HomeClient() {
             {showResults ? (
                 // SEÇÃO DO RESULTADO DA PESQUISA 
                 <section className="space-y-8 mt-2">
-                    {loading ? (
-                        <div className="flex justify-center items-center h-64">
-                            <LoadingSpinner />
-                        </div>
-                    ) : resultado.length > 0 ? (
-                        <div className="productsContainer">
-                            {resultado.map(produto => (
-                                <ProductCard key={produto.id} product={produto} />
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="notFound">Nenhum produto encontrado.</p>
-                    )}
+                    <LoadingContainer loading={loading}>
+                        {resultado.length > 0 ? (
+                            <div className="productsContainer">
+                                {resultado.map(produto => (
+                                    <ProductCard key={produto.id} product={produto} />
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="notFound">Nenhum produto encontrado.</p>
+                        )}
+                    </LoadingContainer>
                 </section>
             ) : (
                 // SEÇÃO DA HOME 
@@ -128,17 +128,13 @@ export default function HomeClient() {
                                         <FaChevronDown className="text-green text-lg mb-lg:text-xl rotate-180-smooth" />
                                     </a>
                                 </div>
-                                {loading ? (
-                                    <div className="flex justify-center items-center h-64">
-                                        <LoadingSpinner />
-                                    </div>
-                                ) : (
+                                <LoadingContainer loading={loading}>
                                     <div className="productsContainer">
                                         {produtos_promocoes.slice(0,5).map(produto =>
                                             <ProductCard key={produto.id} product={produto} />
                                         )}
                                     </div>
-                                )}
+                                </LoadingContainer>
                             </section>
                         )}
 
@@ -150,21 +146,17 @@ export default function HomeClient() {
                                     <FaChevronDown className="text-green text-lg mb-lg:text-xl rotate-180-smooth" />
                                 </a>
                             </div>
-                            {loading ? (
-                                <div className="flex justify-center items-center h-64">
-                                    <LoadingSpinner />
-                                </div>
-                            ) : (
+                            <LoadingContainer loading={loading}>
                                 <div className="productsContainer">
                                     {produtos.slice(0,5).map(produto => (
                                         <ProductCard key={produto.id} product={produto} />
                                     ))}
                                 </div>
-                            )}
+                            </LoadingContainer>
                         </section>
                     </div>
                 </>
             )}
-        </>
+        </PageWrapper>
     );
 }
