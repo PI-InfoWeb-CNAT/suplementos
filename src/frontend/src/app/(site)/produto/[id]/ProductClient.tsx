@@ -18,7 +18,7 @@ export default function ProductClient({id}: {id: string}) {
 
     if (loading) {
         return (
-            <section className="flex justify-center items-center h-64">
+            <section className="flex justify-center items-center h-full">
                 <LoadingSpinner />
             </section>
         );

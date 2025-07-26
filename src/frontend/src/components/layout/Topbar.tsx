@@ -19,9 +19,9 @@ const Topbar = ({page}: {page: string}) => {
                 <Icon icon={<IoMenu className='text-[18px] tb:text-[22px]' />} />
             </button>
             {/* LOGO PARA MOBILE */}
-            <div className='nt-sm:hidden relative w-[130px] h-[30px] mb-lg:w-[150px] mb-lg:h-[35px] tb:w-[170px] tb:h-[40px]'>
+            <Link href='/' className='nt-sm:hidden relative w-[130px] h-[30px] mb-lg:w-[150px] mb-lg:h-[35px] tb:w-[170px] tb:h-[40px] cursor-pointer'>
                 <Image src="/Logo-preta-longa.webp" fill alt="Logo preta da PowerUP" />
-            </div>
+            </Link>
             <div className='flex items-center gap-2'>
                 <Icon icon={<IoMdCart className='text-[18px] tb:text-[22px]' />} href="/carrinho" />
                 {/* DESKTOP */}

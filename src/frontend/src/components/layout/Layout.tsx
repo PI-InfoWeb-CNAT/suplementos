@@ -11,14 +11,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <div className='flex flex-col'>
       <div className="relative flex gap-15 bodyPadding min-h-screen items-stretch dt:py-16 py-12">
         <Sidebar />
-
-        {menuOpen && (
-          <div
-            className="fixed inset-0 bg-black/50 z-2 nt-sm:hidden"
-            onClick={() => setMenuOpen(false)}
-          />
-        )}
-
         <div className="relative z-1 flex-1 flex flex-col gap-15">
           {children}
         </div>

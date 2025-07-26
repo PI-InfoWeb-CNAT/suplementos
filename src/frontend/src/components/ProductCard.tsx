@@ -16,7 +16,7 @@ const ProductCard = ({ product }: {product: ProductProps}) => {
                 <img
                 src={product.imagem}
                 alt={`Imagem do produto ${product.nome}`}
-                className="rounded-3xl h-[210px] w-full object-cover"
+                className="rounded-3xl h-auto w-full object-cover"
                 />
             </div>
             <div className="flex flex-col flex-grow bg-white rounded-b-3xl shadow-lg px-5 pt-12 pb-5 -mt-7 z-0">

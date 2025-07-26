@@ -75,6 +75,7 @@ export default function HomeClient() {
             {showResults ? (
                 // SEÇÃO DO RESULTADO DA PESQUISA 
                 <section className="space-y-8 mt-2">
+                    <p className='text-dark-grey text-xl font-medium'>Produtos encontrados: {resultado.length}</p>
                     <LoadingContainer loading={loading}>
                         {resultado.length > 0 ? (
                             <div className="productsContainer">
