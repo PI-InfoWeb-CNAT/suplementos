@@ -3,6 +3,7 @@
 import { useProdutos } from '@/context/ProductContext';
 import ProductCard from "@/components/ProductCard";
 import PageWrapper from '@/components/layout/PageWrapper';
+import LoadingContainer from '@/components/loading/LoadingContainer';
 
 export default function CategoriaClient({tipo}: {tipo: string}) {
     const { produtos, loading } = useProdutos();
@@ -20,11 +21,13 @@ export default function CategoriaClient({tipo}: {tipo: string}) {
     return (
         <PageWrapper pageName={pageName}>
             <section>
-                <div className="productsContainer">
-                    {produtos_tipo.map((produto) => (
-                        <ProductCard key={produto.id} product={produto} />
-                    ))}
-                </div>
+                <LoadingContainer loading={loading}>
+                    <div className="productsContainer">
+                        {produtos_tipo.map((produto) => (
+                            <ProductCard key={produto.id} product={produto} />
+                        ))}
+                    </div>
+                </LoadingContainer>
             </section>
         </PageWrapper>
     )

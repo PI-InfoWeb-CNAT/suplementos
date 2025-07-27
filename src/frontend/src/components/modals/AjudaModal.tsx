@@ -16,7 +16,7 @@ export default function AjudaModal() {
         </div>
       </DialogTrigger>
 
-      <DialogContent className="w-180 h-80 flex flex-col justify-center items-center">
+      <DialogContent className="w-180 h-80 flex flex-col justify-center items-center" aria-describedby={undefined}>
         <DialogHeader>
             <VisuallyHidden>
                 <DialogTitle>Ajuda</DialogTitle>

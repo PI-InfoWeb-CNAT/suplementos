@@ -5,7 +5,7 @@ export default function CadastroPage() {
     return (
         <main className="flex flex-row-reverse relative h-screen">
             <section className="relative nt-sm:w-[60%] w-full flex flex-col justify-center items-center bg-white rounded-l-3xl z-20 ">
-                <div className="nt-lg:w-[50%] w-3/4 space-y-15 flex flex-col items-center  mt-20">
+                <div className="nt-lg:w-[50%] w-3/4 space-y-15 flex flex-col items-center tb:mt-10 mb-lg:mt-50 mt-30">
                     <form action="" className="w-full space-y-15 mt-5 mb-5">
                         <div className="space-y-7">
                             <div className="flex flex-col gap-2">
