@@ -1,43 +1,86 @@
+'use client';
+
+import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import api from "@/services/api";
 
 export default function CadastroPage() {
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
+    const onSubmit = async (data: any) => {
+        if (data.senha !== data.confirmacaoSenha) {
+            toast("As senhas não coincidem");
+            return;
+        }
+
+        try {
+            await api.post("/clientes/", {
+                nome: data.nome,
+                cpf: data.cpf,
+                telefone_celular: data.telefone,
+                user: {
+                    email: data.email,
+                    password: data.senha,
+                },
+            });
+
+
+            toast("Cadastro realizado com sucesso!");
+            reset();
+        } catch (error: any) {
+            if (error.response) {
+                console.error("Erro na resposta da API:", error.response.data);
+                toast("Erro ao cadastrar: " + JSON.stringify(error.response.data));
+            } else {
+                console.error("Erro de rede:", error.message);
+                toast("Erro de rede. Tente novamente.");
+            }
+        }
+    };
+
+    const onError = (errors: any) => {
+        toast("Por favor, preencha todos os campos.");
+    };
+
     return (
         <main className="flex flex-row-reverse relative h-screen">
             <section className="relative nt-sm:w-[60%] w-full flex flex-col justify-center items-center bg-white rounded-l-3xl z-20 ">
                 <div className="nt-lg:w-[50%] w-3/4 space-y-15 flex flex-col items-center tb:mt-10 mb-lg:mt-50 mt-30">
-                    <form action="" className="w-full space-y-15 mt-5 mb-5">
+                    <form onSubmit={handleSubmit(onSubmit, onError)} className="w-full space-y-15 mt-5 mb-5">
                         <div className="space-y-7">
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="nome" className="font-semibold mb-lg:text-lg">NOME COMPLETO</label>
-                                <input type="text" name="nome" id="nome" placeholder="Digite seu nome" className="input w-full"/>
+                                <input {...register("nome", { required: true })} type="text" id="nome" placeholder="Digite seu nome" className="input w-full" />
                             </div>
                             <div className="flex flex-col gap-4">
                                 <label htmlFor="email" className="font-semibold mb-lg:text-lg">E-MAIL</label>
-                                <input type="email" name="email" id="email" placeholder="Digite seu email" className="input w-full" />
+                                <input {...register("email", { required: true })} type="email" id="email" placeholder="Digite seu email" className="input w-full" />
                             </div>
-                         
+
                             <div className="w-full flex flex-col md:flex-row md:space-x-24 space-y-6 md:space-y-0 items-start">
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="cpf" className="font-semibold mb-lg:text-lg whitespace-nowrap">CPF</label>
-                                    <input type="text" name="cpf" id="cpf" placeholder="Digite seu CPF" className="input w-full" />
+                                    <input {...register("cpf", { required: true })} type="text" id="cpf" placeholder="Digite seu CPF" className="input w-full" />
                                 </div>
 
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="telefone" className="font-semibold mb-lg:text-lg whitespace-nowrap">TELEFONE CELULAR</label>
-                                    <input type="text" name="telefone" id="telefone" placeholder="Digite seu telefone celular" className="input w-full" />
+                                    <input {...register("telefone", { required: true })} type="text" id="telefone" placeholder="Digite seu telefone celular" className="input w-full" />
                                 </div>
                             </div>
 
                             <div className="w-full flex flex-col md:flex-row md:space-x-24 space-y-6 md:space-y-0 items-start">
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="senha" className="font-semibold mb-lg:text-lg whitespace-nowrap">SENHA</label>
-                                    <input type="text" name="senha" id="senha" placeholder="Digite sua senha" className="input w-full" />
+                                    <input {...register("senha", { required: true })} type="password" id="senha" placeholder="Digite sua senha" className="input w-full" />
                                 </div>
 
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
-                                    <label htmlFor="telefone2" className="font-semibold mb-lg:text-lg whitespace-nowrap">CONFIRMAÇÃO DA SENHA</label>
-                                    <input type="text" name="telefone2" id="telefone2" placeholder="Digite sua senha novamente" className="input w-full" />
+                                    <label htmlFor="confirmacaoSenha" className="font-semibold mb-lg:text-lg whitespace-nowrap">CONFIRMAÇÃO DA SENHA</label>
+                                    <input {...register("confirmacaoSenha", { required: true })} type="password" id="confirmacaoSenha" placeholder="Digite sua senha novamente" className="input w-full" />
                                 </div>
                             </div>
                         </div>
@@ -61,9 +104,9 @@ export default function CadastroPage() {
             </section>
             <a href="/" className="absolute tb:top-7 top-9 right-10 z-20">
                 <button className="text-dark-green hover:brightness-70 transition-all duration-300 cursor-pointer">
-                    <X className="tb:w-10 w-8 h-auto" /> 
+                    <X className="tb:w-10 w-8 h-auto" />
                 </button>
             </a>
         </main>
-    )
+    );
 }

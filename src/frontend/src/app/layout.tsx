@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bai_Jamjuree } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const baiJamjuree = Bai_Jamjuree({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({ children }:
       </head>
       <body className={`${baiJamjuree.className} antialiased`}>
           {children}
+          <Toaster />
       </body>
     </html>
   );
