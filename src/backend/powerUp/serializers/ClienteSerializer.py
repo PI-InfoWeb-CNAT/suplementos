@@ -19,6 +19,9 @@ class ClienteSerializer(serializers.ModelSerializer):
         user_data = validated_data.pop('user')
         password = user_data.pop('password')
 
+        if User.objects.filter(email=user_data.get('email')).exists():
+            raise serializers.ValidationError({"email": "Este email já está em uso."})
+
         user = User(
             username=user_data.get('email'), 
             email=user_data.get('email')

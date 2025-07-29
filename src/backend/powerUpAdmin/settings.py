@@ -24,6 +24,10 @@ INSTALLED_APPS = [
     'powerUp',
 ]
 
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'powerUp.utils.custom_exception_handler',
+}
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.security.SecurityMiddleware',

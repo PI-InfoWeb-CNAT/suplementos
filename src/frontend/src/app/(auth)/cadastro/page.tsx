@@ -1,18 +1,20 @@
 'use client';
 
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { notify } from "@/lib/toast";
 import api from "@/services/api";
 
 export default function CadastroPage() {
+    const router = useRouter();
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const onSubmit = async (data: any) => {
         if (data.senha !== data.confirmacaoSenha) {
-            toast("As senhas não coincidem");
+            notify("As senhas não coincidem", "warning");
             return;
         }
 
@@ -28,21 +30,31 @@ export default function CadastroPage() {
             });
 
 
-            toast("Cadastro realizado com sucesso!");
-            reset();
+            notify("Cadastro realizado com sucesso!", "success");
+            setTimeout(() => {
+                router.push("/login");
+            }, 2000); 
         } catch (error: any) {
             if (error.response) {
                 console.error("Erro na resposta da API:", error.response.data);
-                toast("Erro ao cadastrar: " + JSON.stringify(error.response.data));
+                const erros = error.response.data.errors || [error.response.data.detail];
+                notify(erros, "error");
             } else {
                 console.error("Erro de rede:", error.message);
-                toast("Erro de rede. Tente novamente.");
+                notify("Erro de rede. Tente novamente.", "error");
             }
         }
     };
 
     const onError = (errors: any) => {
-        toast("Por favor, preencha todos os campos.");
+        for (const campo in errors) {
+            const erro = errors[campo]
+            if (erro.type === 'minLength') {
+                notify(`A senha deve ter no mínimo 8 caracteres`, "warning");
+                return
+            }
+        }
+        notify("Por favor, preencha todos os campos.", "warning");
     };
 
     return (
@@ -75,7 +87,7 @@ export default function CadastroPage() {
                             <div className="w-full flex flex-col md:flex-row md:space-x-24 space-y-6 md:space-y-0 items-start">
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="senha" className="font-semibold mb-lg:text-lg whitespace-nowrap">SENHA</label>
-                                    <input {...register("senha", { required: true })} type="password" id="senha" placeholder="Digite sua senha" className="input w-full" />
+                                    <input {...register("senha", { required: true, minLength: 8 })} type="password" id="senha" placeholder="Digite sua senha" className="input w-full" />
                                 </div>
 
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
