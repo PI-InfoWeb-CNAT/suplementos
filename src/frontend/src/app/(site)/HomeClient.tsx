@@ -12,7 +12,6 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import Category from "@/components/Category";
 import ProductCard from "@/components/ProductCard";
 import { useProdutos } from '@/context/ProductContext';
-import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import { ProductProps } from '@/types/products';
 import PageWrapper from '@/components/layout/PageWrapper';
 import LoadingContainer from '@/components/loading/LoadingContainer';

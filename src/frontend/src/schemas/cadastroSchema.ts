@@ -2,11 +2,11 @@ import { z } from "zod";
 
 export const cadastroSchema = z
   .object({
-    nome: z.string().min(1, "Nome é obrigatório"),
+    nome: z.string().min(1, "O nome é obrigatório"),
     email: z.email("Email inválido"),
     cpf: z
         .string()
-        .min(1, "CPF é obrigatório"),
+        .min(1, "O CPF é obrigatório"),
     telefone: z
         .string()
         .min(8, "O telefone deve ter no mínimo 8 caracteres")
