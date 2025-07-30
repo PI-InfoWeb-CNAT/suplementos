@@ -1,23 +1,23 @@
 'use client';
 
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, FieldErrors } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 
+import { cadastroSchema, CadastroSchemaType } from "@/schemas/cadastroSchema";
 import { Button } from "@/components/ui/button";
 import { notify } from "@/lib/toast";
 import api from "@/services/api";
 
 export default function CadastroPage() {
     const router = useRouter();
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm<CadastroSchemaType>({
+        resolver: zodResolver(cadastroSchema),
+        mode: "onChange"
+    });
 
     const onSubmit = async (data: any) => {
-        if (data.senha !== data.confirmacaoSenha) {
-            notify("As senhas não coincidem", "warning");
-            return;
-        }
-
         try {
             await api.post("/clientes/", {
                 nome: data.nome,
@@ -28,7 +28,6 @@ export default function CadastroPage() {
                     password: data.senha,
                 },
             });
-
 
             notify("Cadastro realizado com sucesso!", "success");
             setTimeout(() => {
@@ -46,16 +45,16 @@ export default function CadastroPage() {
         }
     };
 
-    const onError = (errors: any) => {
-        for (const campo in errors) {
-            const erro = errors[campo]
-            if (erro.type === 'minLength') {
-                notify(`A senha deve ter no mínimo 8 caracteres`, "warning");
-                return
-            }
+    const onError = (errors: FieldErrors<CadastroSchemaType>) => {
+        const firstError = Object.values(errors)[0];
+
+        if (firstError && "message" in firstError) {
+            notify(firstError.message as string, "warning");
+        } else {
+            notify("Erro ao validar dados", "warning");
         }
-        notify("Por favor, preencha todos os campos.", "warning");
     };
+
 
     return (
         <main className="flex flex-row-reverse relative h-screen">
@@ -65,7 +64,7 @@ export default function CadastroPage() {
                         <div className="space-y-7">
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="nome" className="font-semibold mb-lg:text-lg">NOME COMPLETO</label>
-                                <input {...register("nome", { required: true })} type="text" id="nome" placeholder="Digite seu nome" className="input w-full" />
+                                <input {...register("nome")} type="text" id="nome" placeholder="Digite seu nome" className="input w-full" />
                             </div>
                             <div className="flex flex-col gap-4">
                                 <label htmlFor="email" className="font-semibold mb-lg:text-lg">E-MAIL</label>
@@ -75,24 +74,24 @@ export default function CadastroPage() {
                             <div className="w-full flex flex-col md:flex-row md:space-x-24 space-y-6 md:space-y-0 items-start">
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="cpf" className="font-semibold mb-lg:text-lg whitespace-nowrap">CPF</label>
-                                    <input {...register("cpf", { required: true })} type="text" id="cpf" placeholder="Digite seu CPF" className="input w-full" />
+                                    <input {...register("cpf")} type="text" id="cpf" placeholder="Digite seu CPF" className="input w-full" />
                                 </div>
 
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="telefone" className="font-semibold mb-lg:text-lg whitespace-nowrap">TELEFONE CELULAR</label>
-                                    <input {...register("telefone", { required: true })} type="text" id="telefone" placeholder="Digite seu telefone celular" className="input w-full" />
+                                    <input {...register("telefone")} type="text" id="telefone" placeholder="Digite seu telefone celular" className="input w-full" />
                                 </div>
                             </div>
 
                             <div className="w-full flex flex-col md:flex-row md:space-x-24 space-y-6 md:space-y-0 items-start">
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="senha" className="font-semibold mb-lg:text-lg whitespace-nowrap">SENHA</label>
-                                    <input {...register("senha", { required: true, minLength: 8 })} type="password" id="senha" placeholder="Digite sua senha" className="input w-full" />
+                                    <input {...register("senha")} type="password" id="senha" placeholder="Digite sua senha" className="input w-full" />
                                 </div>
 
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="confirmacaoSenha" className="font-semibold mb-lg:text-lg whitespace-nowrap">CONFIRMAÇÃO DA SENHA</label>
-                                    <input {...register("confirmacaoSenha", { required: true })} type="password" id="confirmacaoSenha" placeholder="Digite sua senha novamente" className="input w-full" />
+                                    <input {...register("confirmacaoSenha")} type="password" id="confirmacaoSenha" placeholder="Digite sua senha novamente" className="input w-full" />
                                 </div>
                             </div>
                         </div>
