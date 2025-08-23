@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Bai_Jamjuree } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/context/AuthContext";
+import { MenuProvider } from "@/context/MenuContext";
 
 const baiJamjuree = Bai_Jamjuree({
   subsets: ["latin"],
@@ -31,8 +33,12 @@ export default function RootLayout({ children }:
         <link rel="icon" href="/favicons/favicon-dark.ico" media="(prefers-color-scheme: light)"/>
       </head>
       <body className={`${baiJamjuree.className} antialiased`}>
-          {children}
-          <Toaster />
+        <MenuProvider>
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
+        </MenuProvider>
       </body>
     </html>
   );

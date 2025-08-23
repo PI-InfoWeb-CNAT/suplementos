@@ -1,21 +1,72 @@
+'use client';
+
+import { useRouter } from "next/navigation";
+import { useForm, FieldErrors } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
+
+import { loginSchema, LoginSchemaType } from "@/schemas/loginSchema";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
+import { notify } from "@/lib/toast";
+import api from "@/services/api";
 
 export default function LoginClient() {
+    const { login } = useAuth();
+    const router = useRouter();
+    const { register, handleSubmit, formState: { errors } } = useForm<LoginSchemaType>({
+        resolver: zodResolver(loginSchema),
+        mode: "onChange"
+    });
+
+    const onSubmit = async (data: LoginSchemaType) => {
+        try {
+            const response = await api.post("/login/", {
+                email: data.email,
+                password: data.senha,
+            });
+
+            const { access, refresh, nome, perfil, email } = response.data;
+
+            localStorage.setItem("access", access);
+            localStorage.setItem("refresh", refresh);
+
+            login({ nome, perfil, email });
+            notify(`Bem-vindo, ${nome}!`, "success");
+
+            setTimeout(() => {
+                router.push("/");
+            }, 2000);
+        } catch (error: any) {
+            console.error("Erro ao fazer login:", error.response?.data || error.message);
+            notify("Email ou senha incorretos.", "error");
+        }
+    };
+
+    const onError = (errors: FieldErrors<LoginSchemaType>) => {
+        const firstError = Object.values(errors)[0];
+
+        if (firstError && "message" in firstError) {
+            notify(firstError.message as string, "warning");
+        } else {
+            notify("Erro ao validar dados", "warning");
+        }
+    };
+
     return (
         <main className="flex relative h-screen">
             <section className="relative nt-sm:w-[60%] w-full flex flex-col justify-center items-center bg-white rounded-r-3xl z-20">
                 <div className="nt-lg:w-[50%] w-3/4 space-y-15 flex flex-col items-center">
                     <h3 className="mb-lg:text-2xl text-xl text-center font-semibold">BEM VINDO DE VOLTA!</h3>
-                    <form action="" className="w-full space-y-15">
+                    <form onSubmit={handleSubmit(onSubmit, onError)} className="w-full space-y-15">
                         <div className="space-y-7">
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="email" className="font-semibold mb-lg:text-lg">E-MAIL</label>
-                                <input type="email" name="email" id="email" placeholder="Digite seu e-mail" className="input"/>
+                                <input {...register("email")} type="email" name="email" id="email" placeholder="Digite seu e-mail" className="input" />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="senha" className="font-semibold mb-lg:text-lg">SENHA</label>
-                                <input type="password" name="senha" id="senha" placeholder="Digite sua senha" className="input"/>
+                                <input {...register("senha")} type="password" name="senha" id="senha" placeholder="Digite sua senha" className="input" />
                             </div>
                         </div>
                         <Button type="submit" variant="submit" size="submit">
@@ -38,7 +89,7 @@ export default function LoginClient() {
             </section>
             <a href="/" className="absolute tb:top-7 top-9 right-10 z-20">
                 <button className="nt-sm:text-gray-400 nt-sm:hover:text-white text-dark-green hover:brightness-70 transition-all duration-300 cursor-pointer">
-                    <X className="tb:w-10 w-8 h-auto" /> 
+                    <X className="tb:w-10 w-8 h-auto" />
                 </button>
             </a>
         </main>

@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { usePathname } from 'next/navigation';
 import { useMenu } from "@/context/MenuContext";
+import { useAuth } from "@/context/AuthContext";
 
 import { IoIosClose } from "react-icons/io";
 import { IoHomeSharp } from "react-icons/io5";
 import { BsFillLightningChargeFill, BsBasket3Fill } from "react-icons/bs";
 import { FaTrophy, FaHeart } from "react-icons/fa";
 import { BiSolidUser } from "react-icons/bi";
-import { MdLogin } from "react-icons/md";
+import { MdLogin, MdLogout } from "react-icons/md";
 import { IoMdPersonAdd } from "react-icons/io";
 
 import AjudaModal from "../modals/AjudaModal";
@@ -16,6 +17,7 @@ import NavLink from "./NavLink";
 export default function MobileSidebar() {
     const pathname = usePathname();
     const { menuOpen, setMenuOpen } = useMenu();
+    const { isLogged, logout } = useAuth();
     
     const [showSidebar, setShowSidebar] = useState(false);
     const [shouldAnimate, setShouldAnimate] = useState(false);
@@ -69,11 +71,16 @@ export default function MobileSidebar() {
                             <NavLink href="/meus-favoritos" icon={<FaHeart />} name="Meus Favoritos" />
                             <NavLink href="/perfil" icon={<BiSolidUser />} name="Meu Perfil" />
                         </ul>
-
-                        <ul className="flex flex-col gap-3">
-                            <NavLink href="/login" icon={<MdLogin />} name="Entrar" />
-                            <NavLink href="/cadastro" icon={<IoMdPersonAdd />} name="Cadastrar" />
-                        </ul>
+                        {isLogged ? (
+                            <ul onClick={() => logout()} className="flex flex-col gap-3">
+                                <NavLink icon={<MdLogout />} name="Sair" />
+                            </ul>
+                        ) : (
+                            <ul className="flex flex-col gap-3">
+                                <NavLink href="/login" icon={<MdLogin />} name="Entrar" />
+                                <NavLink href="/cadastro" icon={<IoMdPersonAdd />} name="Cadastrar" />
+                            </ul>
+                        )}
                     </nav>
 
                     <AjudaModal />

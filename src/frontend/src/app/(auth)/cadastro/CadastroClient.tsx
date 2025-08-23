@@ -68,7 +68,7 @@ export default function CadastroClient() {
                             </div>
                             <div className="flex flex-col gap-4">
                                 <label htmlFor="email" className="font-semibold mb-lg:text-lg">E-MAIL</label>
-                                <input {...register("email", { required: true })} type="email" id="email" placeholder="Digite seu email" className="input w-full" />
+                                <input {...register("email")} type="email" id="email" placeholder="Digite seu email" className="input w-full" />
                             </div>
 
                             <div className="w-full flex flex-col md:flex-row md:space-x-24 space-y-6 md:space-y-0 items-start">

@@ -60,12 +60,6 @@
     box-sizing: border-box;
 }
 
-.transition-color-slow {
-  transition-property: color;
-  transition-duration: 300ms;
-  transition-timing-function: ease;
-}
-
 .transition-border-fast {
   transition-property: border-left;
   transition-duration: 10ms;
@@ -99,6 +93,10 @@
 
   .input {
     @apply pl-3 pr-3 py-2.5 mb-lg:text-base text-sm rounded-md border-2 border-green outline-none;
+  }
+
+  .transition-color-slow {
+    @apply transition-colors duration-300 ease-in-out;
   }
 }
 

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { NavLinkProps } from '@/types/index';
 
-const NavLink = ({href, icon, name}: NavLinkProps) => {
+const NavLink = ({href = "#", icon, name}: NavLinkProps) => {
     const pathname = usePathname()
     const isActive = pathname === href
 

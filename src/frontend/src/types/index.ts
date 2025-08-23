@@ -13,7 +13,7 @@ export interface IconProps {
 }
 
 export interface NavLinkProps {
-    href: string;
+    href?: string;
     icon: React.ReactNode;
     name: string;
 }

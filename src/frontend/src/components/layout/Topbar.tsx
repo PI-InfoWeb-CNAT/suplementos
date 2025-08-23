@@ -3,12 +3,17 @@ import Image from "next/image";
 
 import { IoMenu } from "react-icons/io5";
 import { IoMdCart } from "react-icons/io";
+import { BiSolidBell } from "react-icons/bi";
 
+import UserDropdown from '@/components/UserDropdown';
 import Icon from '@/components/Icon';
+import { useAuth } from '@/context/AuthContext';
 import { useMenu } from '@/context/MenuContext';
+import { is } from 'zod/v4/locales';
 
 const Topbar = ({page}: {page: string}) => {
     const { setMenuOpen } = useMenu();
+    const { isLogged, user } = useAuth();
 
     return (
         <header className="flex items-center justify-between">
@@ -24,15 +29,23 @@ const Topbar = ({page}: {page: string}) => {
             </Link>
             <div className='flex items-center gap-2'>
                 <Icon icon={<IoMdCart className='text-[18px] tb:text-[22px]' />} href="/carrinho" />
-                {/* DESKTOP */}
-                <div className='hidden nt-sm:flex items-center gap-2'>
-                    <Link href="/login" className=" bg-dark-grey py-2 px-4 font-medium text-white text-base rounded-tl-[10px] rounded-br-[10px] hover:text-light-green transition-color-slow">
-                        Entrar
-                    </Link>
-                    <Link href="/cadastro" className=" bg-dark-grey py-2 px-4 font-medium text-white text-base rounded-tl-[10px] rounded-br-[10px] hover:text-light-green transition-color-slow">
-                        Cadastrar
-                    </Link>
-                </div>
+                {isLogged && user ? (
+                    <>
+                        <Icon icon={<BiSolidBell className='text-[18px] tb:text-[22px]' />} href="/notificacoes" />
+                        <div className='hidden nt-sm:block'>
+                            <UserDropdown user={user} />
+                        </div>
+                    </>
+                ) : (
+                    <div className='hidden nt-sm:flex items-center gap-2'>
+                        <Link href="/login" className=" bg-dark-grey py-2 px-4 font-medium text-white text-base rounded-tl-[10px] rounded-br-[10px] hover:text-light-green transition-color-slow">
+                            Entrar
+                        </Link>
+                        <Link href="/cadastro" className=" bg-dark-grey py-2 px-4 font-medium text-white text-base rounded-tl-[10px] rounded-br-[10px] hover:text-light-green transition-color-slow">
+                            Cadastrar
+                        </Link>
+                    </div>
+                )}
             </div>
         </header>
     );
