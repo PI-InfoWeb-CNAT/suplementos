@@ -27,7 +27,7 @@ export default function AjudaModal() {
           <p className="w-max border-b border-dark-green">powerup.suporte@gmail.com</p>
         </div>
         <DialogClose asChild>
-            <button className="absolute right-4 top-4 border-none text-dark-grey hover:text-black transition-colors cursor-pointer focus:outline-none">
+            <button className="absolute p-0.5 right-4 top-4 border-none rounded-sm text-black hover:bg-gray-200 transition-color-slow cursor-pointer focus:outline-none">
                 <X className="w-7 h-auto" /> 
             </button>
         </DialogClose>
