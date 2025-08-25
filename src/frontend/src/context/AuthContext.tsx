@@ -11,8 +11,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const { setMenuOpen } = useMenu();
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const { setMenuOpen } = useMenu();
 
     const getFirstName = (fullName: string) => fullName.split(" ")[0];
 
@@ -25,6 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             parsed.nome = getFirstName(parsed.nome);
             setUser(parsed);
         }
+        setLoading(false);
     }, []);
 
     const login = (userData: User) => {
@@ -46,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isLogged: !!user, user, login, logout }}>
+        <AuthContext.Provider value={{ isLogged: !!user, user, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );
