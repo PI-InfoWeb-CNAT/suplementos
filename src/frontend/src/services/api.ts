@@ -1,9 +1,46 @@
-import axios from 'axios';
+import axios, { InternalAxiosRequestConfig } from "axios";
 
-const url = process.env.API_URL ?? "http://localhost:8000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
-const instance = axios.create({
-    baseURL: url,
-})
+const api = axios.create({ baseURL: BASE_URL });
 
-export default instance;
+// Interceptor de request
+api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+    let token = localStorage.getItem("access");
+
+    if (!token) return config;
+
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const now = Math.floor(Date.now() / 1000);
+
+        if (payload.exp < now) {
+            const refresh = localStorage.getItem("refresh");
+            if (refresh) {
+                const response = await axios.post(`${BASE_URL}/refresh/`, { refresh });
+                const newToken = response.data.access;
+                if (newToken) {
+                    token = newToken;
+                    localStorage.setItem("access", newToken);
+                }
+            } else {
+                localStorage.removeItem("access");
+                localStorage.removeItem("refresh");
+                localStorage.removeItem("user");
+                window.location.href = "/login";
+                return Promise.reject(new Error("Usuário deslogado"));
+            }
+        }
+
+        // Garante headers compatíveis
+        config.headers = config.headers ?? {};
+        (config.headers as any)["Authorization"] = `Bearer ${token}`;
+
+        return config;
+    } catch (e) {
+        console.error("Erro no interceptor de auth:", e);
+        return config;
+    }
+});
+
+export default api;

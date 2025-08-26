@@ -13,7 +13,7 @@ import { is } from 'zod/v4/locales';
 
 const Topbar = ({page}: {page: string}) => {
     const { setMenuOpen } = useMenu();
-    const { isLogged, user } = useAuth();
+    const { isLogged, user, loading } = useAuth();
 
     return (
         <header className="flex items-center justify-between">
@@ -29,7 +29,9 @@ const Topbar = ({page}: {page: string}) => {
             </Link>
             <div className='flex items-center gap-2'>
                 <Icon icon={<IoMdCart className='text-[18px] tb:text-[22px]' />} href="/carrinho" />
-                {isLogged && user ? (
+                {loading ? (
+                    null
+                ) : isLogged && user ? (
                     <>
                         <Icon icon={<BiSolidBell className='text-[18px] tb:text-[22px]' />} href="/notificacoes" />
                         <div className='hidden nt-sm:block'>
