@@ -10,6 +10,7 @@ import { FaTrophy, FaHeart } from "react-icons/fa";
 import { BiSolidUser } from "react-icons/bi";
 import { MdLogin, MdLogout } from "react-icons/md";
 import { IoMdPersonAdd } from "react-icons/io";
+import { FaRegTrashCan } from "react-icons/fa6";
 
 import AjudaModal from "../modals/AjudaModal";
 import NavLink from "./NavLink";
@@ -74,6 +75,7 @@ export default function MobileSidebar() {
                         {isLogged ? (
                             <ul onClick={() => logout()} className="flex flex-col gap-3">
                                 <NavLink icon={<MdLogout />} name="Sair" />
+                                <NavLink icon={<FaRegTrashCan />} name="Excluir Conta" />
                             </ul>
                         ) : (
                             <ul className="flex flex-col gap-3">

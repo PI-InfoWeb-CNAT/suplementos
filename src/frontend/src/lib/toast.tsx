@@ -7,18 +7,22 @@ const styleMap: Record<Variant, React.CSSProperties> = {
   success: {
     backgroundColor: "#059669",
     color: "#fff",
+    border: "none",
   },
   error: {
     backgroundColor: "#dc2626",
     color: "#fff",
+    border: "none",
   },
   info: {
     backgroundColor: "#2563eb",
     color: "#fff",
+    border: "none",
   },
   warning: {
     backgroundColor: "#FEC02B",
     color: "#000",
+    border: "none",
   },
 };
 

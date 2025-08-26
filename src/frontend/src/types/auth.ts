@@ -8,6 +8,6 @@ export interface AuthContextType {
     isLogged: boolean;
     user: User | null;
     login: (userData: User) => void;
-    logout: () => void;
+    logout: (showMessage?: boolean) => void;
     loading: boolean;
 };

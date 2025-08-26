@@ -35,17 +35,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('user', JSON.stringify(userData));
     };
 
-    const logout = () => {
+    const logout = (showMessage = true) => {
         setUser(null);
         localStorage.removeItem('user');
         localStorage.removeItem('access');
         localStorage.removeItem('refresh');
-        notify("Você saiu da sua conta com sucesso.", "success");
+
+        if (showMessage) {
+            notify("Você saiu da sua conta com sucesso.", "success");
+        }
+
         setTimeout(() => {
             router.push('/');
             setMenuOpen(false);
-        }, 1000)
+        }, 1000);
     };
+
 
     return (
         <AuthContext.Provider value={{ isLogged: !!user, user, login, logout, loading }}>
