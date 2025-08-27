@@ -13,11 +13,13 @@ import { IoMdPersonAdd } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
 
 import AjudaModal from "../modals/AjudaModal";
+import ExcluirContaModal from "../modals/ExcluirContaModal";
 import NavLink from "./NavLink";
 
 export default function MobileSidebar() {
     const pathname = usePathname();
     const { menuOpen, setMenuOpen } = useMenu();
+    const [openExcluir, setOpenExcluir] = useState(false);
     const { isLogged, logout } = useAuth();
     
     const [showSidebar, setShowSidebar] = useState(false);
@@ -73,9 +75,13 @@ export default function MobileSidebar() {
                             <NavLink href="/perfil" icon={<BiSolidUser />} name="Meu Perfil" />
                         </ul>
                         {isLogged ? (
-                            <ul onClick={() => logout()} className="flex flex-col gap-3">
-                                <NavLink icon={<MdLogout />} name="Sair" />
-                                <NavLink icon={<FaRegTrashCan />} name="Excluir Conta" />
+                            <ul className="flex flex-col gap-3">
+                                <div onClick={() => logout()}>
+                                    <NavLink icon={<MdLogout />} name="Sair" />
+                                </div>
+                                <div onClick={() => setOpenExcluir(true)}>
+                                    <NavLink icon={<FaRegTrashCan />} name="Excluir Conta" />
+                                </div>
                             </ul>
                         ) : (
                             <ul className="flex flex-col gap-3">
@@ -86,6 +92,7 @@ export default function MobileSidebar() {
                     </nav>
 
                     <AjudaModal />
+                    <ExcluirContaModal open={openExcluir} onOpenChange={setOpenExcluir} />
                 </aside>
             )}
         </>
