@@ -80,9 +80,12 @@
 
   }
   .h2 {
-    @apply text-2xl tb:text-[28px] font-semibold ;
+    @apply text-2xl tb:text-[28px] font-semibold;
   }
-
+  .h3 {
+    @apply text-xl tb:text-[22px] text-dark-grey font-bold;
+  }
+ 
   .productsContainer {
     @apply flex flex-wrap dt:gap-11 gap-8 nt-sm:justify-start justify-center;
   }
