@@ -18,6 +18,12 @@ export interface NavLinkProps {
     name: string;
 }
 
+export interface CardLinkProps {
+    href: string;
+    icon: React.ReactNode;
+    text: string;
+}
+
 export interface CategoryProps extends NavLinkProps {
     isEven?: boolean;
 }

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, } from "@/components/ui/dropdown-menu";
 import ExcluirContaModal from "./modals/ExcluirContaModal";
+import Link from "next/link";
 
 export default function UserDropdown({ user }: { user?: { nome: string } }) {
     const { logout } = useAuth();
@@ -27,7 +28,7 @@ export default function UserDropdown({ user }: { user?: { nome: string } }) {
                     className="min-w-[8rem] bg-popover text-popover-foreground rounded-md border shadow-md p-1"
                 >
                     <DropdownMenuItem asChild>
-                        <a href="/perfil">Perfil</a>
+                        <Link href="/perfil">Perfil</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => logout()}>Sair</DropdownMenuItem>
                     <DropdownMenuItem
