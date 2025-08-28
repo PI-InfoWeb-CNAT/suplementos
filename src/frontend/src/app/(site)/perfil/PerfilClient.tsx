@@ -6,8 +6,9 @@ import imgEdit from "../../../../public/img-editar.svg"
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import withAuth from "@/lib/withAuth";
 
-export default function PerfilClient() {
+function PerfilClient() {
     return (
         <PageWrapper pageName="Meu Perfil">
             <div className="flex flex-col nt-sm:flex-row nt-sm:justify-between gap-y-5">
@@ -48,3 +49,6 @@ export default function PerfilClient() {
         </PageWrapper>
     );
 }
+
+
+export default withAuth(PerfilClient);

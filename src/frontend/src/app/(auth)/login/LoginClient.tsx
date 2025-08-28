@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
@@ -14,6 +14,9 @@ import api from "@/services/api";
 export default function LoginClient() {
     const { login } = useAuth();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirect = searchParams.get("redirect");
+
     const { register, handleSubmit, formState: { errors } } = useForm<LoginSchemaType>({
         resolver: zodResolver(loginSchema),
         mode: "onChange"
@@ -35,7 +38,11 @@ export default function LoginClient() {
             notify(`Bem-vindo, ${nome}!`, "success");
 
             setTimeout(() => {
-                router.push("/");
+                if (redirect) {
+                    router.push(redirect); 
+                } else {
+                    router.push("/");
+                }
             }, 2000);
         } catch (error: any) {
             console.error("Erro ao fazer login:", error.response?.data || error.message);
