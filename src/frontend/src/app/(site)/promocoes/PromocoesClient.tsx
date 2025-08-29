@@ -1,29 +1,35 @@
 'use client';
-import { useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 import ProductCard from "@/components/ProductCard";
 import LoadingContainer from "@/components/loading/LoadingContainer";
-import { useProdutos } from '@/context/ProductContext';
 import Filter from "@/components/Filter";
 import PageWrapper from "@/components/layout/PageWrapper";
+import api from "@/services/api";
 import { ProductProps } from "@/types/products";
 
 export default function PromocoesClient() {
-    const { produtos, loading } = useProdutos();
+    const [produtosOriginais, setProdutosOriginais] = useState<ProductProps[]>([]);
+    const [produtosPromocoes, setProdutosPromocoes] = useState<ProductProps[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const produtosPromocoesOriginais = useMemo(
-        () => produtos.filter(p => p.porcentagem_desconto > 0),
-        [produtos]
-    );
-
-    const [produtosPromocoes, setProdutosPromocoes] = useState<ProductProps[]>(produtosPromocoesOriginais);
+    useEffect(() => {
+        setLoading(true);
+        api.get("/promocoes/")
+            .then(res => {
+                setProdutosOriginais(res.data);
+                setProdutosPromocoes(res.data);
+            })
+            .catch(err => console.error("Erro ao carregar promoções:", err))
+            .finally(() => setLoading(false));
+    }, []);
 
     return (
         <PageWrapper pageName="Promoções">
             <section className="space-y-10">
                 <h2 className="h2 lg:hidden">Promoções</h2>
 
-                <Filter produtos={produtosPromocoesOriginais} onChange={setProdutosPromocoes} />
+                <Filter produtos={produtosOriginais} onChange={setProdutosPromocoes} />
 
                 <LoadingContainer loading={loading}>
                     {produtosPromocoes.length > 0 ? (

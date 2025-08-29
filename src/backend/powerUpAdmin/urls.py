@@ -8,12 +8,14 @@ from django.conf.urls.static import static
 from powerUp.views.ProdutoView import ProdutoViewSet
 from powerUp.views.ClienteView import ClienteViewSet
 from powerUp.views.FavoritoView import FavoritoViewSet
+from powerUp.views.PromocoesView import PromocoesViewSet
 from powerUp.views.LoginView import CustomTokenObtainPairView
 
 router = DefaultRouter()
 router.register(r'produtos', ProdutoViewSet)
 router.register(r'clientes', ClienteViewSet)
 router.register(r'favoritos', FavoritoViewSet, basename='favorito')
+router.register(r'promocoes', PromocoesViewSet, basename='promocoes')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
