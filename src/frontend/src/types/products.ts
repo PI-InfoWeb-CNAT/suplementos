@@ -16,8 +16,11 @@ export interface ProductCardProps {
 }
 
 export interface FilterProps {
-  ordenacao: string;
-  setOrdenacao: (value: string) => void;
+   produtos: ProductProps[];                  
+    onChange?: (produtosOrdenados: ProductProps[]) => void; // Callback com produtos ordenados
+    initialOrdenacao?: string;                  // Ordenação inicial
+    showReset?: boolean;                        // Mostrar opção "Sem ordenação"
+    extraOptions?: { value: string; label: string }[]; // Opções extras de ordenação
 }
 
 export interface ProductContextType {
