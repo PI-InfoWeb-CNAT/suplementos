@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-
 import api from '@/services/api';
 import { ProductProps, ProductContextType } from '../types/products';
 
@@ -24,7 +23,7 @@ export function ProdutosProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <ProdutosContext.Provider value={{ produtos, loading }}>
+    <ProdutosContext.Provider value={{ produtos, setProdutos, loading }}>
       {children}
     </ProdutosContext.Provider>
   );

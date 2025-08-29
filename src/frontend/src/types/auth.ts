@@ -6,6 +6,7 @@ export interface User {
 
 export interface AuthContextType {
     isLogged: boolean;
+    isLoggingOut: boolean;
     user: User | null;
     login: (userData: User) => void;
     logout: (showMessage?: boolean) => void;

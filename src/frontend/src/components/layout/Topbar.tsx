@@ -9,7 +9,6 @@ import UserDropdown from '@/components/UserDropdown';
 import Icon from '@/components/Icon';
 import { useAuth } from '@/context/AuthContext';
 import { useMenu } from '@/context/MenuContext';
-import { is } from 'zod/v4/locales';
 
 const Topbar = ({page}: {page: string}) => {
     const { setMenuOpen } = useMenu();

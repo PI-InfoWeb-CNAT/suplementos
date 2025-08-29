@@ -12,6 +12,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const router = useRouter();
     const { setMenuOpen } = useMenu();
 
@@ -36,6 +37,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const logout = (showMessage = true) => {
+        setIsLoggingOut(true);
         setUser(null);
         localStorage.removeItem('user');
         localStorage.removeItem('access');
@@ -45,15 +47,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             notify("Você saiu da sua conta com sucesso.", "success");
         }
 
-        setTimeout(() => {
-            router.push('/');
-            setMenuOpen(false);
-        }, 1000);
+        setMenuOpen(false);
+        router.replace('/'); 
     };
 
-
     return (
-        <AuthContext.Provider value={{ isLogged: !!user, user, login, logout, loading }}>
+        <AuthContext.Provider value={{ isLogged: !!user, user, login, logout, loading, isLoggingOut }}>
             {children}
         </AuthContext.Provider>
     );

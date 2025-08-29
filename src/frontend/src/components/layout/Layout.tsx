@@ -2,11 +2,8 @@
 
 import Sidebar from './Sidebar'
 import Footer from './Footer'
-import { useMenu } from '@/context/MenuContext';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const { menuOpen, setMenuOpen } = useMenu();
-
   return (
     <div className='flex flex-col'>
       <div className="relative flex gap-15 bodyPadding min-h-screen items-stretch dt:py-16 py-12">

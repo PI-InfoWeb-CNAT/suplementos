@@ -7,15 +7,15 @@ import LoadingSpinner from "@/components/loading/LoadingSpinner";
 
 export function withAuth<P extends object>(WrappedComponent: FC<P>) {
     const ComponentWithAuth: FC<P> = (props) => {
-        const { isLogged, loading } = useAuth();
+        const { isLogged, isLoggingOut, loading } = useAuth();
         const router = useRouter();
         const pathname = usePathname();
 
         useEffect(() => {
-            if (!loading && !isLogged) {
-                router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+            if (!loading && !isLogged && !isLoggingOut) {
+                router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
             }
-        }, [loading, isLogged, router, pathname]);
+        }, [loading, isLogged, isLoggingOut, router, pathname]);
 
         if (loading || (!loading && !isLogged)) {
             return (

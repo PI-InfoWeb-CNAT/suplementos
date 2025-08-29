@@ -7,6 +7,12 @@ export interface ProductProps {
   porcentagem_desconto: number;
   categoria: string;
   preco_calculado: number; 
+  is_favorited: boolean;
+}
+
+export interface ProductCardProps {
+  product: ProductProps;
+  onFavoriteChange?: (produtoId: number, isFavorited: boolean) => void;
 }
 
 export interface FilterProps {
@@ -16,5 +22,6 @@ export interface FilterProps {
 
 export interface ProductContextType {
   produtos: ProductProps[];
+  setProdutos: React.Dispatch<React.SetStateAction<ProductProps[]>>;
   loading: boolean;
 }

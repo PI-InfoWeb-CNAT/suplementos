@@ -1,16 +1,19 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from powerUp.views.ProdutoView import ProdutoViewSet
-from powerUp.views.ClienteView import ClienteViewSet
-from powerUp.views.LoginView import CustomTokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 from django.conf import settings
 from django.conf.urls.static import static
 
+from powerUp.views.ProdutoView import ProdutoViewSet
+from powerUp.views.ClienteView import ClienteViewSet
+from powerUp.views.FavoritoView import FavoritoViewSet
+from powerUp.views.LoginView import CustomTokenObtainPairView
+
 router = DefaultRouter()
 router.register(r'produtos', ProdutoViewSet)
 router.register(r'clientes', ClienteViewSet)
+router.register(r'favoritos', FavoritoViewSet, basename='favorito')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
