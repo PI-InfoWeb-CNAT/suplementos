@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
 class ClienteSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(required=False)
 
     class Meta:
         model = Cliente
@@ -29,6 +29,27 @@ class ClienteSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
 
-        # Criar o cliente associado
         cliente = Cliente.objects.create(user=user, **validated_data)
         return cliente
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', None)
+
+        instance.nome = validated_data.get('nome', instance.nome)
+        instance.cpf = validated_data.get('cpf', instance.cpf)
+        instance.telefone_celular = validated_data.get('telefone_celular', instance.telefone_celular)
+        instance.save()
+
+        if user_data:
+            user = instance.user
+            email = user_data.get('email')
+            if email and email != user.email:
+                if User.objects.filter(email=email).exclude(pk=user.pk).exists():
+                    raise serializers.ValidationError({"email": "Este email já está em uso."})
+                user.email = email
+                user.username = email 
+            if 'password' in user_data and user_data['password']:
+                user.set_password(user_data['password'])
+            user.save()
+
+        return instance

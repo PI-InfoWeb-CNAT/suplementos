@@ -29,12 +29,12 @@ export default function LoginClient() {
                 password: data.senha,
             });
 
-            const { access, refresh, nome, perfil, email } = response.data;
+            const { access, refresh, id, nome, email, perfil, cpf, telefone } = response.data;
 
             localStorage.setItem("access", access);
             localStorage.setItem("refresh", refresh);
 
-            login({ nome, perfil, email });
+            login({ id, nome, email, perfil, cpf, telefone });
             notify(`Bem-vindo, ${nome}!`, "success");
 
             setTimeout(() => {

@@ -85,7 +85,7 @@
   .h3 {
     @apply text-xl tb:text-[22px] text-dark-grey font-bold;
   }
- 
+
   .productsContainer {
     @apply flex flex-wrap dt:gap-11 gap-8 nt-sm:justify-start justify-center;
   }

@@ -9,7 +9,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 class ClienteViewSet(viewsets.ModelViewSet): 
     queryset = Cliente.objects.all() 
     serializer_class = ClienteSerializer 
-    permission_classes = [AllowAny] 
     
     @action(detail=False, methods=['delete'], url_path='excluir-conta', permission_classes=[IsAuthenticated]) 
     def excluir_conta(self, request): 

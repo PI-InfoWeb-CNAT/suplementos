@@ -17,7 +17,7 @@ export default function CadastroClient() {
         mode: "onChange"
     });
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: CadastroSchemaType) => {
         try {
             await api.post("/clientes/", {
                 nome: data.nome,

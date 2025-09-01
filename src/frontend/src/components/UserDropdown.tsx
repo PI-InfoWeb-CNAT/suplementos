@@ -11,13 +11,15 @@ export default function UserDropdown({ user }: { user?: { nome: string } }) {
     const { logout } = useAuth();
     const [openExcluir, setOpenExcluir] = useState(false);
 
+    const getFirstName = (fullName: string ) => fullName.split(" ")[0];
+
     return (
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <div className="flex items-center gap-1 cursor-pointer select-none group hover:text-dark-green transition-color-slow">
                         <p className="text-lg">
-                            Olá, <strong>{user?.nome}</strong>
+                            Olá, <strong>{user ? getFirstName(user.nome) : ''}</strong>
                         </p>
                         <IoIosArrowDown className="text-[14px] tb:text-xl transition-transform duration-200 group-data-[state=open]:rotate-180" />
                     </div>

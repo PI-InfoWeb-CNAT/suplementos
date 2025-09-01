@@ -16,22 +16,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const router = useRouter();
     const { setMenuOpen } = useMenu();
 
-    const getFirstName = (fullName: string) => fullName.split(" ")[0];
-
     useEffect(() => {
         const access = localStorage.getItem('access');
         const userData = localStorage.getItem('user');
 
         if (access && userData) {
             const parsed = JSON.parse(userData);
-            parsed.nome = getFirstName(parsed.nome);
             setUser(parsed);
         }
         setLoading(false);
     }, []);
 
     const login = (userData: User) => {
-        userData.nome = getFirstName(userData.nome);
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
     };
@@ -52,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isLogged: !!user, user, login, logout, loading, isLoggingOut }}>
+        <AuthContext.Provider value={{ isLogged: !!user, user, setUser, login, logout, loading, isLoggingOut }}>
             {children}
         </AuthContext.Provider>
     );

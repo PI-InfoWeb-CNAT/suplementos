@@ -33,18 +33,26 @@ class EmailTokenObtainSerializer(serializers.Serializer):
         # Pega dados do cliente
         try:
             cliente = user.cliente
+            cliente_id = cliente.id
             nome = cliente.nome
             perfil = cliente.perfil
+            cpf = cliente.cpf
+            telefone = cliente.telefone_celular
+            
         except:
             nome = user.username
             perfil = 'user'
+            cliente_id = None
 
         return {
             'refresh': str(refresh),
             'access': access,
+            'id': cliente_id,
             'nome': nome,
-            'perfil': perfil,
             'email': user.email,
+            'perfil': perfil,
+            'cpf': cpf,
+            'telefone': telefone,
         }
 
 class CustomTokenObtainPairView(APIView):
