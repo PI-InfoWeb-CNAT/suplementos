@@ -63,8 +63,14 @@ function PerfilClient() {
 
             notify("Dados atualizados com sucesso!", "success");
         } catch (error: any) {
-            console.error(error);
-            notify("Erro ao atualizar perfil", "error");
+            if (error.response) {
+                console.error("Erro na resposta da API:", error.response.data);
+                const erros = error.response.data.errors || [error.response.data.detail];
+                notify(erros, "error");
+            } else {
+                console.error("Erro de rede:", error.message);
+                notify("Erro de rede. Tente novamente.", "error");
+            }
         }
     };
 
@@ -87,19 +93,19 @@ function PerfilClient() {
                         <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col gap-6 w-full">
                             <label htmlFor="nome" className="flex items-center space-x-2 w-full text-lg">
                                 <strong>Nome:</strong>
-                                <input {...register("nome")} type="text" name="nome" id="nome" className="input pl-2 py-0.5 rounded-sm w-full" />
+                                <input {...register("nome")} type="text" id="nome" className="input pl-2 py-0.5 rounded-sm w-full" />
                             </label>
-                            <label htmlFor="nome" className="flex items-center space-x-2 w-full text-lg">
+                            <label htmlFor="email" className="flex items-center space-x-2 w-full text-lg">
                                 <strong>Email:</strong>
-                                <input {...register("email")} type="text" name="nome" id="nome" className="input pl-2 py-0.5 rounded-sm w-full" />
+                                <input {...register("email")} type="text" id="email" className="input pl-2 py-0.5 rounded-sm w-full" />
                             </label>
-                            <label htmlFor="nome" className="flex items-center space-x-2 mb-lg:w-3/5 text-lg">
+                            <label htmlFor="cpf" className="flex items-center space-x-2 mb-lg:w-3/5 text-lg">
                                 <strong>CPF:</strong>
-                                <input {...register("cpf")} type="text" name="nome" id="nome" className="input pl-2 py-0.5 rounded-sm w-full" />
+                                <input {...register("cpf")} type="text" id="cpf" className="input pl-2 py-0.5 rounded-sm w-full" />
                             </label>
-                            <label htmlFor="nome" className="flex items-center space-x-2 mb-lg:w-3/4 text-lg">
+                            <label htmlFor="telefone_celular" className="flex items-center space-x-2 mb-lg:w-3/4 text-lg">
                                 <strong>Telefone:</strong>
-                                <input {...register("telefone_celular")} type="text" name="nome" id="nome" className="input pl-2 py-0.5 rounded-sm w-full" />
+                                <input {...register("telefone_celular")} type="text" id="telefone_celular" className="input pl-2 py-0.5 rounded-sm w-full" />
                             </label>
                             <div className="flex nt-lg:flex-row nt-sm:flex-col mb-lg:flex-row flex-col tb:gap-x-8 gap-x-4 gap-y-4 nt-lg:w-auto w-[180px] mt-4">
                                 <Button variant="submit" size="submit">
