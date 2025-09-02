@@ -4,7 +4,6 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 const api = axios.create({ baseURL: BASE_URL });
 
-// Interceptor de request
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
     let token = localStorage.getItem("access");
 
@@ -32,7 +31,6 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
             }
         }
 
-        // Garante headers compatíveis
         config.headers = config.headers ?? {};
         (config.headers as any)["Authorization"] = `Bearer ${token}`;
 

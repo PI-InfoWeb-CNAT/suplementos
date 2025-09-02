@@ -12,6 +12,7 @@ import withAuth from "@/lib/withAuth";
 import { notify } from "@/lib/toast";
 import api from "@/services/api";
 import { editPerfilSchema, EditPerfilSchemaType } from "@/schemas/editPerfilSchema";
+import RedefinirSenhaModal from "@/components/modals/RedefinirSenhaModal";
 
 function PerfilClient() {
     const { user, setUser } = useAuth();
@@ -111,9 +112,7 @@ function PerfilClient() {
                                 <Button variant="submit" size="submit">
                                     Atualizar
                                 </Button>
-                                <Button variant="close" size="close">
-                                    Redefinir senha
-                                </Button>
+                                <RedefinirSenhaModal />
                             </div>
                         </form>
                     </div>
