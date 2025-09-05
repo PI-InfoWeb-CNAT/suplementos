@@ -1,16 +1,40 @@
 'use client'
 import { X } from "lucide-react"
+import { useForm, FieldErrors } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
-
 import { Button } from "../ui/button"
+import { redefinirSenhaSchema, RedefinirSenhaSchemaType } from "@/schemas/redefinirSenhaSchema";
+import { notify } from "@/lib/toast";
+import api from "@/services/api";
+
 
 export default function RedefinirSenhaModal() {
+    const { register, handleSubmit, formState: { errors } } = useForm<RedefinirSenhaSchemaType>({
+        resolver: zodResolver(redefinirSenhaSchema),
+        mode: "onChange"
+    });
+
+    const onSubmit = async () => {
+        alert('Submit')
+    }
+
+    const onError = (errors: FieldErrors<RedefinirSenhaSchemaType>) => {
+        const firstError = Object.values(errors)[0];
+
+        if (firstError && "message" in firstError) {
+            notify(firstError.message as string, "warning");
+        } else {
+            notify("Erro ao validar dados", "warning");
+        }
+    };
+
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="close" size="close">
+                <Button variant="close" size="close" type="button" className="w-50">
                     Redefinir senha
                 </Button>
             </DialogTrigger>
@@ -22,18 +46,18 @@ export default function RedefinirSenhaModal() {
                         <DialogDescription>Preencha os campos abaixo e redefina sua senha</DialogDescription>
                     </VisuallyHidden>
                 </DialogHeader>
-                <form className="flex flex-col gap-6 sm:w-4/5 w-full">
+                <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col gap-6 sm:w-4/5 w-full">
                     <label htmlFor="senha_atual" className="flex items-center space-x-2 sm:text-lg">
                         <strong className="sm:w-30">Senha atual:</strong>
-                        <input type="text" id="senha_atual" className="input pl-2 py-0.5 rounded-sm flex-1" />
+                        <input {...register("senha_atual")} type="text" id="senha_atual" className="input pl-2 py-0.5 rounded-sm flex-1" />
                     </label>
                     <label htmlFor="nova_senha" className="flex items-center space-x-2 sm:text-lg">
                         <strong className="sm:w-30">Nova senha:</strong>
-                        <input type="text" id="nova_senha" className="input pl-2 py-0.5 rounded-sm flex-1" />
+                        <input {...register("nova_senha")} type="text" id="nova_senha" className="input pl-2 py-0.5 rounded-sm flex-1" />
                     </label>
                     <label htmlFor="confirmacao_nova_senha" className="flex items-center space-x-2 sm:text-lg">
                         <strong className="sm:w-50">Confirmação da senha:</strong>
-                        <input type="text" id="confirmacao_nova_senha" className="input pl-2 py-0.5 rounded-sm flex-1" />
+                        <input {...register("confirmacao_nova_senha")} type="text" id="confirmacao_nova_senha" className="input pl-2 py-0.5 rounded-sm flex-1" />
                     </label>
                     <div className="flex gap-8 mt-5">
                         <Button variant="submit" size="submit" type="submit">
