@@ -17,9 +17,33 @@ export default function RedefinirSenhaModal() {
         mode: "onChange"
     });
 
-    const onSubmit = async () => {
-        alert('Submit')
-    }
+    const onSubmit = async (data: RedefinirSenhaSchemaType) => {
+        try {
+            await api.patch('/redefinir-senha/', data);
+            notify('Senha redefinida com sucesso!', 'success');
+        } catch (error: any) {
+            if (error.response?.data) {
+                const data = error.response.data;
+
+                const firstKey = Object.keys(data)[0];
+                const messages = data[firstKey];
+
+                let messageStr = '';
+
+                if (Array.isArray(messages)) {
+                    messageStr = messages[0];
+                } else if (typeof messages === 'string') {
+                    messageStr = messages;
+                } else {
+                    messageStr = JSON.stringify(messages); // fallback
+                }
+
+                notify(messageStr, 'error');
+            } else {
+                notify('Erro ao redefinir a senha. Tente novamente.', 'error');
+            }
+        }
+    };
 
     const onError = (errors: FieldErrors<RedefinirSenhaSchemaType>) => {
         const firstError = Object.values(errors)[0];

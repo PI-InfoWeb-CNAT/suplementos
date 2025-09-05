@@ -9,6 +9,7 @@ from powerUp.views.ProdutoView import ProdutoViewSet
 from powerUp.views.ClienteView import ClienteViewSet
 from powerUp.views.FavoritoView import FavoritoViewSet
 from powerUp.views.PromocoesView import PromocoesViewSet
+from powerUp.views.RedefinirSenhaView import RedefinirSenhaView
 from powerUp.views.LoginView import CustomTokenObtainPairView
 
 router = DefaultRouter()
@@ -21,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('redefinir-senha/', RedefinirSenhaView.as_view(), name='redefinir-senha'),
     path('', include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
