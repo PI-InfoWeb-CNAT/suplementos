@@ -8,12 +8,14 @@ class RedefinirSenhaSerializer(serializers.Serializer):
     def validate_senha_atual(self, value):
         user = self.context['request'].user
         if not user.check_password(value):
-            raise serializers.ValidationError({"senha_atual": "Senha atual incorreta"})
+            raise serializers.ValidationError("Senha atual incorreta")
         return value
 
     def validate(self, data):
         if data['nova_senha'] != data['confirmacao_nova_senha']:
-            raise serializers.ValidationError({"confirmacao_nova_senha": "As senhas não coincidem"})
+            raise serializers.ValidationError("A confirmação da nova senha não corresponde")
+        if data['nova_senha'] == data['senha_atual']:
+            raise serializers.ValidationError("A nova senha não pode ser igual à senha atual")
         return data
 
     def save(self, **kwargs):

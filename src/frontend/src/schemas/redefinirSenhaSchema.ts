@@ -12,7 +12,11 @@ export const redefinirSenhaSchema = z
   })
   .refine((data) => data.nova_senha === data.confirmacao_nova_senha, {
     path: ["confirmacao_nova_senha"],
-    message: "As senhas não coincidem",
+    message: "A confirmação da nova senha não corresponde",
+  })
+  .refine((data) => data.nova_senha !== data.senha_atual, {
+    path: ["nova_senha"],
+    message: "A nova senha não pode ser igual à senha atual",
   });
 
 export type RedefinirSenhaSchemaType = z.infer<typeof redefinirSenhaSchema>;

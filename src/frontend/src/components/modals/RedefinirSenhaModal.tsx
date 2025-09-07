@@ -1,5 +1,6 @@
 'use client'
 import { X } from "lucide-react"
+import { useState } from "react";
 import { useForm, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -12,7 +13,9 @@ import api from "@/services/api";
 
 
 export default function RedefinirSenhaModal() {
-    const { register, handleSubmit, formState: { errors } } = useForm<RedefinirSenhaSchemaType>({
+    const [open, setOpen] = useState(false);
+
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<RedefinirSenhaSchemaType>({
         resolver: zodResolver(redefinirSenhaSchema),
         mode: "onChange"
     });
@@ -21,24 +24,20 @@ export default function RedefinirSenhaModal() {
         try {
             await api.patch('/redefinir-senha/', data);
             notify('Senha redefinida com sucesso!', 'success');
+            setOpen(false);
+            reset();
         } catch (error: any) {
             if (error.response?.data) {
-                const data = error.response.data;
+                const data = error.response.data as Record<string, any>;
 
-                const firstKey = Object.keys(data)[0];
-                const messages = data[firstKey];
+                const message =
+                    data.non_field_errors?.[0] ??
+                    (Array.isArray(Object.values(data)[0])
+                        ? Object.values(data)[0][0]
+                        : Object.values(data)[0]) ??
+                    "Erro ao redefinir a senha.";
 
-                let messageStr = '';
-
-                if (Array.isArray(messages)) {
-                    messageStr = messages[0];
-                } else if (typeof messages === 'string') {
-                    messageStr = messages;
-                } else {
-                    messageStr = JSON.stringify(messages); // fallback
-                }
-
-                notify(messageStr, 'error');
+                notify(message, "error");
             } else {
                 notify('Erro ao redefinir a senha. Tente novamente.', 'error');
             }
@@ -56,7 +55,7 @@ export default function RedefinirSenhaModal() {
     };
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="close" size="close" type="button" className="w-50">
                     Redefinir senha
