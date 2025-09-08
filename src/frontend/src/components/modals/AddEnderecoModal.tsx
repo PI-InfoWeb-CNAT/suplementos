@@ -1,0 +1,37 @@
+'use client'
+import { X } from "lucide-react"
+import { CiCirclePlus } from "react-icons/ci";
+
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+
+export default function AddEnderecoModal() {
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <div className='group flex flex-col justify-center items-center gap-3 border-2 border-dashed border-dark-grey rounded-xl text-dark-grey text-xl w-[45%] h-[300px] cursor-pointer'>
+                    <CiCirclePlus size={45} className="group-hover:scale-115 transition-all duration-300"/>
+                    <p className="font-medium">Adicione um novo endereço</p>
+                </div>
+            </DialogTrigger>
+
+            <DialogContent className="w-180 h-80 flex flex-col justify-center items-center" aria-describedby={undefined}>
+                <DialogHeader>
+                    <VisuallyHidden>
+                        <DialogTitle>Adicionar Endereço</DialogTitle>
+                        <DialogDescription>Para adicionar um endereço, preencha os campos e aperte em adicionar.</DialogDescription>
+                    </VisuallyHidden>
+                </DialogHeader>
+                <div className="flex flex-col items-center gap-5 px-10 text-center tb:text-xl text-lg font-bold">
+                    <p>Para entrar em contato conosco, envie uma mensagem para o e-mail abaixo:</p>
+                    <p className="w-max border-b border-dark-green">powerup.suporte@gmail.com</p>
+                </div>
+                <DialogClose asChild>
+                    <button className="absolute p-0.5 right-4 top-4 border-none rounded-sm text-black hover:bg-gray-200 transition-color-slow cursor-pointer focus:outline-none">
+                        <X className="w-7 h-auto" />
+                    </button>
+                </DialogClose>
+            </DialogContent>
+        </Dialog>
+    )
+}
