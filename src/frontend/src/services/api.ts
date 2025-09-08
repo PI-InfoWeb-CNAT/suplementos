@@ -16,11 +16,20 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
         if (payload.exp < now) {
             const refresh = localStorage.getItem("refresh");
             if (refresh) {
-                const response = await axios.post(`${BASE_URL}/refresh/`, { refresh });
-                const newToken = response.data.access;
-                if (newToken) {
-                    token = newToken;
-                    localStorage.setItem("access", newToken);
+                try {
+                    const response = await axios.post(`${BASE_URL}/refresh/`, { refresh });
+                    const newToken = response.data.access;
+                    if (newToken) {
+                        token = newToken;
+                        localStorage.setItem("access", newToken);
+                    }
+                } catch (error) {
+                    console.error("Refresh token expirado ou inválido:", error);
+                    localStorage.removeItem("access");
+                    localStorage.removeItem("refresh");
+                    localStorage.removeItem("user");
+                    window.location.href = "/";
+                    return Promise.reject(new Error("Sessão expirada. Faça login novamente."));
                 }
             } else {
                 localStorage.removeItem("access");
