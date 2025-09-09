@@ -26,7 +26,9 @@ export const addEnderecoSchema = z
     numero: z
         .string()
         .min(1, "O número é obrigatório"),
-    complemento: z.string(),
+    complemento: z.
+        string().
+        optional(),
   })
 
 export type AddEnderecoSchemaType = z.infer<typeof addEnderecoSchema>;

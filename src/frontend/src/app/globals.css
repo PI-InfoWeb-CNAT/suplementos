@@ -95,7 +95,6 @@
   }
 
   .input {
-    /* @apply px-3 py-2.5 mb-lg:text-base text-sm rounded-md border-2 border-green outline-none; */
     @apply pl-2 py-0.5 mb-lg:text-base text-sm rounded-sm border-2 border-green outline-none;
   }
 

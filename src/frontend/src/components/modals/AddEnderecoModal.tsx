@@ -7,14 +7,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { CiCirclePlus } from "react-icons/ci";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { Button } from "../ui/button";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import LoadingContainer from "../loading/LoadingContainer";
 import { addEnderecoSchema, AddEnderecoSchemaType } from "@/schemas/addEnderecoSchema";
 import { notify } from "@/lib/toast";
-import { Button } from "../ui/button";
+import api from "@/services/api";
 
 export default function AddEnderecoModal() {
-    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<AddEnderecoSchemaType>({
+    const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<AddEnderecoSchemaType>({
         resolver: zodResolver(addEnderecoSchema),
         mode: "onChange"
     });
@@ -62,7 +63,19 @@ export default function AddEnderecoModal() {
     }, [cepValue, setValue]);
 
     const onSubmit = async (data: AddEnderecoSchemaType) => {
-        notify("oi", "success")
+        try {
+            await api.post("/enderecos/", data)
+            notify("API funcionando", "success")
+        } catch (error: any) {
+            if (error.response) {
+                console.error("Erro na resposta da API:", error.response.data);
+                const erros = error.response.data.errors || [error.response.data.detail];
+                notify(erros, "error");
+            } else {
+                console.error("Erro de rede:", error.message);
+                notify("Erro de rede. Tente novamente.", "error");
+            }
+        }
     }
 
     const onError = (errors: FieldErrors<AddEnderecoSchemaType>) => {
@@ -111,47 +124,52 @@ export default function AddEnderecoModal() {
                         {showInputs && (
                             <>
                                 <label htmlFor="rua" className="flex flex-col space-x-2 sm:text-lg w-full">
-                                    <strong className="">Rua:</strong>
+                                    <strong className="">Rua:*</strong>
                                     <input {...register("rua")} type="text" id="rua" className="input" />
                                 </label>
                                 <label htmlFor="bairro" className="flex flex-col space-x-2 sm:text-lg w-full">
-                                    <strong className="">Bairro:</strong>
+                                    <strong className="">Bairro:*</strong>
                                     <input {...register("bairro")} type="text" id="bairro" className="input" />
                                 </label>
                                 <div className="flex justify-between w-full">
                                     <label htmlFor="rua" className="flex flex-col space-x-2 sm:text-lg w-[70%]">
-                                        <strong className="">Cidade:</strong>
+                                        <strong className="">Cidade:*</strong>
                                         <input {...register("cidade")} type="text" id="rua" className="input" />
                                     </label>
                                     <label htmlFor="rua" className="flex flex-col space-x-2 sm:text-lg w-[20%]">
-                                        <strong className="">UF:</strong>
+                                        <strong className="">UF:*</strong>
                                         <input {...register("uf")} type="text" id="rua" className="input" />
                                     </label>
                                 </div>
                                 <div className="flex justify-between w-full">
                                     <label htmlFor="numero" className="flex flex-col space-x-2 sm:text-lg w-[30%]">
-                                        <strong className="">Número:</strong>
-                                        <input {...register("numero")} type="text" id="numero" className="input" />
+                                        <strong className="">Número:*</strong>
+                                        <input {...register("numero")} type="text" id="numero" className="input" placeholder="Ex: 123"/>
                                     </label>
                                     <label htmlFor="complemento" className="flex flex-col space-x-2 sm:text-lg w-[60%]">
                                         <strong className="">Complemento:</strong>
-                                        <input {...register("complemento")} type="text" id="complemento" className="input" />
+                                        <input {...register("complemento")} type="text" id="complemento" className="input" placeholder="Ex: Apartamento 000"/>
                                     </label>
                                 </div>
                                 <label htmlFor="apelido" className="flex flex-col space-x-2 sm:text-lg w-full">
-                                    <strong className="">Apelido:</strong>
-                                    <input {...register("apelido")} type="text" id="apelido" className="input" placeholder="Digite o apelido do endereço" />
+                                    <strong className="">Apelido:*</strong>
+                                    <input {...register("apelido")} type="text" id="apelido" className="input" placeholder="Ex: Meu Endereço" />
                                 </label>
                                 <label htmlFor="destinatario" className="flex flex-col space-x-2 sm:text-lg w-full">
-                                    <strong className="">Destinatário:</strong>
-                                    <input {...register("destinatario")} type="text" id="destinatario" className="input" placeholder="Digite o destinatário do endereço" />
+                                    <strong className="">Destinatário:*</strong>
+                                    <input {...register("destinatario")} type="text" id="destinatario" className="input" placeholder="Ex: João da Silva" />
                                 </label>
                                 <div className="flex gap-8 mt-5">
                                     <Button variant="submit" size="submit" type="submit">
                                         Adicionar
                                     </Button>
                                     <DialogClose asChild>
-                                        <Button variant="close" size="close" type="button">
+                                        <Button variant="close" size="close" type="button" 
+                                            onClick={() => {
+                                                reset();
+                                                setShowInputs(false);
+                                            }}
+                                        >
                                             Cancelar
                                         </Button>
                                     </DialogClose>

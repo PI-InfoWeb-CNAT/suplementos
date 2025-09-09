@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User 
 from powerUp.models import Cliente 
 from powerUp.serializers.ClienteSerializer import ClienteSerializer 
-from rest_framework.permissions import IsAuthenticated, AllowAny 
+from rest_framework.permissions import IsAuthenticated
 
 class ClienteViewSet(viewsets.ModelViewSet): 
     queryset = Cliente.objects.all() 

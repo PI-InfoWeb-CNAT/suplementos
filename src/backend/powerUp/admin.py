@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models.Produto import Produto
 from .models.Cliente import Cliente
 from .models.Favorito import Favorito
+from .models.Endereco import Endereco
 
 class ProdutoAdmin(admin.ModelAdmin):
     list_display = ('nome', 'preco', 'porcentagem_desconto', 'categoria')
@@ -14,7 +15,13 @@ class ClienteAdmin(admin.ModelAdmin):
 class FavoritoAdmin(admin.ModelAdmin):
     list_display = ('cliente', 'produto')
     empty_value_display = 'Vazio'
+    
+class EnderecoAdmin(admin.ModelAdmin):
+    list_display = ('rua', 'numero', 'cidade', 'uf')
+    empty_value_display = 'Vazio'
+    
 
 admin.site.register(Produto, ProdutoAdmin)
 admin.site.register(Cliente, ClienteAdmin)
 admin.site.register(Favorito, FavoritoAdmin)
+admin.site.register(Endereco, EnderecoAdmin)
