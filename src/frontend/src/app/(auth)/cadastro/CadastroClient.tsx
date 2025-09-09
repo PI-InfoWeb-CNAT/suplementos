@@ -64,34 +64,34 @@ export default function CadastroClient() {
                         <div className="space-y-7">
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="nome" className="font-semibold mb-lg:text-lg">NOME COMPLETO</label>
-                                <input {...register("nome")} type="text" id="nome" placeholder="Digite seu nome" className="input w-full" />
+                                <input {...register("nome")} type="text" id="nome" placeholder="Digite seu nome" className="input px-3 py-2.5 rounded-md w-full" />
                             </div>
                             <div className="flex flex-col gap-4">
                                 <label htmlFor="email" className="font-semibold mb-lg:text-lg">E-MAIL</label>
-                                <input {...register("email")} type="email" id="email" placeholder="Digite seu email" className="input w-full" />
+                                <input {...register("email")} type="email" id="email" placeholder="Digite seu email" className="input px-3 py-2.5 rounded-md w-full" />
                             </div>
 
                             <div className="w-full flex flex-col md:flex-row md:space-x-24 space-y-6 md:space-y-0 items-start">
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="cpf" className="font-semibold mb-lg:text-lg whitespace-nowrap">CPF</label>
-                                    <input {...register("cpf")} type="text" id="cpf" placeholder="Digite seu CPF" className="input w-full" />
+                                    <input {...register("cpf")} type="text" id="cpf" placeholder="Digite seu CPF" className="input px-3 py-2.5 rounded-md w-full" />
                                 </div>
 
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="telefone" className="font-semibold mb-lg:text-lg whitespace-nowrap">TELEFONE CELULAR</label>
-                                    <input {...register("telefone")} type="text" id="telefone" placeholder="Digite seu telefone celular" className="input w-full" />
+                                    <input {...register("telefone")} type="text" id="telefone" placeholder="Digite seu telefone celular" className="input px-3 py-2.5 rounded-md w-full" />
                                 </div>
                             </div>
 
                             <div className="w-full flex flex-col md:flex-row md:space-x-24 space-y-6 md:space-y-0 items-start">
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="senha" className="font-semibold mb-lg:text-lg whitespace-nowrap">SENHA</label>
-                                    <input {...register("senha")} type="password" id="senha" placeholder="Digite sua senha" className="input w-full" />
+                                    <input {...register("senha")} type="password" id="senha" placeholder="Digite sua senha" className="input px-3 py-2.5 rounded-md w-full" />
                                 </div>
 
                                 <div className="flex flex-col gap-2 w-full md:w-1/2">
                                     <label htmlFor="confirmacaoSenha" className="font-semibold mb-lg:text-lg whitespace-nowrap">CONFIRMAÇÃO DA SENHA</label>
-                                    <input {...register("confirmacaoSenha")} type="password" id="confirmacaoSenha" placeholder="Digite sua senha novamente" className="input w-full" />
+                                    <input {...register("confirmacaoSenha")} type="password" id="confirmacaoSenha" placeholder="Digite sua senha novamente" className="input px-3 py-2.5 rounded-md w-full" />
                                 </div>
                             </div>
                         </div>

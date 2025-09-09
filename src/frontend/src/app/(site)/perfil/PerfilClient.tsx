@@ -85,7 +85,7 @@ function PerfilClient() {
                             <label htmlFor="nome" className="w-full sm:text-lg">
                                 <div className="flex items-center space-x-2">
                                     <strong>Nome:</strong>
-                                    <input {...register("nome")} type="text" id="nome" className="input pl-2 py-0.5 rounded-sm w-full" />
+                                    <input {...register("nome")} type="text" id="nome" className="input w-full" />
                                 </div>
                                 {errors.nome && (
                                     <span className="text-red-500 text-sm mt-1 leading-1">
@@ -96,7 +96,7 @@ function PerfilClient() {
                             <label htmlFor="email" className="w-full sm:text-lg">
                                 <div className="flex items-center space-x-2">
                                     <strong>Email:</strong>
-                                    <input {...register("email")} type="text" id="email" className="input pl-2 py-0.5 rounded-sm w-full" />
+                                    <input {...register("email")} type="text" id="email" className="input w-full" />
                                 </div>
                                 {errors.email && (
                                     <span className="text-red-500 text-sm mt-1 leading-1">
@@ -107,7 +107,7 @@ function PerfilClient() {
                             <label htmlFor="cpf" className="mb-lg:w-3/5 sm:text-lg">
                                 <div className="flex items-center space-x-2">
                                     <strong>CPF:</strong>
-                                    <input {...register("cpf")} type="text" id="cpf" className="input pl-2 py-0.5 rounded-sm w-full" />
+                                    <input {...register("cpf")} type="text" id="cpf" className="input w-full" />
                                 </div>
                                 {errors.cpf && (
                                     <span className="text-red-500 text-sm mt-1 leading-1">
@@ -118,7 +118,7 @@ function PerfilClient() {
                             <label htmlFor="telefone_celular" className="mb-lg:w-3/4 sm:text-lg">
                                 <div className="flex items-center space-x-2">
                                     <strong>Telefone:</strong>
-                                    <input {...register("telefone_celular")} type="text" id="telefone_celular" className="input pl-2 py-0.5 rounded-sm w-full" />
+                                    <input {...register("telefone_celular")} type="text" id="telefone_celular" className="input w-full" />
                                 </div>
                                 {errors.telefone_celular && (
                                     <span className="text-red-500 text-sm mt-1 leading-1">

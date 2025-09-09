@@ -69,11 +69,11 @@ export default function LoginClient() {
                         <div className="space-y-7">
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="email" className="font-semibold mb-lg:text-lg">E-MAIL</label>
-                                <input {...register("email")} type="email" name="email" id="email" placeholder="Digite seu e-mail" className="input" />
+                                <input {...register("email")} type="email" name="email" id="email" placeholder="Digite seu e-mail" className="input px-3 py-2.5 rounded-md" />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="senha" className="font-semibold mb-lg:text-lg">SENHA</label>
-                                <input {...register("senha")} type="password" name="senha" id="senha" placeholder="Digite sua senha" className="input" />
+                                <input {...register("senha")} type="password" name="senha" id="senha" placeholder="Digite sua senha" className="input px-3 py-2.5 rounded-md" />
                             </div>
                         </div>
                         <Button type="submit" variant="submit" size="submit">
