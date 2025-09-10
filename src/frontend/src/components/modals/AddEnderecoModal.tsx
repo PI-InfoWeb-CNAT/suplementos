@@ -13,7 +13,7 @@ import LoadingContainer from "../loading/LoadingContainer";
 import { addEnderecoSchema, AddEnderecoSchemaType } from "@/schemas/addEnderecoSchema";
 import { notify } from "@/lib/toast";
 import api from "@/services/api";
-import { EnderecoProps } from "@/types";
+import { EnderecoProps } from "@/types/endereco";
 
 export default function AddEnderecoModal({ onSuccess }: {onSuccess?: (endereco: EnderecoProps) => void;}) {
     const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<AddEnderecoSchemaType>({
@@ -111,7 +111,7 @@ export default function AddEnderecoModal({ onSuccess }: {onSuccess?: (endereco: 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <div className='group flex flex-col justify-center items-center gap-3 border-2 border-dashed border-dark-grey rounded-xl text-dark-grey text-xl w-[45%] h-[300px] cursor-pointer'>
+                <div className='w-[47%] h-[335px] group flex flex-col justify-center items-center gap-3 border-2 border-dashed border-dark-grey rounded-xl text-dark-grey text-xl  cursor-pointer'>
                     <CiCirclePlus size={45} className="group-hover:scale-115 transition-all duration-300" />
                     <p className="font-medium">Adicione um novo endereço</p>
                 </div>

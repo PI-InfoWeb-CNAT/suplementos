@@ -78,7 +78,7 @@ function PerfilClient() {
     return (
         <PageWrapper pageName="Meu Perfil">
             <div className="flex flex-col nt-sm:flex-row nt-sm:justify-between gap-y-5 lg:w-full md:w-[65%] mx-auto">
-                <section className="flex justify-between rounded-2xl shadow-[0_0_5px_rgba(0,0,0,0.41)] nt-sm:w-1/2 nt-lg:w-[57%] p-6">
+                <section className="flex justify-between rounded-2xl card-shadow nt-sm:w-1/2 nt-lg:w-[57%] p-6">
                     <div className="flex flex-col gap-4 w-full nt-lg:w-[60%]">
                         <h3 className="h3 mb-4">Dados Pessoais</h3>
                         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 w-full">
