@@ -17,7 +17,7 @@ class FavoritoAdmin(admin.ModelAdmin):
     empty_value_display = 'Vazio'
     
 class EnderecoAdmin(admin.ModelAdmin):
-    list_display = ('rua', 'numero', 'cidade', 'uf')
+    list_display = ('cliente', 'rua', 'numero', 'cidade', 'uf')
     empty_value_display = 'Vazio'
     
 

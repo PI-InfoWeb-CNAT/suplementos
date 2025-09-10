@@ -1,13 +1,29 @@
 from rest_framework import serializers
-from powerUp.models import Endereco
+from powerUp.models import Endereco, Cliente
 
 class EnderecoSerializer(serializers.ModelSerializer):
+    complemento = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    
     class Meta: 
         model = Endereco
-        fields = '__all__'
+        fields = ["id", "apelido", "destinatario", "cep", "uf", "cidade", "bairro", "rua", "numero", "complemento"]
+        read_only_fields = ["cliente"]
         
     def create(self, validated_data):
-        validated_data['cliente'] = self.context['request'].user
-        print("Dados recebidos (cliente preenchido):", validated_data)
-
-        return validated_data  
+        request = self.context.get("request")
+        user = request.user
+        rua = validated_data.get("rua")
+        numero = validated_data.get("numero")
+        complemento = validated_data.get("complemento")
+        
+        try:
+            cliente = Cliente.objects.get(user=user)
+        except Cliente.DoesNotExist:
+            raise serializers.ValidationError({"validacao": ["Cliente não encontrado para este usuário."]})
+        
+        if Endereco.objects.filter(cliente=cliente, rua=rua, numero=numero, complemento=complemento).exists():
+            raise serializers.ValidationError({"validacao": ["Você já possui esse endereço."]})
+        
+        endereco = Endereco.objects.create(cliente=cliente, **validated_data)
+        
+        return endereco

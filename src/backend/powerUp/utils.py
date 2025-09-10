@@ -15,7 +15,7 @@ def custom_exception_handler(exc, context):
                     if field == "non_field_errors":
                         custom_errors.append(f"{message}")
                     else:
-                        custom_errors.append(f"{field.capitalize()}: {message}")
+                        custom_errors.append(f"{message}")
             else:
                 custom_errors.append(f"{field.capitalize()}: {messages}")
 

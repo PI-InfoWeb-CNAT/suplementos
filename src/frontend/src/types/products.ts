@@ -17,10 +17,10 @@ export interface ProductCardProps {
 
 export interface FilterProps {
    produtos: ProductProps[];                  
-    onChange?: (produtosOrdenados: ProductProps[]) => void; // Callback com produtos ordenados
-    initialOrdenacao?: string;                  // Ordenação inicial
-    showReset?: boolean;                        // Mostrar opção "Sem ordenação"
-    extraOptions?: { value: string; label: string }[]; // Opções extras de ordenação
+    onChange?: (produtosOrdenados: ProductProps[]) => void; 
+    initialOrdenacao?: string;                 
+    showReset?: boolean;                       
+    extraOptions?: { value: string; label: string }[];
 }
 
 export interface ProductContextType {

@@ -4,6 +4,9 @@ from powerUp.serializers.EnderecoSerializer import EnderecoSerializer
 from rest_framework.permissions import IsAuthenticated
 
 class EnderecoViewSet(viewsets.ModelViewSet):
-    queryset = Endereco.objects.all()
     serializer_class = EnderecoSerializer
-    permissions = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        user = self.request.user
+        return Endereco.objects.filter(cliente__user=user)

@@ -10,7 +10,7 @@ class Endereco(models.Model):
     bairro = models.CharField(null=False, max_length=50)
     rua = models.CharField(null=False, max_length=200)
     numero = models.CharField(null=False, max_length=10)
-    complemento = models.CharField(null=True, max_length=255)
+    complemento = models.CharField(null=True, blank=True, max_length=255)
 
     def __str__(self):
         return f'{self.rua}, {self.numero} - {self.cidade}/{self.uf}'

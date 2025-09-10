@@ -13,13 +13,15 @@ import LoadingContainer from "../loading/LoadingContainer";
 import { addEnderecoSchema, AddEnderecoSchemaType } from "@/schemas/addEnderecoSchema";
 import { notify } from "@/lib/toast";
 import api from "@/services/api";
+import { EnderecoProps } from "@/types";
 
-export default function AddEnderecoModal() {
+export default function AddEnderecoModal({ onSuccess }: {onSuccess?: (endereco: EnderecoProps) => void;}) {
     const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<AddEnderecoSchemaType>({
         resolver: zodResolver(addEnderecoSchema),
         mode: "onChange"
     });
 
+    const [open, setOpen] = useState(false);
     const cepValue = watch("cep");
     const [showInputs, setShowInputs] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -64,8 +66,26 @@ export default function AddEnderecoModal() {
 
     const onSubmit = async (data: AddEnderecoSchemaType) => {
         try {
-            await api.post("/enderecos/", data)
-            notify("API funcionando", "success")
+            const response = await api.post("/enderecos/", {
+                cep: data.cep,
+                rua: data.rua,
+                bairro: data.bairro,
+                cidade: data.cidade,
+                uf: data.uf,
+                numero: data.numero,
+                complemento: data.complemento,
+                apelido: data.apelido,
+                destinatario: data.destinatario,
+            });
+
+            notify("Endereço adicionado com sucesso", "success");
+            setOpen(false);
+            setShowInputs(false);
+            reset();
+
+            if (onSuccess) {
+                onSuccess(response.data);
+            }
         } catch (error: any) {
             if (error.response) {
                 console.error("Erro na resposta da API:", error.response.data);
@@ -89,7 +109,7 @@ export default function AddEnderecoModal() {
     };
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <div className='group flex flex-col justify-center items-center gap-3 border-2 border-dashed border-dark-grey rounded-xl text-dark-grey text-xl w-[45%] h-[300px] cursor-pointer'>
                     <CiCirclePlus size={45} className="group-hover:scale-115 transition-all duration-300" />
@@ -144,11 +164,11 @@ export default function AddEnderecoModal() {
                                 <div className="flex justify-between w-full">
                                     <label htmlFor="numero" className="flex flex-col space-x-2 sm:text-lg w-[30%]">
                                         <strong className="">Número:*</strong>
-                                        <input {...register("numero")} type="text" id="numero" className="input" placeholder="Ex: 123"/>
+                                        <input {...register("numero")} type="text" id="numero" className="input" placeholder="Ex: 123" />
                                     </label>
                                     <label htmlFor="complemento" className="flex flex-col space-x-2 sm:text-lg w-[60%]">
                                         <strong className="">Complemento:</strong>
-                                        <input {...register("complemento")} type="text" id="complemento" className="input" placeholder="Ex: Apartamento 000"/>
+                                        <input {...register("complemento")} type="text" id="complemento" className="input" placeholder="Ex: Apartamento 000" />
                                     </label>
                                 </div>
                                 <label htmlFor="apelido" className="flex flex-col space-x-2 sm:text-lg w-full">
@@ -164,7 +184,7 @@ export default function AddEnderecoModal() {
                                         Adicionar
                                     </Button>
                                     <DialogClose asChild>
-                                        <Button variant="close" size="close" type="button" 
+                                        <Button variant="close" size="close" type="button"
                                             onClick={() => {
                                                 reset();
                                                 setShowInputs(false);
