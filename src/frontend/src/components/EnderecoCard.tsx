@@ -4,7 +4,7 @@ import EditEnderecoModal from "./modals/EditEnderecoModal";
 
 const EnderecoCard = ({endereco}: EnderecoCardProps) => {
     return (
-        <div className="space-y-5 card-shadow w-[47%] h-[335px] rounded-xl p-5 overflow-x-auto whitespace-nowrap">
+        <div className="space-y-5 card-shadow w-full h-[335px] rounded-xl p-5 overflow-x-auto whitespace-nowrap">
             <h3 className="h3">{endereco.apelido}</h3>
             <div className="space-y-2">
                 <p className="font-bold">Destinatário: <span className="font-medium">{endereco.destinatario}</span></p>

@@ -109,9 +109,9 @@ export default function AddEnderecoModal() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <div className='w-[47%] h-[335px] group flex flex-col justify-center items-center gap-3 border-2 border-dashed border-dark-grey rounded-xl text-dark-grey text-xl  cursor-pointer'>
+                <div className='h-[335px] group flex flex-col justify-center items-center gap-3 border-2 border-dashed border-dark-grey rounded-xl text-dark-grey text-xl  cursor-pointer'>
                     <CiCirclePlus size={45} className="group-hover:scale-115 transition-all duration-300" />
-                    <p className="font-medium">Adicione um novo endereço</p>
+                    <p className="font-medium text-center">Adicione um novo endereço</p>
                 </div>
             </DialogTrigger>
 

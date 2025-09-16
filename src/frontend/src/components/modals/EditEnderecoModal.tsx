@@ -92,9 +92,9 @@ export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="min-h-80 flex flex-col justify-center items-center py-15" aria-describedby={undefined}>
+            <DialogContent className="min-h-80 flex flex-col justify-center items-center py-10" aria-describedby={undefined}>
                 <DialogHeader>
-                    <DialogTitle className="font-semibold text-2xl mb-5">Editar endereço</DialogTitle>
+                    <DialogTitle className="font-semibold text-2xl mb-5">Edição do endereço <strong>{endereco.apelido}</strong></DialogTitle>
                     <VisuallyHidden>
                         <DialogDescription>Para obter ajuda, acesse o e-mail abaixo</DialogDescription>
                     </VisuallyHidden>
