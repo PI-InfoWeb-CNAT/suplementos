@@ -34,6 +34,7 @@ export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
     });
 
     const cepValue = watch("cep");
+    const [cepInvalido, setCepInvalido] = useState(false);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const { updateEndereco } = useEnderecos();
@@ -54,6 +55,7 @@ export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
                     if (response.data.erro) {
                         setLoading(false);
                         notify("CEP inválido", "warning");
+                        setCepInvalido(true);
                         return;
                     }
 
@@ -61,6 +63,7 @@ export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
                     setValue("bairro", response.data.bairro || "");
                     setValue("cidade", response.data.localidade || "");
                     setValue("uf", response.data.uf || "");
+                    setCepInvalido(false);
                     setTimeout(() => {
                         setLoading(false);
                     }, 500)
@@ -73,6 +76,10 @@ export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
     }, [cepValue, setValue]);
 
     const onSubmit = async (data: EnderecoSchemaType) => {
+        if (cepInvalido) {
+            notify("CEP inválido", "warning");
+            return;
+        }
         const updatedData: any = {};
 
         if (data.apelido !== endereco.apelido) updatedData.apelido = data.apelido;
