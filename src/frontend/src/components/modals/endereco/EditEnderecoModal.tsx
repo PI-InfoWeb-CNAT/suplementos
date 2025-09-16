@@ -6,14 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Icon, X } from "lucide-react"
 import { LuRotateCcw } from "react-icons/lu";
-import { Button } from "../ui/button"
+import { Button } from "../../ui/button"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { enderecoSchema, EnderecoSchemaType } from "@/schemas/enderecoSchema";
 import { useEnderecos } from "@/context/EnderecoContext";
 import { notify } from "@/lib/toast";
 import { EnderecoCardProps } from "@/types/endereco";
-import LoadingContainer from "../loading/LoadingContainer";
+import LoadingContainer from "../../loading/LoadingContainer";
 
 export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
     const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<EnderecoSchemaType>({
@@ -34,7 +34,6 @@ export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
 
     const cepValue = watch("cep");
     const [loading, setLoading] = useState(false);
-    const { enderecos } = useEnderecos();
 
     const formatCep = (value: string) => {
         const numbers = value.replace(/\D/g, "");

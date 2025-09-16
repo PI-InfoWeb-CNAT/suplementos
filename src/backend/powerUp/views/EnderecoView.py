@@ -16,7 +16,4 @@ class EnderecoViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response(
-            {"detail": "Endereço excluído com sucesso."}, 
-            status=status.HTTP_204_NO_CONTENT
-        )
+        return Response({"detail": "Endereço excluído com sucesso."}, status=status.HTTP_204_NO_CONTENT)

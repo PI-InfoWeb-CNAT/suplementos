@@ -1,31 +1,8 @@
-
 import { EnderecoCardProps } from "@/types/endereco";
-import { Button } from "./ui/button";
-import EditEnderecoModal from "./modals/EditEnderecoModal";
-import { useEnderecos } from "@/context/EnderecoContext";
-import api from "@/services/api";
-import { notify } from "@/lib/toast";
-import { useState } from "react";
-
+import EditEnderecoModal from "./modals/endereco/EditEnderecoModal";
+import ExcluirEnderecoModal from "./modals/endereco/ExcluirEnderecoModal";
 
 const EnderecoCard = ({ endereco }: EnderecoCardProps) => {
-    const { deleteEndereco } = useEnderecos();
-    const [loading, setLoading] = useState(false);
-
-    const handleDelete = async () => {
-        if (!window.confirm(`Tem certeza que deseja excluir o endereço "${endereco.apelido}"?`)) return;
-        setLoading(true);
-        try {
-            await api.delete(`/enderecos/${endereco.id}/`);
-            deleteEndereco(endereco.id);
-            notify("Endereço excluído com sucesso!", "success");
-        } catch (error: any) {
-            notify("Erro ao excluir endereço.", "error");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     return (
         <div className="space-y-5 card-shadow w-full h-[335px] rounded-xl p-5 overflow-x-auto whitespace-nowrap">
             <h3 className="h3">{endereco.apelido}</h3>
@@ -39,9 +16,7 @@ const EnderecoCard = ({ endereco }: EnderecoCardProps) => {
             </div>
             <div className="flex gap-5">
                 <EditEnderecoModal endereco={endereco} />
-                <Button variant="exclude" onClick={handleDelete} disabled={loading}>
-                    {loading ? "Excluindo..." : "Excluir"}
-                </Button>
+                <ExcluirEnderecoModal endereco={endereco} />
             </div>
         </div>
     );

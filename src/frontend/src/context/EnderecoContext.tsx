@@ -3,12 +3,14 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { EnderecoContextType, EnderecoProps } from "@/types/endereco";
 import api from "@/services/api";
+import { useAuth } from "./AuthContext";
 
 const EnderecoContext = createContext<EnderecoContextType | null>(null);
 
 export const EnderecoProvider = ({ children }: { children: React.ReactNode }) => {
     const [enderecos, setEnderecos] = useState<EnderecoProps[]>([]);
     const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
     const getEnderecos = async () => {
         setLoading(true);
@@ -35,8 +37,10 @@ export const EnderecoProvider = ({ children }: { children: React.ReactNode }) =>
     }
 
     useEffect(() => {
-        getEnderecos();
-    }, []);
+        if (user) {
+            getEnderecos();
+        }
+    }, [user]);
 
     return (
         <EnderecoContext.Provider value={{ enderecos, loading, getEnderecos, addEndereco, updateEndereco, deleteEndereco }}>

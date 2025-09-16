@@ -2,7 +2,7 @@
 
 import FastAcess from "@/components/FastAcess";
 import PageWrapper from "@/components/layout/PageWrapper";
-import AddEnderecoModal from "@/components/modals/AddEnderecoModal";
+import AddEnderecoModal from "@/components/modals/endereco/AddEnderecoModal";
 import withAuth from "@/lib/withAuth";
 import EnderecoCard from "@/components/EnderecoCard";
 import { useEnderecos } from "@/context/EnderecoContext";
