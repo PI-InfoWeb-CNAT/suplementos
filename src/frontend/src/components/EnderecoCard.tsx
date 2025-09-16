@@ -1,5 +1,6 @@
 import { EnderecoCardProps } from "@/types/endereco";
 import { Button } from "./ui/button";
+import EditEnderecoModal from "./modals/EditEnderecoModal";
 
 const EnderecoCard = ({endereco}: EnderecoCardProps) => {
     return (
@@ -14,9 +15,7 @@ const EnderecoCard = ({endereco}: EnderecoCardProps) => {
                 <p className="font-bold">Complemento: <span className="font-medium">{endereco.complemento != "" ? endereco.complemento : "Vazio"}</span></p>
             </div>
             <div className="flex gap-5">
-                <Button variant="submit">
-                    Editar
-                </Button>
+                <EditEnderecoModal />
                 <Button variant="exclude">
                     Excluir
                 </Button>

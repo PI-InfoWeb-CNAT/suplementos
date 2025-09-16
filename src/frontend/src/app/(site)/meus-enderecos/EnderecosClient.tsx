@@ -5,23 +5,11 @@ import FastAcess from "@/components/FastAcess";
 import PageWrapper from "@/components/layout/PageWrapper";
 import AddEnderecoModal from "@/components/modals/AddEnderecoModal";
 import withAuth from "@/lib/withAuth";
-import api from "@/services/api";
-import { EnderecoProps } from "@/types/endereco";
 import EnderecoCard from "@/components/EnderecoCard";
+import { useEnderecos } from "@/context/EnderecoContext";
 
 function EnderecosClient() {
-    const [enderecos, setEnderecos] = useState<EnderecoProps[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        setLoading(true);
-        api.get("/enderecos/")
-            .then(res => {
-                setEnderecos(res.data);
-            })
-            .catch(err => console.error("Erro ao carregar endereços do cliente:", err))
-            .finally(() => setLoading(false));
-    }, []);
+    const { enderecos } = useEnderecos();
 
     return (
         <PageWrapper pageName="Meus Endereços">
@@ -31,7 +19,7 @@ function EnderecosClient() {
                     {enderecos.map((endereco) => (
                         <EnderecoCard key={endereco.id} endereco={endereco}/>
                     ))}
-                    <AddEnderecoModal onSuccess={(novoEndereco) => setEnderecos(prev => [...prev, novoEndereco])} />
+                    <AddEnderecoModal />
                 </section>
                 <FastAcess />
             </div>

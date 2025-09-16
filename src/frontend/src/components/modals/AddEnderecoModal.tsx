@@ -13,9 +13,9 @@ import LoadingContainer from "../loading/LoadingContainer";
 import { addEnderecoSchema, AddEnderecoSchemaType } from "@/schemas/addEnderecoSchema";
 import { notify } from "@/lib/toast";
 import api from "@/services/api";
-import { EnderecoProps } from "@/types/endereco";
+import { useEnderecos } from "@/context/EnderecoContext";
 
-export default function AddEnderecoModal({ onSuccess }: {onSuccess?: (endereco: EnderecoProps) => void;}) {
+export default function AddEnderecoModal() {
     const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<AddEnderecoSchemaType>({
         resolver: zodResolver(addEnderecoSchema),
         mode: "onChange"
@@ -25,6 +25,7 @@ export default function AddEnderecoModal({ onSuccess }: {onSuccess?: (endereco: 
     const cepValue = watch("cep");
     const [showInputs, setShowInputs] = useState(false);
     const [loading, setLoading] = useState(false);
+    const { addEndereco } = useEnderecos();
 
     const formatCep = (value: string) => {
         const numbers = value.replace(/\D/g, "");
@@ -78,14 +79,11 @@ export default function AddEnderecoModal({ onSuccess }: {onSuccess?: (endereco: 
                 destinatario: data.destinatario,
             });
 
+            addEndereco(response.data);
             notify("Endereço adicionado com sucesso", "success");
             setOpen(false);
             setShowInputs(false);
             reset();
-
-            if (onSuccess) {
-                onSuccess(response.data);
-            }
         } catch (error: any) {
             if (error.response) {
                 console.error("Erro na resposta da API:", error.response.data);
