@@ -4,16 +4,17 @@ import { useState, useEffect } from "react"
 import { useForm, FieldErrors } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Icon, X } from "lucide-react"
+import { X } from "lucide-react"
 import { LuRotateCcw } from "react-icons/lu";
 import { Button } from "../../ui/button"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { enderecoSchema, EnderecoSchemaType } from "@/schemas/enderecoSchema";
-import { useEnderecos } from "@/context/EnderecoContext";
 import { notify } from "@/lib/toast";
 import { EnderecoCardProps } from "@/types/endereco";
 import LoadingContainer from "../../loading/LoadingContainer";
+import { useEnderecos } from "@/context/EnderecoContext";
+import api from "@/services/api";
 
 export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
     const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<EnderecoSchemaType>({
@@ -34,6 +35,8 @@ export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
 
     const cepValue = watch("cep");
     const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false);
+    const { updateEndereco } = useEnderecos();
 
     const formatCep = (value: string) => {
         const numbers = value.replace(/\D/g, "");
@@ -70,7 +73,39 @@ export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
     }, [cepValue, setValue]);
 
     const onSubmit = async (data: EnderecoSchemaType) => {
-        console.log(data)
+        const updatedData: any = {};
+
+        if (data.apelido !== endereco.apelido) updatedData.apelido = data.apelido;
+        if (data.destinatario !== endereco.destinatario) updatedData.destinatario = data.destinatario;
+        if (data.cep !== endereco.cep) updatedData.cep = data.cep;
+        if (data.uf !== endereco.uf) updatedData.uf = data.uf;
+        if (data.cidade !== endereco.cidade) updatedData.cidade = data.cidade;
+        if (data.bairro !== endereco.bairro) updatedData.bairro = data.bairro;
+        if (data.rua !== endereco.rua) updatedData.rua = data.rua;
+        if (data.numero !== endereco.numero) updatedData.numero = data.numero;
+        if (data.complemento !== endereco.complemento) updatedData.complemento = data.complemento;
+
+        if (Object.keys(updatedData).length === 0) {
+            notify("Altere algum campo antes de atualizar.", "warning");
+            return;
+        }
+
+        try {
+            const response = await api.patch(`/enderecos/${endereco.id}/`, updatedData);
+
+            updateEndereco(response.data)
+            setOpen(false)
+            notify("Endereço atualizado com sucesso!", "success")
+        } catch (error: any) {
+            if (error.response) {
+                console.error("Erro na resposta da API:", error.response.data);
+                const erros = error.response.data.errors || [error.response.data.detail];
+                notify(erros, "error");
+            } else {
+                console.error("Erro de rede:", error.message);
+                notify("Erro de rede. Tente novamente.", "error");
+            }
+        }
     }
 
     const onError = (errors: FieldErrors<EnderecoSchemaType>) => {
@@ -84,7 +119,7 @@ export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
     };
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="submit">
                     Editar

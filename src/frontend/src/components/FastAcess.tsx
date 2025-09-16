@@ -14,7 +14,7 @@ const FastAcess = () => {
                 <CardLink href="/perfil" icon={<BiSolidUser size={55}/>} text="Meu Perfil"/>
                 <CardLink href="/meus-pedidos" icon={<BsBasket3Fill size={45}/>} text="Meus Pedidos"/>
                 <CardLink href="/meus-favoritos" icon={<FaHeart size={45}/>} text="Meus Favoritos"/>
-                <CardLink href="/meus-enderecos" icon={<FaLocationDot size={45}/>} text="Meus Endereços"/>
+                <CardLink href="/perfil/meus-enderecos" icon={<FaLocationDot size={45}/>} text="Meus Endereços"/>
                 <CardLink href="/minha-carteira" icon={<IoWalletOutline size={50}/>} text="Minha Carteira"/>
                 <CardLink href="/comprar-novamente" icon={<MdReplay size={50}/>} text="Comprar Novamente"/>
             </div>
