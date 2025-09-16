@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const addEnderecoSchema = z
+export const enderecoSchema = z
   .object({
     apelido: z.
         string().
@@ -31,4 +31,4 @@ export const addEnderecoSchema = z
         optional(),
   })
 
-export type AddEnderecoSchemaType = z.infer<typeof addEnderecoSchema>;
+export type EnderecoSchemaType = z.infer<typeof enderecoSchema>;

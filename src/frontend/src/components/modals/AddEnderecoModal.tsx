@@ -10,14 +10,14 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Button } from "../ui/button";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import LoadingContainer from "../loading/LoadingContainer";
-import { addEnderecoSchema, AddEnderecoSchemaType } from "@/schemas/addEnderecoSchema";
+import { enderecoSchema, EnderecoSchemaType } from "@/schemas/enderecoSchema";
 import { notify } from "@/lib/toast";
 import api from "@/services/api";
 import { useEnderecos } from "@/context/EnderecoContext";
 
 export default function AddEnderecoModal() {
-    const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<AddEnderecoSchemaType>({
-        resolver: zodResolver(addEnderecoSchema),
+    const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<EnderecoSchemaType>({
+        resolver: zodResolver(enderecoSchema),
         mode: "onChange"
     });
 
@@ -65,7 +65,7 @@ export default function AddEnderecoModal() {
         }
     }, [cepValue, setValue]);
 
-    const onSubmit = async (data: AddEnderecoSchemaType) => {
+    const onSubmit = async (data: EnderecoSchemaType) => {
         try {
             const response = await api.post("/enderecos/", {
                 cep: data.cep,
@@ -96,7 +96,7 @@ export default function AddEnderecoModal() {
         }
     }
 
-    const onError = (errors: FieldErrors<AddEnderecoSchemaType>) => {
+    const onError = (errors: FieldErrors<EnderecoSchemaType>) => {
         const firstError = Object.values(errors)[0];
 
         if (firstError && "message" in firstError) {

@@ -15,7 +15,7 @@ const EnderecoCard = ({endereco}: EnderecoCardProps) => {
                 <p className="font-bold">Complemento: <span className="font-medium">{endereco.complemento != "" ? endereco.complemento : "Vazio"}</span></p>
             </div>
             <div className="flex gap-5">
-                <EditEnderecoModal />
+                <EditEnderecoModal endereco={endereco}/>
                 <Button variant="exclude">
                     Excluir
                 </Button>
