@@ -3,3 +3,4 @@ from .Produto import Produto
 from .Cliente import Cliente
 from .Favorito import Favorito
 from .Endereco import Endereco
+from .Cartao import Cartao
