@@ -7,8 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { CiCirclePlus } from "react-icons/ci";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
-import { Button } from "../../ui/button";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { Button } from "../../ui/button";
 import LoadingContainer from "../../loading/LoadingContainer";
 import { enderecoSchema, EnderecoSchemaType } from "@/schemas/enderecoSchema";
 import { notify } from "@/lib/toast";
@@ -130,7 +130,7 @@ export default function AddEnderecoModal() {
                             {...register("cep")}
                             type="text"
                             id="cep"
-                            className="input pl-2 py-0.5 rounded-sm flex-1"
+                            className="input"
                             placeholder="00000-000"
                             maxLength={9}
                             value={cepValue || ""}
