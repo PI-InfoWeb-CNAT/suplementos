@@ -1,14 +1,17 @@
 import Layout from "@/components/layout/Layout";
-import { EnderecoProvider } from "@/context/EnderecoContext";
-import { ProdutosProvider } from "@/context/ProductContext";
+import { CartaoProvider } from "@/contexts/CartaoContext";
+import { EnderecoProvider } from "@/contexts/EnderecoContext";
+import { ProdutosProvider } from "@/contexts/ProductContext";
 
 export default function SiteLayout({ children }: { children: React.ReactNode; }) {
   return (
         <ProdutosProvider>
           <EnderecoProvider>
-            <Layout>
-              {children}
-            </Layout>
+            <CartaoProvider>
+              <Layout>
+                {children}
+              </Layout>
+            </CartaoProvider>
           </EnderecoProvider>
         </ProdutosProvider>
   );

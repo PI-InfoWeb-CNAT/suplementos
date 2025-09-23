@@ -8,7 +8,7 @@ import { RiAlertFill } from "react-icons/ri";
 import { Button } from "../../ui/button";
 import api from "@/services/api";
 import { notify } from "@/lib/toast";
-import { useEnderecos } from "@/context/EnderecoContext";
+import { useEnderecos } from "@/contexts/EnderecoContext";
 import { EnderecoCardProps } from "@/types/endereco";
 
 export default function ExcluirEnderecoModal({endereco}: EnderecoCardProps) {

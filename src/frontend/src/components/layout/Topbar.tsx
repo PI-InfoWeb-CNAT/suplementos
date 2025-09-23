@@ -7,8 +7,8 @@ import { BiSolidBell } from "react-icons/bi";
 
 import UserDropdown from '@/components/UserDropdown';
 import Icon from '@/components/Icon';
-import { useAuth } from '@/context/AuthContext';
-import { useMenu } from '@/context/MenuContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useMenu } from '@/contexts/MenuContext';
 
 const Topbar = ({page}: {page: string}) => {
     const { setMenuOpen } = useMenu();

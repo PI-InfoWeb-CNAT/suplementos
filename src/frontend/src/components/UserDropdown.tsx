@@ -2,7 +2,7 @@
 
 import { IoIosArrowDown } from "react-icons/io";
 import { useState } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, } from "@/components/ui/dropdown-menu";
 import ExcluirContaModal from "./modals/ExcluirContaModal";
 import Link from "next/link";

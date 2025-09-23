@@ -1,6 +1,6 @@
 'use client';
 
-import { useProdutos } from '@/context/ProductContext';
+import { useProdutos } from '@/contexts/ProductContext';
 import ProductCard from "@/components/ProductCard";
 import PageWrapper from '@/components/layout/PageWrapper';
 import LoadingContainer from '@/components/loading/LoadingContainer';

@@ -6,7 +6,7 @@ import PageWrapper from "@/components/layout/PageWrapper";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { useProdutos } from "@/context/ProductContext"
+import { useProdutos } from "@/contexts/ProductContext"
 
 export default function ProductClient({id}: {id: string}) {
     const idNumber = Number(id);

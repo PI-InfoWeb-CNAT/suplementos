@@ -2,7 +2,7 @@
 
 import { FC, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
 
 export function withAuth<P extends object>(WrappedComponent: FC<P>) {

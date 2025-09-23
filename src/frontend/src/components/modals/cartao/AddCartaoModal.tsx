@@ -12,7 +12,9 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "@/components/ui/button";
 import LoadingContainer from "@/components/loading/LoadingContainer";
 import { cartaoSchema, CartaoSchemaType } from "@/schemas/cartaoSchema";
+import { useCartoes } from "@/contexts/CartaoContext";
 import { notify } from "@/lib/toast";
+import api from "@/services/api";
 
 export default function AddCartaoModal() {
     const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<CartaoSchemaType>({
@@ -24,6 +26,7 @@ export default function AddCartaoModal() {
     const numeroValue = watch("numero");
     const [showInputs, setShowInputs] = useState(false);
     const [loading, setLoading] = useState(false);
+    const { addCartao } = useCartoes();
 
     useEffect(() => {
         const onlyNumbers = numeroValue?.replace(/\D/g, "");
@@ -58,7 +61,30 @@ export default function AddCartaoModal() {
     }, [numeroValue]);
 
     const onSubmit = async (data: CartaoSchemaType) => {
-        notify("ok", "success")
+        try {
+            const response = await api.post("/cartoes/", {
+                apelido: data.apelido,
+                titular: data.titular,
+                numero: data.numero,
+                bandeira: data.bandeira,
+                tipo: data.tipo,
+            });
+
+            addCartao(response.data);
+            notify("Cartão adicionado com sucesso", "success");
+            setOpen(false);
+            setShowInputs(false);
+            reset();
+        } catch (error: any) {
+            if (error.response) {
+                console.error("Erro na resposta da API:", error.response.data);
+                const erros = error.response.data.errors || [error.response.data.detail];
+                notify(erros, "error");
+            } else {
+                console.error("Erro de rede:", error.message);
+                notify("Erro de rede. Tente novamente.", "error");
+            }
+        }
     }
 
     const onError = (errors: FieldErrors<CartaoSchemaType>) => {

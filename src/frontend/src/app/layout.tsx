@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Bai_Jamjuree } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { AuthProvider } from "@/context/AuthContext";
-import { MenuProvider } from "@/context/MenuContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { MenuProvider } from "@/contexts/MenuContext";
 
 const baiJamjuree = Bai_Jamjuree({
   subsets: ["latin"],

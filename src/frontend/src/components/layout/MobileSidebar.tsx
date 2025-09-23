@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from 'next/navigation';
-import { useMenu } from "@/context/MenuContext";
-import { useAuth } from "@/context/AuthContext";
+import { useMenu } from "@/contexts/MenuContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 import { IoIosClose } from "react-icons/io";
 import { IoHomeSharp } from "react-icons/io5";

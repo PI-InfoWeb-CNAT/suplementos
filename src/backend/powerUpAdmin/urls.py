@@ -10,6 +10,7 @@ from powerUp.views.ClienteView import ClienteViewSet
 from powerUp.views.FavoritoView import FavoritoViewSet
 from powerUp.views.PromocoesView import PromocoesViewSet
 from powerUp.views.EnderecoView import EnderecoViewSet
+from powerUp.views.CartaoView import CartaoViewSet
 from powerUp.views.RedefinirSenhaView import RedefinirSenhaView
 from powerUp.views.LoginView import CustomTokenObtainPairView
 
@@ -17,6 +18,7 @@ router = DefaultRouter()
 router.register(r'produtos', ProdutoViewSet)
 router.register(r'clientes', ClienteViewSet)
 router.register(r'enderecos', EnderecoViewSet, basename='endereco')
+router.register(r'cartoes', CartaoViewSet, basename='cartao')
 router.register(r'favoritos', FavoritoViewSet, basename='favorito')
 router.register(r'promocoes', PromocoesViewSet, basename='promocoes')
 

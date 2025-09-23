@@ -5,7 +5,7 @@ import PageWrapper from "@/components/layout/PageWrapper";
 import AddEnderecoModal from "@/components/modals/endereco/AddEnderecoModal";
 import withAuth from "@/lib/withAuth";
 import EnderecoCard from "@/components/EnderecoCard";
-import { useEnderecos } from "@/context/EnderecoContext";
+import { useEnderecos } from "@/contexts/EnderecoContext";
 import LoadingContainer from "@/components/loading/LoadingContainer";
 
 function EnderecosClient() {

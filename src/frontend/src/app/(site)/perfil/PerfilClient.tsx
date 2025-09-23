@@ -7,7 +7,7 @@ import imgEdit from "../../../../public/img-editar.svg"
 import FastAcess from "@/components/FastAcess";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import withAuth from "@/lib/withAuth";
 import { notify } from "@/lib/toast";
 import api from "@/services/api";

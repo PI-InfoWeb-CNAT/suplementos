@@ -9,8 +9,8 @@ import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { ProductCardProps } from "@/types/products";
 import { Button } from "@/components/ui/button";
 import Icon from "./Icon";
-import { useAuth } from "@/context/AuthContext";
-import { useProdutos } from "@/context/ProductContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProdutos } from "@/contexts/ProductContext";
 import api from "@/services/api";
 import { notify } from "@/lib/toast";
 

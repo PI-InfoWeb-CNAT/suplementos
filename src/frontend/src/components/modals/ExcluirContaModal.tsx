@@ -9,7 +9,7 @@ import { RiAlertFill } from "react-icons/ri";
 import { Button } from "../ui/button";
 import api from "@/services/api";
 import { notify } from "@/lib/toast";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ExcluirContaModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void; }) {
     const [loading, setLoading] = useState(false);

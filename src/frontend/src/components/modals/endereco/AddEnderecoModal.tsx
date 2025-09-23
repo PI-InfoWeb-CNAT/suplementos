@@ -13,7 +13,7 @@ import LoadingContainer from "../../loading/LoadingContainer";
 import { enderecoSchema, EnderecoSchemaType } from "@/schemas/enderecoSchema";
 import { notify } from "@/lib/toast";
 import api from "@/services/api";
-import { useEnderecos } from "@/context/EnderecoContext";
+import { useEnderecos } from "@/contexts/EnderecoContext";
 
 export default function AddEnderecoModal() {
     const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<EnderecoSchemaType>({

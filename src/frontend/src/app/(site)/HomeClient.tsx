@@ -11,7 +11,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Category from "@/components/Category";
 import ProductCard from "@/components/ProductCard";
-import { useProdutos } from '@/context/ProductContext';
+import { useProdutos } from '@/contexts/ProductContext';
 import { ProductProps } from '@/types/products';
 import PageWrapper from '@/components/layout/PageWrapper';
 import LoadingContainer from '@/components/loading/LoadingContainer';

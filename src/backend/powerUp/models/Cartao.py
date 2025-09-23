@@ -14,4 +14,4 @@ class Cartao(models.Model):
     tipo = models.CharField(max_length=10, choices=TIPOS)
 
     def __str__(self):
-        return f'{self.nome} - {self.cliente}'
+        return f'{self.apelido} - {self.cliente}'

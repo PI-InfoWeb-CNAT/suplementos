@@ -13,7 +13,7 @@ import { enderecoSchema, EnderecoSchemaType } from "@/schemas/enderecoSchema";
 import { notify } from "@/lib/toast";
 import { EnderecoCardProps } from "@/types/endereco";
 import LoadingContainer from "../../loading/LoadingContainer";
-import { useEnderecos } from "@/context/EnderecoContext";
+import { useEnderecos } from "@/contexts/EnderecoContext";
 import api from "@/services/api";
 
 export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
