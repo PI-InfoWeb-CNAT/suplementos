@@ -29,6 +29,7 @@ function FavoritosClient() {
         <PageWrapper pageName="Meus Favoritos">
             {produtos.length > 0 ? (
                 <>
+                    <h2 className="h2 lg:hidden">Meus Favoritos</h2>
                     <Filter produtos={produtos} onChange={setProdutosOrdenados} />
 
                     <LoadingContainer loading={loading}>

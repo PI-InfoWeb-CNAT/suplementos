@@ -22,10 +22,11 @@ export default function AddCartaoModal() {
         mode: "onChange"
     });
 
-    const [open, setOpen] = useState(false);
     const numeroValue = watch("numero");
+    const [open, setOpen] = useState(false);
     const [showInputs, setShowInputs] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [brandName, setBrandName] = useState("");
     const { addCartao } = useCartoes();
 
     useEffect(() => {
@@ -42,7 +43,8 @@ export default function AddCartaoModal() {
                         notify("Número inválido", "warning");
                         setShowInputs(false);
                     } else {
-                        setValue("bandeira", response.data.brandName || "");
+                        setValue("bandeira", response.data.brand || "");
+                        setBrandName(response.data.brandName || "");
 
                         setTimeout(() => {
                             setShowInputs(true)
@@ -100,7 +102,7 @@ export default function AddCartaoModal() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <div className='h-[335px] group flex flex-col justify-center items-center gap-3 border-2 border-dashed border-dark-grey rounded-xl text-dark-grey text-xl  cursor-pointer'>
+                <div className='2xl:h-[450px] h-[300px] group flex flex-col justify-center items-center gap-3 border-2 border-dashed border-dark-grey rounded-xl text-dark-grey text-xl  cursor-pointer'>
                     <CiCirclePlus size={45} className="group-hover:scale-115 transition-all duration-300" />
                     <p className="font-medium text-center">Adicione um novo cartão</p>
                 </div>
@@ -140,7 +142,7 @@ export default function AddCartaoModal() {
                                 <div className="flex justify-between w-full">
                                     <label htmlFor="rua" className="flex flex-col space-x-2 sm:text-lg w-[50%]">
                                         <strong className="">Bandeira:*</strong>
-                                        <input {...register("bandeira")} type="text" id="rua" className="input" placeholder="Ex: Visa" />
+                                        <input type="text" id="rua" className="input" value={brandName} readOnly />
                                     </label>
                                     <label htmlFor="tipo" className="flex flex-col space-x-2 sm:text-lg w-[40%]">
                                         <strong>Tipo:*</strong>

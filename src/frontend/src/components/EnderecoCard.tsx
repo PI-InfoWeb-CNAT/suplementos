@@ -6,7 +6,7 @@ const EnderecoCard = ({ endereco }: EnderecoCardProps) => {
     return (
         <div className="space-y-5 card-shadow w-full h-[335px] rounded-xl p-5 overflow-x-auto whitespace-nowrap">
             <h3 className="h3">{endereco.apelido}</h3>
-            <div className="space-y-2">
+            <div className="space-y-2 text-dark-grey">
                 <p className="font-bold">Destinatário: <span className="font-medium">{endereco.destinatario}</span></p>
                 <p className="font-bold">Rua: <span className="font-medium">{endereco.rua}, {endereco.numero}</span></p>
                 <p className="font-bold">Bairro: <span className="font-medium">{endereco.bairro}</span></p>
