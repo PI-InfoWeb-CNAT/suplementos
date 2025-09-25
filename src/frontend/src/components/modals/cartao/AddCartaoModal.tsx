@@ -131,18 +131,18 @@ export default function AddCartaoModal() {
                     <LoadingContainer loading={loading}>
                         {showInputs && (
                             <>
-                                <label htmlFor="rua" className="flex flex-col space-x-2 sm:text-lg w-full">
+                                <label htmlFor="titular" className="flex flex-col space-x-2 sm:text-lg w-full">
                                     <strong className="">Titular:*</strong>
-                                    <input {...register("titular")} type="text" id="rua" className="input" placeholder="Ex: JOÃO DA SILVA" />
+                                    <input {...register("titular")} type="text" id="titular" className="input" placeholder="Ex: JOÃO DA SILVA" />
                                 </label>
                                 <label htmlFor="bairro" className="flex flex-col space-x-2 sm:text-lg w-full">
                                     <strong className="">Apelido:*</strong>
                                     <input {...register("apelido")} type="text" id="bairro" className="input" placeholder="Ex: Meu Cartão" />
                                 </label>
                                 <div className="flex justify-between w-full">
-                                    <label htmlFor="rua" className="flex flex-col space-x-2 sm:text-lg w-[50%]">
+                                    <label htmlFor="nandeira" className="flex flex-col space-x-2 sm:text-lg w-[50%]">
                                         <strong className="">Bandeira:*</strong>
-                                        <input type="text" id="rua" className="input" value={brandName} readOnly />
+                                        <input type="text" id="bandeira" className="input" value={brandName} readOnly />
                                     </label>
                                     <label htmlFor="tipo" className="flex flex-col space-x-2 sm:text-lg w-[40%]">
                                         <strong>Tipo:*</strong>

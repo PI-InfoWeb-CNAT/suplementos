@@ -1,4 +1,4 @@
-import { CartaoCardProps } from "@/types/cartao"
+import Image from "next/image"
 
 import amex from "../../public/cartoes/amex.png"
 import elo from "../../public/cartoes/elo.png"
@@ -6,8 +6,10 @@ import hipercard from "../../public/cartoes/hipercard.png"
 import mastercard from "../../public/cartoes/mastercard.png"
 import visa from "../../public/cartoes/visa.png"
 import defaultCard from "../../public/cartoes/default.png"
-import Image from "next/image"
+
 import { Button } from "./ui/button"
+import EditCartaoModal from "./modals/cartao/EditCartaoModal"
+import { CartaoCardProps } from "@/types/cartao"
 
 const CartaoCard = ({ cartao }: CartaoCardProps) => {
     let bandeiraImg;
@@ -52,9 +54,7 @@ const CartaoCard = ({ cartao }: CartaoCardProps) => {
                     <p className="font-bold">Tipo: <span className="font-medium">{cartao.tipo == "debito" ? "Débito" : "Crédito"}</span></p>
                 </div>
                 <div className="flex gap-5">
-                    <Button variant="submit">
-                        Editar
-                    </Button>
+                    <EditCartaoModal cartao={cartao} />
                     <Button variant="exclude">
                         Excluir
                     </Button>
