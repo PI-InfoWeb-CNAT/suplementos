@@ -25,6 +25,15 @@ export default function EditCartaoModal({ cartao }: CartaoCardProps) {
 
     const [open, setOpen] = useState(false);
 
+    async function onSubmit(data: CartaoSchemaType) {
+        try {
+            await axios.patch(`/api/cartoes/${cartao.id}/`, data);
+            setOpen(false);
+        } catch (error) {
+            alert('Erro ao editar cartão.');
+        }
+    }
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -40,7 +49,7 @@ export default function EditCartaoModal({ cartao }: CartaoCardProps) {
                         <DialogDescription>Para obter ajuda, acesse o e-mail abaixo</DialogDescription>
                     </VisuallyHidden>
                 </DialogHeader>
-                <form className="flex flex-col items-center gap-6 sm:w-4/5 w-full">
+                <form className="flex flex-col items-center gap-6 sm:w-4/5 w-full" onSubmit={handleSubmit(onSubmit)}>
                     <label htmlFor="rua" className="flex flex-col space-x-2 sm:text-lg w-full">
                         <strong className="">Titular:*</strong>
                         <input {...register("titular")} type="text" id="rua" className="input" placeholder="Ex: JOÃO DA SILVA" />
@@ -65,7 +74,7 @@ export default function EditCartaoModal({ cartao }: CartaoCardProps) {
                     </div>
                     <div className="flex gap-8 mt-5">
                         <Button variant="submit" size="submit" type="submit">
-                            Adicionar
+                            Salvar
                         </Button>
                         <DialogClose asChild>
                             <Button variant="close" size="close" type="button" onClick={() => reset()}>
