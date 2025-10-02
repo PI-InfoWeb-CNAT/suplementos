@@ -1,10 +1,12 @@
+export type TipoCartao = "debito" | "credito";
+
 export interface CartaoProps {
     id: number;
     apelido: string;
     titular: string;
     numero: string;
     bandeira: string;
-    tipo: string;
+    tipo: TipoCartao;
 }
 
 export interface CartaoCardProps {

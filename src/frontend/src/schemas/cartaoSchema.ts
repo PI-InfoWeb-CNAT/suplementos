@@ -14,10 +14,11 @@ export const cartaoSchema = z
     bandeira: z
         .string()
         .min(1, "A bandeira é obrigatória"),
-    tipo: z
-        .enum(["debito", "credito"], {
-            message: "Selecione Débito ou Crédito"
-        }),
+    tipo: z.string()
   })
 
 export type CartaoSchemaType = z.infer<typeof cartaoSchema>;
+
+export const editCartaoSchema = cartaoSchema.omit({ numero: true });
+
+export type EditCartaoSchemaType = z.infer<typeof editCartaoSchema>;

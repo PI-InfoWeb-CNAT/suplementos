@@ -17,7 +17,7 @@ import { useEnderecos } from "@/contexts/EnderecoContext";
 import api from "@/services/api";
 
 export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
-    const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<EnderecoSchemaType>({
+    const { register, handleSubmit, watch, reset, setValue, formState: { errors, isDirty } } = useForm<EnderecoSchemaType>({
         resolver: zodResolver(enderecoSchema),
         mode: "onChange",
         defaultValues: {
@@ -80,25 +80,13 @@ export default function EditEnderecoModal({endereco}: EnderecoCardProps) {
             notify("CEP inválido", "warning");
             return;
         }
-        const updatedData: any = {};
-
-        if (data.apelido !== endereco.apelido) updatedData.apelido = data.apelido;
-        if (data.destinatario !== endereco.destinatario) updatedData.destinatario = data.destinatario;
-        if (data.cep !== endereco.cep) updatedData.cep = data.cep;
-        if (data.uf !== endereco.uf) updatedData.uf = data.uf;
-        if (data.cidade !== endereco.cidade) updatedData.cidade = data.cidade;
-        if (data.bairro !== endereco.bairro) updatedData.bairro = data.bairro;
-        if (data.rua !== endereco.rua) updatedData.rua = data.rua;
-        if (data.numero !== endereco.numero) updatedData.numero = data.numero;
-        if (data.complemento !== endereco.complemento) updatedData.complemento = data.complemento;
-
-        if (Object.keys(updatedData).length === 0) {
+        if (!isDirty) {
             notify("Altere algum campo antes de atualizar.", "warning");
             return;
         }
 
         try {
-            const response = await api.patch(`/enderecos/${endereco.id}/`, updatedData);
+            const response = await api.patch(`/enderecos/${endereco.id}/`, data);
 
             updateEndereco(response.data)
             setOpen(false)

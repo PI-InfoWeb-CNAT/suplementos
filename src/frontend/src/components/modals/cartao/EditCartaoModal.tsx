@@ -1,5 +1,4 @@
 'use client'
-import axios from "axios";
 import { useState, useEffect } from "react"
 import { useForm, FieldErrors } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,30 +8,69 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { Button } from "@/components/ui/button";
 import { CartaoCardProps } from "@/types/cartao";
-import { cartaoSchema, CartaoSchemaType } from "@/schemas/cartaoSchema";
+import { editCartaoSchema, EditCartaoSchemaType } from "@/schemas/cartaoSchema";
+import api from "@/services/api";
+import { notify } from "@/lib/toast";
+import { useCartoes } from "@/contexts/CartaoContext";
 
 export default function EditCartaoModal({ cartao }: CartaoCardProps) {
-    const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<CartaoSchemaType>({
-        resolver: zodResolver(cartaoSchema),
+    const { register, handleSubmit, reset, formState: { errors, isDirty } } = useForm<EditCartaoSchemaType>({
+        resolver: zodResolver(editCartaoSchema),
         mode: "onChange",
         defaultValues: {
             apelido: cartao.apelido,
             titular: cartao.titular,
             bandeira: cartao.bandeira,
-            tipo: cartao.tipo === "debito" || cartao.tipo === "credito" ? cartao.tipo : undefined,
+            tipo: cartao.tipo,
         }
     });
 
-    const [open, setOpen] = useState(false);
+    useEffect(() => {
+        reset({
+            apelido: cartao.apelido,
+            titular: cartao.titular,
+            bandeira: cartao.bandeira,
+            tipo: cartao.tipo,
+        });
+    }, [cartao, reset]); 
 
-    async function onSubmit(data: CartaoSchemaType) {
+    const [open, setOpen] = useState(false);
+    const { updateCartao } = useCartoes();
+
+    const onSubmit = async (data: EditCartaoSchemaType) => {
+        if (!isDirty) {
+            notify("Altere algum campo antes de atualizar.", "warning");
+            return;
+        }
+
         try {
-            await axios.patch(`/api/cartoes/${cartao.id}/`, data);
-            setOpen(false);
-        } catch (error) {
-            alert('Erro ao editar cartão.');
+            const response = await api.patch(`/cartoes/${cartao.id}/`, data);
+
+            updateCartao(response.data)
+            setOpen(false)
+            reset()
+            notify("Cartão atualizado com sucesso!", "success")
+        } catch (error: any) {
+            if (error.response) {
+                console.error("Erro na resposta da API:", error.response.data);
+                const erros = error.response.data.errors || [error.response.data.detail];
+                notify(erros, "error");
+            } else {
+                console.error("Erro de rede:", error.message);
+                notify("Erro de rede. Tente novamente.", "error");
+            }
         }
     }
+
+    const onError = (errors: FieldErrors<EditCartaoSchemaType>) => {
+        const firstError = Object.values(errors)[0];
+
+        if (firstError && "message" in firstError) {
+            notify(firstError.message as string, "warning");
+        } else {
+            notify("Erro ao validar dados", "warning");
+        }
+    };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -49,7 +87,7 @@ export default function EditCartaoModal({ cartao }: CartaoCardProps) {
                         <DialogDescription>Para obter ajuda, acesse o e-mail abaixo</DialogDescription>
                     </VisuallyHidden>
                 </DialogHeader>
-                <form className="flex flex-col items-center gap-6 sm:w-4/5 w-full" onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col items-center gap-6 sm:w-4/5 w-full">
                     <label htmlFor="rua" className="flex flex-col space-x-2 sm:text-lg w-full">
                         <strong className="">Titular:*</strong>
                         <input {...register("titular")} type="text" id="rua" className="input" placeholder="Ex: JOÃO DA SILVA" />
@@ -66,7 +104,6 @@ export default function EditCartaoModal({ cartao }: CartaoCardProps) {
                         <label htmlFor="tipo" className="flex flex-col space-x-2 sm:text-lg w-[40%]">
                             <strong>Tipo:*</strong>
                             <select {...register("tipo")} id="tipo" className="input">
-                                <option value="" disabled>Selecione</option>
                                 <option value="debito">Débito</option>
                                 <option value="credito">Crédito</option>
                             </select>
