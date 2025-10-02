@@ -63,6 +63,11 @@ export default function AddCartaoModal() {
     }, [numeroValue]);
 
     const onSubmit = async (data: CartaoSchemaType) => {
+        if (data.tipo === "") {
+            notify("Selecione o tipo do cartão", "warning");
+            return;
+        }
+
         try {
             const response = await api.post("/cartoes/", {
                 apelido: data.apelido,

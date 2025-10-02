@@ -10,6 +10,7 @@ import defaultCard from "../../public/cartoes/default.png"
 import { Button } from "./ui/button"
 import EditCartaoModal from "./modals/cartao/EditCartaoModal"
 import { CartaoCardProps } from "@/types/cartao"
+import ExcluirCartaoModal from "./modals/cartao/ExcluirCartaoModal"
 
 const CartaoCard = ({ cartao }: CartaoCardProps) => {
     let bandeiraImg;
@@ -55,9 +56,7 @@ const CartaoCard = ({ cartao }: CartaoCardProps) => {
                 </div>
                 <div className="flex gap-5">
                     <EditCartaoModal cartao={cartao} />
-                    <Button variant="exclude">
-                        Excluir
-                    </Button>
+                    <ExcluirCartaoModal cartao={cartao} />
                 </div>
             </div>
         </div>
