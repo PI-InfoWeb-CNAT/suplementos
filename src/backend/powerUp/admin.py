@@ -1,9 +1,5 @@
 from django.contrib import admin
-from .models.Produto import Produto
-from .models.Cliente import Cliente
-from .models.Favorito import Favorito
-from .models.Endereco import Endereco
-from .models.Cartao import Cartao
+from .models import *
 
 class ProdutoAdmin(admin.ModelAdmin):
     list_display = ('nome', 'preco', 'porcentagem_desconto', 'categoria')
@@ -24,6 +20,14 @@ class EnderecoAdmin(admin.ModelAdmin):
 class CartaoAdmin(admin.ModelAdmin):
     list_display = ('cliente', 'titular', 'apelido', 'tipo')
     empty_value_display = 'Vazio'
+
+class CarrinhoAdmin(admin.ModelAdmin):
+    list_display = ('user', 'criado_em')
+    empty_value_display = 'Anônimo'
+
+class CarrinhoItemAdmin(admin.ModelAdmin):
+    list_display = ('produto', 'quantidade', 'carrinho', 'preco', 'imagem')
+    empty_value_display = 'Vazio'
     
 
 admin.site.register(Produto, ProdutoAdmin)
@@ -31,3 +35,5 @@ admin.site.register(Cliente, ClienteAdmin)
 admin.site.register(Favorito, FavoritoAdmin)
 admin.site.register(Endereco, EnderecoAdmin)
 admin.site.register(Cartao, CartaoAdmin)
+admin.site.register(Carrinho, CarrinhoAdmin)
+admin.site.register(CarrinhoItem, CarrinhoItemAdmin)

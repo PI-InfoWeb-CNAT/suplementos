@@ -13,6 +13,7 @@ from powerUp.views.EnderecoView import EnderecoViewSet
 from powerUp.views.CartaoView import CartaoViewSet
 from powerUp.views.RedefinirSenhaView import RedefinirSenhaView
 from powerUp.views.LoginView import CustomTokenObtainPairView
+from powerUp.views.CarrinhoView import CarrinhoAPIView
 
 router = DefaultRouter()
 router.register(r'produtos', ProdutoViewSet)
@@ -27,5 +28,6 @@ urlpatterns = [
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('redefinir-senha/', RedefinirSenhaView.as_view(), name='redefinir-senha'),
+    path('carrinho/', CarrinhoAPIView.as_view(), name='carrinho'),
     path('', include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
