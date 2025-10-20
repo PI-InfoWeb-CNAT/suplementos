@@ -14,7 +14,6 @@ class CarrinhoItem(models.Model):
     produto = models.ForeignKey(Produto, null=True, related_name='carrinhos', on_delete=models.CASCADE)
     quantidade = models.PositiveIntegerField()
     preco = models.DecimalField(max_digits=8, decimal_places=2)
-    imagem = models.CharField(max_length=255, blank=True, null=True) 
     
     def __str__(self):
         return f'{self.produto}'

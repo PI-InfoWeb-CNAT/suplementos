@@ -1,7 +1,20 @@
 import { X } from "lucide-react";
 import { CarrinhoItemProps } from "@/types/carrinho";
+import api from "@/services/api";
+import { notify } from "@/lib/toast";
 
-const CarrinhoItemCard = ({ item }: { item: CarrinhoItemProps }) => {
+const CarrinhoItemCard = ({ item, onRemove }: { item: CarrinhoItemProps; onRemove?: (id: number) => void }) => {
+    const handleRemoveItem = async () => {
+        try {
+            await api.delete(`/carrinho/item/${item.id}/`);
+            notify("Item removido do carrinho com sucesso!", "success");
+            onRemove?.(item.id);
+        } catch (error) {
+            console.error("Erro ao remover item:", error);
+            notify("Erro ao remover o item do carrinho.", "error");
+        }
+    };
+
     return (
         <div className="relative card-shadow flex rounded-3xl">
             <div className="w-60 object-cover object-center">
@@ -22,7 +35,11 @@ const CarrinhoItemCard = ({ item }: { item: CarrinhoItemProps }) => {
                     <p className="font-bold text-[22px]">Subtotal: <span className="font-medium">{item.subtotal}</span></p>
                 </div>
             </div>
-            <X size={30} className="absolute top-4 right-4 bg-dark-grey text-green rounded-full p-1 cursor-pointer hover:bg-[#2E2E2E] transition-colors"/>
+            <X 
+                size={30} 
+                onClick={handleRemoveItem}
+                className="absolute top-4 right-4 bg-dark-grey text-green rounded-full p-1 cursor-pointer hover:bg-[#2E2E2E] transition-colors"
+            />
         </div>
     )
 }

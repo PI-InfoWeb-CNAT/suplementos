@@ -4,7 +4,7 @@ const LoadingContainer = ({ children, loading }: {children: React.ReactNode; loa
     return (
         <>
             {loading ? (
-                <section className="flex justify-center items-center h-64">
+                <section className="w-full flex justify-center items-center h-64">
                     <LoadingSpinner />
                 </section>
             ) : (

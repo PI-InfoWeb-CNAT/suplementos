@@ -22,7 +22,7 @@ class ProdutoSerializer(serializers.ModelSerializer):
 
     def get_preco_calculado(self, obj):
         preco = obj.preco_calculado()
-        return f'{preco:.2f}'
+        return f'{preco:.2f}'.replace('.', ',')
 
     def get_is_favorited(self, obj):
         request = self.context.get("request")

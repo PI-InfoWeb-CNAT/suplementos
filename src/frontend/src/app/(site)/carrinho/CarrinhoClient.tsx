@@ -36,33 +36,37 @@ export default function CarrinhoClient() {
         <PageWrapper pageName="Meu Carrinho">
             <section>
                 <h2 className="h2 lg:hidden">Meu Carrinho</h2>
-                <div className="flex justify-between">
-                    <div className="flex flex-col gap-8 w-[60%]">
-                        <LoadingContainer loading={loading}>
+                <div>
+                    <LoadingContainer loading={loading}>
+                        <div className="flex justify-between">
                             {itens.length === 0 ? (
                                 <p className="notFound">Seu carrinho está vazio.</p>
                             ) : (
-                                itens.map(item => (
-                                    <CarrinhoItemCard key={item.id} item={item} />
-                                ))
+                                <>
+                                    <div className="flex flex-col gap-8 w-[60%]">
+                                        {itens.map(item => (
+                                            <CarrinhoItemCard key={item.id} item={item} onRemove={(id) => setItens((prev) => prev.filter((i) => i.id !== id))} />
+                                        ))}
+                                    </div>
+                                    <div className="card-shadow rounded-3xl w-[30%] px-7 py-5 h-max">
+                                        <div className="flex justify-between items-center text-[22px] font-semibold">
+                                            <p>Total:</p>
+                                            <span>{total}</span>
+                                        </div>
+                                        <a href="/finalizar-pedido" className="mt-10 mb-4 block">
+                                            <Button type="button" variant="submit" size="submit" className="w-full py-2 rounded-lg">
+                                                Finalizar Pedido
+                                            </Button>
+                                        </a>
+                                        <div className="w-full h-[1px] bg-gray-400"></div>
+                                        <div className="relative w-full h-92 mt-6">
+                                            <Image src={'/imagem-carrinho.png'} alt="Imagem do Carrinho" fill className="object-cover"/>
+                                        </div>
+                                    </div>
+                                </>
                             )}
-                        </LoadingContainer>
-                    </div>
-                    <div className="card-shadow rounded-3xl w-[30%] px-7 py-5 h-max">
-                        <div className="flex justify-between items-center text-[22px] font-semibold">
-                            <p>Total:</p>
-                            <span>{total}</span>
                         </div>
-                        <a href="/finalizar-pedido" className="mt-10 mb-4 block">
-                            <Button type="button" variant="submit" size="submit" className="w-full py-2 rounded-lg">
-                                Finalizar Pedido
-                            </Button>
-                        </a>
-                        <div className="w-full h-[1px] bg-gray-400"></div>
-                        <div className="relative w-full h-92 mt-6">
-                            <Image src={'/imagem-carrinho.png'} alt="Imagem do Carrinho" fill className="object-cover"/>
-                        </div>
-                    </div>
+                    </LoadingContainer>
                 </div>
             </section>
         </PageWrapper>

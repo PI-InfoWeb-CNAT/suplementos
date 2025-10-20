@@ -26,7 +26,7 @@ class CarrinhoAdmin(admin.ModelAdmin):
     empty_value_display = 'Anônimo'
 
 class CarrinhoItemAdmin(admin.ModelAdmin):
-    list_display = ('produto', 'quantidade', 'carrinho', 'preco', 'imagem')
+    list_display = ('produto', 'quantidade', 'carrinho', 'preco')
     empty_value_display = 'Vazio'
     
 

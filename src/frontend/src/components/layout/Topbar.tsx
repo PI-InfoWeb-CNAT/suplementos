@@ -16,6 +16,7 @@ const Topbar = ({ page }: { page: string }) => {
     const { setMenuOpen } = useMenu();
     const { isLogged, user, loading } = useAuth();
     const [cartCount, setCartCount] = useState(0);
+    const [loadingCart, setLoadingCart] = useState(true);
 
     useEffect(() => {
         const fetchCartCount = async () => {
@@ -24,6 +25,8 @@ const Topbar = ({ page }: { page: string }) => {
                 setCartCount(response.data.total_itens);
             } catch (error) {
                 console.error("Erro ao buscar carrinho:", error);
+            } finally {
+                setLoadingCart(false);
             }
         };
         fetchCartCount();
@@ -43,11 +46,15 @@ const Topbar = ({ page }: { page: string }) => {
             </Link>
             <div className='flex items-center gap-2'>
                 <div className='relative mr-2'>
-                    <Icon icon={<IoMdCart className='text-[18px] tb:text-[22px]' />} href="/carrinho" />
-                    {cartCount > 0 && (
-                        <span className="tb:w-6 tb:h-6 w-5 h-5 flex justify-center items-center absolute -top-2 -right-2 bg-red-500 text-white tb:text-sm text-xs font-semibold px-1.5 py-0.5 rounded-full">
-                            {cartCount}
-                        </span>
+                    {!loadingCart && (
+                        <>
+                            <Icon icon={<IoMdCart className='text-[18px] tb:text-[22px]' />} href="/carrinho" />
+                            {cartCount > 0 && (
+                                <span className="tb:w-6 tb:h-6 w-5 h-5 flex justify-center items-center absolute -top-2 -right-2 bg-red-500 text-white tb:text-sm text-xs font-semibold px-1.5 py-0.5 rounded-full">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </>
                     )}
                 </div>
                 {loading ? (
