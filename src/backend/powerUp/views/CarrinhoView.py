@@ -17,10 +17,15 @@ class CarrinhoAPIView(APIView):
         ).first()
 
         if not carrinho:
-            return Response({"detail": "Carrinho vazio"}, status=status.HTTP_204_NO_CONTENT)
+            return Response({"total_itens": 0}, status=status.HTTP_200_OK)
 
-        serializer = CarrinhoSerializer(carrinho)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        total_itens = sum(item.quantidade for item in carrinho.itens.all())
+        serializer = CarrinhoSerializer(carrinho, context={"request": request})
+
+        return Response({
+            "total_itens": total_itens,
+            "carrinho": serializer.data
+        }, status=status.HTTP_200_OK)
 
     def post(self, request):
         produto_id = request.data.get('produto')

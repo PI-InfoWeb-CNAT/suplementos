@@ -1,17 +1,20 @@
 from rest_framework import serializers
 from powerUp.models import Carrinho, CarrinhoItem
+from powerUp.serializers.ProdutoSerializer import ProdutoSerializer
 
 class CarrinhoItemSerializer(serializers.ModelSerializer):
-    total = serializers.SerializerMethodField()
+    subtotal = serializers.SerializerMethodField()
     produto_nome = serializers.CharField(source='produto.nome', read_only=True)
     produto_imagem = serializers.ImageField(source='produto.imagem', read_only=True)
+    produto = ProdutoSerializer(read_only=True)
 
     class Meta:
         model = CarrinhoItem
-        fields = ['id', 'produto', 'produto_nome', 'produto_imagem', 'quantidade', 'preco', 'total']
+        fields = ['id', 'produto', 'produto_nome', 'produto_imagem', 'quantidade', 'preco', 'subtotal']
 
-    def get_total(self, obj):
-        return obj.quantidade * obj.preco
+    def get_subtotal(self, obj):
+        preco_calculado = float(obj.produto.preco_calculado())
+        return f'{preco_calculado * obj.quantidade:.2f}'
 
 
 class CarrinhoSerializer(serializers.ModelSerializer):

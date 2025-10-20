@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from "next/image";
+import { useState, useEffect } from 'react';
 
 import { IoMenu } from "react-icons/io5";
 import { IoMdCart } from "react-icons/io";
@@ -9,15 +10,29 @@ import UserDropdown from '@/components/UserDropdown';
 import Icon from '@/components/Icon';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMenu } from '@/contexts/MenuContext';
+import api from '@/services/api';
 
-const Topbar = ({page}: {page: string}) => {
+const Topbar = ({ page }: { page: string }) => {
     const { setMenuOpen } = useMenu();
     const { isLogged, user, loading } = useAuth();
+    const [cartCount, setCartCount] = useState(0);
+
+    useEffect(() => {
+        const fetchCartCount = async () => {
+            try {
+                const response = await api.get("/carrinho/");
+                setCartCount(response.data.total_itens);
+            } catch (error) {
+                console.error("Erro ao buscar carrinho:", error);
+            }
+        };
+        fetchCartCount();
+    }, []);
 
     return (
         <header className="flex items-center justify-between">
             {/* TÍTULO DO DESKTOP */}
-            <h1 className="hidden nt-sm:block h1 font-bold">{page}</h1> 
+            <h1 className="hidden nt-sm:block h1 font-bold">{page}</h1>
             {/* ÍCONE DE HAMBURGUER PARA MENU MOBILE */}
             <button className='nt-sm:hidden' onClick={() => setMenuOpen(true)}>
                 <Icon icon={<IoMenu className='text-[18px] tb:text-[22px]' />} />
@@ -27,7 +42,14 @@ const Topbar = ({page}: {page: string}) => {
                 <Image src="/Logo-preta-longa.webp" fill alt="Logo preta da PowerUP" />
             </Link>
             <div className='flex items-center gap-2'>
-                <Icon icon={<IoMdCart className='text-[18px] tb:text-[22px]' />} href="/carrinho" />
+                <div className='relative mr-2'>
+                    <Icon icon={<IoMdCart className='text-[18px] tb:text-[22px]' />} href="/carrinho" />
+                    {cartCount > 0 && (
+                        <span className="tb:w-6 tb:h-6 w-5 h-5 flex justify-center items-center absolute -top-2 -right-2 bg-red-500 text-white tb:text-sm text-xs font-semibold px-1.5 py-0.5 rounded-full">
+                            {cartCount}
+                        </span>
+                    )}
+                </div>
                 {loading ? (
                     null
                 ) : isLogged && user ? (

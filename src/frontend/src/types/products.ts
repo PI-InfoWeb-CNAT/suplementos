@@ -3,10 +3,10 @@ export interface ProductProps {
   nome: string;
   preco: number;
   descricao: string;
-  imagem: string; 
+  imagem: string;
   porcentagem_desconto: number;
   categoria: string;
-  preco_calculado: number; 
+  preco_calculado: number;
   is_favorited: boolean;
 }
 
@@ -16,11 +16,11 @@ export interface ProductCardProps {
 }
 
 export interface FilterProps {
-   produtos: ProductProps[];                  
-    onChange?: (produtosOrdenados: ProductProps[]) => void; 
-    initialOrdenacao?: string;                 
-    showReset?: boolean;                       
-    extraOptions?: { value: string; label: string }[];
+  produtos: ProductProps[];
+  onChange?: (produtosOrdenados: ProductProps[]) => void;
+  initialOrdenacao?: string;
+  showReset?: boolean;
+  extraOptions?: { value: string; label: string }[];
 }
 
 export interface ProductContextType {

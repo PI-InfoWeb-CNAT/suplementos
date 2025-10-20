@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from "next/navigation";
 import { useForm, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,6 +15,7 @@ import { notify } from "@/lib/toast";
 import api from "@/services/api";
 
 export default function ProductClient({ id }: { id: string }) {
+    const router = useRouter();
     const { register, handleSubmit, formState: { errors } } = useForm<CarrinhoSchemaType>({
         resolver: zodResolver(carrinhoSchema),
     });
@@ -44,6 +46,9 @@ export default function ProductClient({ id }: { id: string }) {
             });
 
             notify("Produto adicionado ao carrinho com sucesso!", "success");
+            setTimeout(() => {
+                router.push("/carrinho");
+            }, 1500); 
         } catch (error: any) {
             if (error.response) {
                 notify(error.response.data.erro || "Erro ao adicionar produto.", "error");

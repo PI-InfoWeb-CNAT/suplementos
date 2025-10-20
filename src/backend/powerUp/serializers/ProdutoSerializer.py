@@ -4,6 +4,7 @@ from powerUp.models import Produto, Favorito, Cliente
 class ProdutoSerializer(serializers.ModelSerializer):
     preco_calculado = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
+    imagem = serializers.SerializerMethodField() 
 
     class Meta:
         model = Produto
@@ -36,3 +37,9 @@ class ProdutoSerializer(serializers.ModelSerializer):
             return False
 
         return Favorito.objects.filter(cliente=cliente, produto=obj).exists()
+    
+    def get_imagem(self, obj):
+        request = self.context.get("request")
+        if obj.imagem and hasattr(obj.imagem, "url"):
+            return request.build_absolute_uri(obj.imagem.url)
+        return None
