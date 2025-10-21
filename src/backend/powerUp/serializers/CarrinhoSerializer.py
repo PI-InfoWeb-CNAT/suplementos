@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from powerUp.models import Carrinho, CarrinhoItem
 from powerUp.serializers.ProdutoSerializer import ProdutoSerializer
+from decimal import Decimal
 
 class CarrinhoItemSerializer(serializers.ModelSerializer):
     subtotal = serializers.SerializerMethodField()
@@ -26,9 +27,9 @@ class CarrinhoSerializer(serializers.ModelSerializer):
         fields = ['id', 'session_key', 'user', 'criado_em', 'itens', 'total']
 
     def get_total(self, obj):
-        total = 0
+        total = Decimal('0.00')
         for item in obj.itens.all():
-            preco_final = item.produto.preco_calculado()
-            total += item.quantidade * preco_final
-        
+            preco_final = Decimal(str(item.produto.preco_calculado()))
+            total += Decimal(item.quantidade) * preco_final
+
         return f"{total:.2f}".replace('.', ',')

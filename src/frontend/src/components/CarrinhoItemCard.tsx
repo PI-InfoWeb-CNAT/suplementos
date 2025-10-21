@@ -16,23 +16,23 @@ const CarrinhoItemCard = ({ item, onRemove }: { item: CarrinhoItemProps; onRemov
     };
 
     return (
-        <div className="relative card-shadow flex rounded-3xl">
-            <div className="w-60 object-cover object-center">
-                <img src={item.produto.imagem} alt={`Imagem do produto ${item.produto.nome}`} className="w-full h-full rounded-3xl" />
+        <div className="relative card-shadow flex flex-col xs:flex-row rounded-3xl">
+            <div className="2xl:w-60 xl:w-50 md:w-60 sm:w-50 xs:w-40 w-full">
+                <img src={item.produto.imagem} alt={`Imagem do produto ${item.produto.nome}`} className="w-full h-full rounded-3xl object-cover object-center" />
             </div>
-            <div className="px-6 py-4 flex flex-col justify-between gap-4">
-                <div className="flex flex-wrap items-center gap-4">
-                    <h3 className="text-2xl font-medium">{item.produto.nome}</h3>
+            <div className="pl-6 pr-10 py-4 flex flex-col flex-1 justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <h3 className="sm:text-2xl text-xl font-medium">{item.produto.nome}</h3>
                     {item.produto.porcentagem_desconto > 0 && (
                         <div className="tb:text-base text-sm bg-dark-grey text-light-green px-2 py-1 tb:rounded-md rounded-sm">
                             {item.produto.porcentagem_desconto}% OFF
                         </div>
                     )}
                 </div>
-                <div className="space-y-4">
-                    <p className="font-bold text-lg">Preço: <span className="font-medium">{item.produto.preco_calculado}</span></p>
-                    <p className="font-bold text-lg">Quantidade: <span className="font-medium">{item.quantidade}</span></p>
-                    <p className="font-bold text-[22px]">Subtotal: <span className="font-medium">{item.subtotal}</span></p>
+                <div className="sm:space-y-4 space-y-2">
+                    <p className="font-bold sm:text-lg">Preço: <span className="font-medium">{item.produto.preco_calculado}</span></p>
+                    <p className="font-bold sm:text-lg">Quantidade: <span className="font-medium">{item.quantidade}</span></p>
+                    <p className="font-bold sm:text-[22px] text-lg">Subtotal: <span className="font-medium">{item.subtotal}</span></p>
                 </div>
             </div>
             <X 
