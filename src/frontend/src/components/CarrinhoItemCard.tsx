@@ -1,14 +1,15 @@
 import { X } from "lucide-react";
 import { CarrinhoItemProps } from "@/types/carrinho";
-import api from "@/services/api";
 import { notify } from "@/lib/toast";
+import { useCarrinho } from "@/contexts/CarrinhoContext";
 
-const CarrinhoItemCard = ({ item, onRemove }: { item: CarrinhoItemProps; onRemove?: (id: number) => void }) => {
+const CarrinhoItemCard = ({ item }: { item: CarrinhoItemProps; }) => {
+    const { removeItem } = useCarrinho();
+
     const handleRemoveItem = async () => {
         try {
-            await api.delete(`/carrinho/item/${item.id}/`);
+            await removeItem(item);
             notify("Item removido do carrinho com sucesso!", "success");
-            onRemove?.(item.id);
         } catch (error) {
             console.error("Erro ao remover item:", error);
             notify("Erro ao remover o item do carrinho.", "error");

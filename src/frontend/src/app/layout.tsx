@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { MenuProvider } from "@/contexts/MenuContext";
+import { CarrinhoProvider } from "@/contexts/CarrinhoContext";
 
 const baiJamjuree = Bai_Jamjuree({
   subsets: ["latin"],
@@ -35,7 +36,9 @@ export default function RootLayout({ children }:
       <body className={`${baiJamjuree.className} antialiased`}>
         <MenuProvider>
           <AuthProvider>
-            {children}
+            <CarrinhoProvider>
+              {children}  
+            </CarrinhoProvider>
             <Toaster />
           </AuthProvider>
         </MenuProvider>

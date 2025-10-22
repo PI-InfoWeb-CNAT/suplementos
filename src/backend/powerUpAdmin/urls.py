@@ -29,6 +29,6 @@ urlpatterns = [
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('redefinir-senha/', RedefinirSenhaView.as_view(), name='redefinir-senha'),
     path('carrinho/', CarrinhoAPIView.as_view(), name='carrinho'),
-    path('carrinho/item/<int:item_id>/', CarrinhoAPIView.as_view(), name='carrinho-item-delete'),
+    path('carrinho/<int:item_id>/', CarrinhoAPIView.as_view(), name='carrinho-item-delete'),
     path('', include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

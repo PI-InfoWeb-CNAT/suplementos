@@ -6,54 +6,60 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 
 import PageWrapper from "@/components/layout/PageWrapper";
-import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import { useProdutos } from "@/contexts/ProductContext"
+import { useCarrinho } from "@/contexts/CarrinhoContext";
+import { useProdutos } from "@/contexts/ProductContext";
 import { carrinhoSchema, CarrinhoSchemaType } from "@/schemas/carrinhoSchema";
 import { notify } from "@/lib/toast";
-import api from "@/services/api";
+import LoadingSpinner from "@/components/loading/LoadingSpinner"; 
 
 export default function ProductClient({ id }: { id: string }) {
     const router = useRouter();
     const { register, handleSubmit, formState: { errors } } = useForm<CarrinhoSchemaType>({
         resolver: zodResolver(carrinhoSchema),
+        defaultValues: { quantidade: 0 }
     });
     const idNumber = Number(id);
+
     const { produtos, loading } = useProdutos();
+    const { addItem } = useCarrinho();
 
-    const produto = produtos.find(produto => produto.id === idNumber)
-
-    const produtos_relacionados = produto ? produtos.filter(p => p.categoria === produto.categoria && p.id !== produto.id) : [];
+    const produto = produtos.find(produto => produto.id === idNumber);
 
     if (loading) {
         return (
-            <section className="flex justify-center items-center h-full">
-                <LoadingSpinner />
-            </section>
+            <PageWrapper pageName="Carregando...">
+                <section className="flex justify-center items-center h-[50vh]">
+                    <LoadingSpinner />
+                </section>
+            </PageWrapper>
         );
     }
 
     if (!produto) {
-        return <p className="notFound">Produto não encontrado.</p>
+        return (
+            <PageWrapper pageName="Erro">
+                <p className="notFound text-center text-xl mt-10">Produto não encontrado.</p>
+            </PageWrapper>
+        );
     }
+
+    const produtos_relacionados = produtos.filter(p => p.categoria === produto.categoria && p.id !== produto.id);
 
     const onSubmit = async (data: CarrinhoSchemaType) => {
         try {
-            await api.post("/carrinho/", {
-                produto: idNumber,
-                quantidade: Number(data.quantidade),
-            });
+            await addItem(produto!, Number(data.quantidade));
 
             notify("Produto adicionado ao carrinho com sucesso!", "success");
             setTimeout(() => {
                 router.push("/carrinho");
-            }, 1500); 
+            }, 1500);
         } catch (error: any) {
             if (error.response) {
                 notify(error.response.data.erro || "Erro ao adicionar produto.", "error");
             } else {
-                notify("Falha de conexão com o servidor.", "error");
+                notify("Falha ao adicionar produto.", "error");
             }
         }
     };
@@ -87,7 +93,13 @@ export default function ProductClient({ id }: { id: string }) {
                     <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col tb:items-start items-center space-y-5">
                         <div className="space-x-4">
                             <label htmlFor="qtd_produto" className="text-lg font-medium">Quantidade:</label>
-                            <input {...register("quantidade", { valueAsNumber: true })} type="number" id="qtd_produto" placeholder="0" className="input text-lg pl-1 pr-0 py-0 w-[50px]" />
+                            <input
+                                {...register("quantidade", { valueAsNumber: true })} 
+                                type="number"
+                                id="qtd_produto"
+                                placeholder="0"
+                                className="input text-lg pl-1 pr-0 py-0 w-[50px]"
+                            />
                         </div>
                         <Button type="submit" variant="submit" size="submit">
                             Adicionar ao carrinho

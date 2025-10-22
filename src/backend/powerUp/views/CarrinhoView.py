@@ -1,23 +1,17 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated # Importe isso
 from django.shortcuts import get_object_or_404
 from powerUp.models import Carrinho, CarrinhoItem, Produto
 from powerUp.serializers.CarrinhoSerializer import CarrinhoSerializer
 
 class CarrinhoAPIView(APIView):
+    permission_classes = [IsAuthenticated] 
+
     def get(self, request):
-        user = request.user if request.user.is_authenticated else None
-        if not request.session.session_key:
-            request.session.create()  # cria a sessão
-        session_key = request.session.session_key  # agora pega a session key real
-
-        print(session_key) 
-
-        carrinho = Carrinho.objects.filter(
-            user=user,
-            session_key=None if user else session_key
-        ).first()
+        user = request.user
+        carrinho = Carrinho.objects.filter(user=user).first()
 
         if not carrinho:
             return Response({
@@ -43,19 +37,10 @@ class CarrinhoAPIView(APIView):
         if not produto_id:
             return Response({"erro": "Produto não informado."}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = request.user if request.user.is_authenticated else None
-
-        if not request.session.session_key:
-            request.session.create()
-        session_key = request.session.session_key
-
+        user = request.user
         produto = get_object_or_404(Produto, id=produto_id)
 
-        carrinho, _ = Carrinho.objects.get_or_create(
-            user=user,
-            session_key=None if user else session_key
-        )
-
+        carrinho, _ = Carrinho.objects.get_or_create(user=user)
         item, created = CarrinhoItem.objects.get_or_create(
             carrinho=carrinho,
             produto=produto,
@@ -74,13 +59,8 @@ class CarrinhoAPIView(APIView):
 
     
     def delete(self, request, item_id):
-        user = request.user if request.user.is_authenticated else None
-        session_key = request.session.session_key or request.session.create()
-
-        carrinho = Carrinho.objects.filter(
-            user=user,
-            session_key=None if user else session_key
-        ).first()
+        user = request.user
+        carrinho = Carrinho.objects.filter(user=user).first()
 
         if not carrinho:
             return Response({"detail": "Carrinho não encontrado."}, status=status.HTTP_404_NOT_FOUND)

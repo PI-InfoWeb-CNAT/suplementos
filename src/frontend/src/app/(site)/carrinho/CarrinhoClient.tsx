@@ -1,57 +1,39 @@
 'use client';
-import { useEffect, useState } from "react";
+import Image from "next/image";
 
 import PageWrapper from "@/components/layout/PageWrapper";
-import { CarrinhoItemProps } from "@/types/carrinho";
-import api from "@/services/api";
 import LoadingContainer from "@/components/loading/LoadingContainer";
 import CarrinhoItemCard from "@/components/CarrinhoItemCard";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { useCarrinho } from "@/contexts/CarrinhoContext";
+
 
 export default function CarrinhoClient() {
-    const [itens, setItens] = useState<CarrinhoItemProps[]>([]);
-    const [total, setTotal] = useState<number>(0);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchCarrinho = async () => {
-            try {
-                const response = await api.get("/carrinho/");
-                const carrinhoData = response.data.carrinho;
-
-                setItens(carrinhoData.itens || []);
-                setTotal(carrinhoData.total || 0);
-            } catch (error) {
-                console.error("Erro ao buscar carrinho:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchCarrinho();
-    }, []);
+    const { items, totalPrice, isLoading } = useCarrinho();
 
     return (
         <PageWrapper pageName="Meu Carrinho">
             <section className="space-y-10">
                 <h2 className="h2 lg:hidden">Meu Carrinho</h2>
                 <div>
-                    <LoadingContainer loading={loading}>
+                    <LoadingContainer loading={isLoading}>
                         <div className="flex flex-col xl:flex-row justify-between xl:gap-0 gap-y-10">
-                            {itens.length === 0 ? (
+                            {items.length === 0 ? (
                                 <p className="notFound">Seu carrinho está vazio.</p>
                             ) : (
                                 <>
                                     <div className="flex flex-col gap-8 xl:w-[60%] xs:w-full w-[240px] xs:mx-0 mx-auto xl:max-h-[640px] md:max-h-[760px] overflow-auto p-1">
-                                        {itens.map(item => (
-                                            <CarrinhoItemCard key={item.id} item={item} onRemove={(id) => setItens((prev) => prev.filter((i) => i.id !== id))} />
+                                        {items.map(item => (
+                                            <CarrinhoItemCard 
+                                                key={item.produto.id} 
+                                                item={item} 
+                                            />
                                         ))}
                                     </div>
                                     <div className="card-shadow rounded-3xl 2xl:w-[30%] xl:w-[35%] md:w-1/2 sm:w-3/4 px-7 py-5 h-max">
                                         <div className="flex justify-between items-center text-[22px] font-semibold">
                                             <p>Total:</p>
-                                            <span>{total}</span>
+                                            <span>R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
                                         </div>
                                         <a href="/finalizar-pedido" className="mt-10 mb-4 block">
                                             <Button type="button" variant="submit" size="submit" className="w-full py-2 rounded-lg">

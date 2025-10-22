@@ -8,3 +8,21 @@ export interface CarrinhoItemProps {
     imagem: string | null;
     subtotal: number;
 }
+
+export interface CarrinhoContextState {
+    items: CarrinhoItemProps[];
+    totalItems: number;
+    totalPrice: number;
+    isLoading: boolean;
+    isInitialized: boolean;
+}
+
+export interface CarrinhoContextProps extends CarrinhoContextState {
+    addItem: (product: ProductProps, quantity: number) => Promise<void>;
+    removeItem: (item: CarrinhoItemProps) => Promise<void>;
+}
+
+export type CarrinhoAction =
+    | { type: 'SET_LOADING'; payload: boolean }
+    | { type: 'SET_CARRINHO'; payload: CarrinhoItemProps[] }
+    | { type: 'LIMPAR_CARRINHO' };
