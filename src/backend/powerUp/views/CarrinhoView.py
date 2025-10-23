@@ -70,3 +70,49 @@ class CarrinhoAPIView(APIView):
 
         serializer = CarrinhoSerializer(carrinho, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class CarrinhoMigracaoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        itens_locais = request.data.get('itens')
+
+        if not isinstance(itens_locais, list):
+            return Response({"erro": "Formato de itens inválido."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 1. Pega ou cria o carrinho do usuário no banco
+        carrinho_usuario, _ = Carrinho.objects.get_or_create(user=user)
+
+        # 2. Itera sobre os itens do localStorage enviados pelo frontend
+        for item_data in itens_locais:
+            produto_id = item_data.get('produto_id')
+            quantidade = item_data.get('quantidade')
+
+            if not produto_id or not quantidade:
+                continue # Pula item mal formatado
+
+            try:
+                produto = Produto.objects.get(id=produto_id)
+            except Produto.DoesNotExist:
+                continue # Pula se o produto não existe mais
+
+            # 3. Lógica de "get_or_create" para mesclar
+            # (Exatamente como no POST da sua CarrinhoAPIView)
+            item_carrinho, created = CarrinhoItem.objects.get_or_create(
+                carrinho=carrinho_usuario,
+                produto=produto,
+                defaults={
+                    'quantidade': quantidade,
+                    'preco': produto.preco, # Usa o preço atual do produto
+                }
+            )
+
+            if not created:
+                # Se o item JÁ EXISTIA no carrinho do usuário, soma as quantidades
+                item_carrinho.quantidade += int(quantidade)
+                item_carrinho.save()
+
+        # 4. Retorna o carrinho final e mesclado
+        serializer = CarrinhoSerializer(carrinho_usuario, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)

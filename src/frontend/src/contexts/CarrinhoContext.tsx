@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, ReactNode, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useReducer, ReactNode, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import { CarrinhoItemProps, CarrinhoContextState, CarrinhoContextProps, CarrinhoAction } from '@/types/carrinho';
 import { ProductProps } from '@/types/products';
@@ -69,33 +69,70 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
     const [state, dispatch] = useReducer(carrinhoReducer, initialState);
     const { isLogged, loading: authLoading } = useAuth();
 
+    const tentativaMigracao = useRef(false);
+
     const carregarCarrinho = useCallback(async () => {
         dispatch({ type: 'SET_LOADING', payload: true });
         try {
-            if (isLogged) {
-                const response = await api.get('/carrinho/');
-                dispatch({ type: 'SET_CARRINHO', payload: response.data.carrinho.itens || [] });
-            } else {
-                const localItems = getLocalCarrinho();
-                dispatch({ type: 'SET_CARRINHO', payload: localItems });
-            }
+            const response = await api.get('/carrinho/');
+            dispatch({ type: 'SET_CARRINHO', payload: response.data.carrinho.itens || [] });
         } catch (error) {
             console.error("Falha ao carregar carrinho:", error);
             dispatch({ type: 'SET_CARRINHO', payload: [] });
         }
-    }, [isLogged]);
+    }, []);
 
     // Efeito para carregar o carrinho inicial ou quando o login muda
     useEffect(() => {
-        if (!authLoading) {
-            carregarCarrinho();
+        if (authLoading) {
+            return; // Espera a autenticação resolver
         }
+
+        const runStartup = async () => {
+            if (isLogged) {
+                // --- Usuário está LOGADO ---
+                dispatch({ type: 'SET_LOADING', payload: true });
+
+                const localItems = getLocalCarrinho();
+
+                if (localItems.length > 0 && !tentativaMigracao.current) {
+                    tentativaMigracao.current = true; // Marca a tentativa
+
+                    try {
+                        const payload = {
+                            itens: localItems.map(item => ({
+                                produto_id: item.produto.id,
+                                quantidade: item.quantidade
+                            }))
+                        };
+
+                        await api.post('/carrinho/migracao/', payload);
+                        saveLocalCarrinho([]);
+
+                    } catch (err) {
+                        console.error("Falha ao fazer merge do carrinho:", err);
+                    }
+                }
+
+                await carregarCarrinho();
+
+            } else {
+                tentativaMigracao.current = false;
+                const localItems = getLocalCarrinho();
+
+                dispatch({ type: 'SET_LOADING', payload: true });
+                dispatch({ type: 'SET_CARRINHO', payload: localItems });
+            }
+        };
+
+        runStartup();
+
     }, [authLoading, isLogged, carregarCarrinho]);
 
-    const addItem = async (product: ProductProps, quantity: number) => {
+    const addItem = useCallback(async (product: ProductProps, quantity: number) => {
         dispatch({ type: 'SET_LOADING', payload: true });
         try {
-            if (isLogged) {
+            if (isLogged) { 
                 await api.post('/carrinho/', {
                     produto: product.id,
                     quantidade: quantity,
@@ -104,7 +141,6 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
             } else {
                 const localItems = getLocalCarrinho();
                 const itemIndex = localItems.findIndex(i => i.produto.id === product.id);
-
                 if (itemIndex > -1) {
                     localItems[itemIndex].quantidade += quantity;
                 } else {
@@ -117,7 +153,6 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
                         subtotal: (product.preco || 0 ) * quantity,
                     });
                 }
-
                 saveLocalCarrinho(localItems);
                 dispatch({ type: 'SET_CARRINHO', payload: localItems });
             }
@@ -127,18 +162,17 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
         } finally {
             dispatch({ type: 'SET_LOADING', payload: false });
         }
-    };
+    }, [isLogged, carregarCarrinho]);
 
-    const removeItem = async (itemToRemove: CarrinhoItemProps) => {
+    const removeItem = useCallback(async (itemToRemove: CarrinhoItemProps) => {
         dispatch({ type: 'SET_LOADING', payload: true });
         try {
-            if (isLogged) {
+            if (isLogged) { 
                 await api.delete(`/carrinho/${itemToRemove.id}/`);
                 await carregarCarrinho();
             } else {
                 const localItems = getLocalCarrinho();
                 const newItems = localItems.filter(i => i.produto.id !== itemToRemove.produto.id);
-
                 saveLocalCarrinho(newItems);
                 dispatch({ type: 'SET_CARRINHO', payload: newItems });
             }
@@ -148,7 +182,7 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
         } finally {
             dispatch({ type: 'SET_LOADING', payload: false });
         }
-    };
+    }, [isLogged, carregarCarrinho]); 
 
     const value = {
         ...state,
