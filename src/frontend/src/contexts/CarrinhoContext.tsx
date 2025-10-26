@@ -46,7 +46,7 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
             return; 
         }
 
-        const runStartup = async () => {
+        const inicializarCarrinho = async () => {
             if (isLogged) {
                 dispatch({ type: 'SET_LOADING', payload: true });
 
@@ -82,7 +82,7 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
             }
         };
 
-        runStartup();
+        inicializarCarrinho();
 
     }, [authLoading, isLogged, carregarCarrinho]);
 
@@ -141,10 +141,36 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [isLogged, carregarCarrinho]); 
 
+    const updateQuantidade = useCallback(async (item: CarrinhoItemProps, novaQuantidade: number) => {
+        dispatch({ type: 'SET_LOADING', payload: true });
+        try {
+            if (isLogged) {
+                await api.patch(`/carrinho/${item.id}/`, { 
+                    quantidade: novaQuantidade 
+                });
+                await carregarCarrinho();
+            } else {
+                const localItems = getLocalCarrinho();
+                const novosItems = localItems.map(i => 
+                    i.produto.id === item.produto.id 
+                        ? { ...i, quantidade: novaQuantidade } 
+                        : i
+                );
+                saveLocalCarrinho(novosItems);
+                // Atualiza o estado localmente
+                dispatch({ type: 'SET_CARRINHO', payload: novosItems });
+            }
+        } catch (error) {
+            console.error("Falha ao atualizar quantidade:", error);
+            throw error; 
+        }
+    }, [isLogged, carregarCarrinho, removeItem]); 
+
     const value = {
         ...state,
         addItem,
         removeItem,
+        updateQuantidade,
     };
 
     return (

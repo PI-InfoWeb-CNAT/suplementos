@@ -20,6 +20,7 @@ export interface CarrinhoContextState {
 export interface CarrinhoContextProps extends CarrinhoContextState {
     addItem: (product: ProductProps, quantity: number) => Promise<void>;
     removeItem: (item: CarrinhoItemProps) => Promise<void>;
+    updateQuantidade: (item: CarrinhoItemProps, novaQuantidade: number) => Promise<void>;
 }
 
 export type CarrinhoAction =
