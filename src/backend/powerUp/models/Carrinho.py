@@ -1,5 +1,4 @@
 from powerUp.models import *
-from django.contrib.auth.models import User
 
 class Carrinho(models.Model):
     session_key = models.CharField(max_length=40, null=True, blank=True)

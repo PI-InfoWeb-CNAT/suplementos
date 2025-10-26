@@ -1,8 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 from .Produto import Produto
 from .Cliente import Cliente
 from .Favorito import Favorito
 from .Endereco import Endereco
 from .Cartao import Cartao
-from .Carrinho import Carrinho
-from .Carrinho import CarrinhoItem
+from .Carrinho import Carrinho, CarrinhoItem
+from .Pedido import Pedido, PedidoItem

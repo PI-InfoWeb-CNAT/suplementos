@@ -28,6 +28,14 @@ class CarrinhoAdmin(admin.ModelAdmin):
 class CarrinhoItemAdmin(admin.ModelAdmin):
     list_display = ('produto', 'quantidade', 'carrinho', 'preco')
     empty_value_display = 'Vazio'
+
+class PedidoAdmin(admin.ModelAdmin):
+    list_display = ('user', 'dt_hora', 'total')
+    empty_value_display = 'Vazio'
+
+class PedidoItemAdmin(admin.ModelAdmin):
+    list_display = ('produto', 'quantidade', 'pedido', 'preco', 'imagem')
+    empty_value_display = 'Vazio'
     
 
 admin.site.register(Produto, ProdutoAdmin)
@@ -37,3 +45,5 @@ admin.site.register(Endereco, EnderecoAdmin)
 admin.site.register(Cartao, CartaoAdmin)
 admin.site.register(Carrinho, CarrinhoAdmin)
 admin.site.register(CarrinhoItem, CarrinhoItemAdmin)
+admin.site.register(Pedido, PedidoAdmin)
+admin.site.register(PedidoItem, PedidoItemAdmin)

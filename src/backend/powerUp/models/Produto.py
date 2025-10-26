@@ -1,5 +1,3 @@
-from django.utils import timezone
-
 from powerUp.models import *
 from decimal import Decimal
 

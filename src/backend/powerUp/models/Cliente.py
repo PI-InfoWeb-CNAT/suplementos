@@ -1,5 +1,4 @@
 from powerUp.models import *
-from django.contrib.auth.models import User
 
 class Cliente(models.Model):
     PERFIL = [
