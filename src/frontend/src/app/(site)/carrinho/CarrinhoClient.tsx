@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import PageWrapper from "@/components/layout/PageWrapper";
 import LoadingContainer from "@/components/loading/LoadingContainer";
-import CarrinhoItemCard from "@/components/CarrinhoItemCard";
+import ItemCard from "@/components/ItemCard";
 import { Button } from "@/components/ui/button";
 import { useCarrinho } from "@/contexts/CarrinhoContext";
 import { formatarPreco } from "@/lib/utils";
@@ -23,15 +23,17 @@ export default function CarrinhoClient() {
                                 <p className="notFound">Seu carrinho está vazio.</p>
                             ) : (
                                 <>
-                                    <div className="flex flex-col gap-8 xl:w-[60%] xs:w-full w-[240px] xs:mx-0 mx-auto xl:max-h-[640px] md:max-h-[760px] overflow-auto p-1">
+                                    <section className="flex flex-col gap-8 xl:w-[62%] xs:w-full w-[240px] xs:mx-0 mx-auto xl:max-h-[640px] md:max-h-[760px] overflow-auto p-1">
                                         {items.map(item => (
-                                            <CarrinhoItemCard 
+                                            <ItemCard 
                                                 key={item.produto.id} 
-                                                item={item} 
+                                                item={item}
+                                                pageName="carrinho" 
                                             />
                                         ))}
-                                    </div>
-                                    <div className="card-shadow rounded-3xl 2xl:w-[30%] xl:w-[35%] md:w-1/2 sm:w-3/4 px-7 py-5 h-max">
+                                    </section>
+
+                                    <section className="card-shadow rounded-3xl 2xl:w-[30%] xl:w-[35%] md:w-1/2 sm:w-3/4 px-7 py-5 h-max">
                                         <div className="flex justify-between items-center text-[22px] font-semibold">
                                             <p>Total:</p>
                                             <span>R$ {formatarPreco(totalPrice)}</span>
@@ -45,7 +47,7 @@ export default function CarrinhoClient() {
                                         <div className="relative w-full 2xl:h-92 xl:h-80 h-92 mt-6">
                                             <Image src={'/imagem-carrinho.png'} alt="Imagem do Carrinho" fill className="object-cover"/>
                                         </div>
-                                    </div>
+                                    </section>
                                 </>
                             )}
                         </div>

@@ -5,7 +5,7 @@ import { CarrinhoItemProps } from "@/types/carrinho";
 import { notify } from "@/lib/toast";
 import { formatarPreco } from "@/lib/utils";
 
-const CarrinhoItemCard = ({ item }: { item: CarrinhoItemProps; }) => {
+const ItemCard = ({ item, pageName }: { item: CarrinhoItemProps; pageName: string }) => {
     const { removeItem, updateQuantidade, isLoading } = useCarrinho();
 
     const handleRemoveItem = async () => {
@@ -18,6 +18,7 @@ const CarrinhoItemCard = ({ item }: { item: CarrinhoItemProps; }) => {
         }
     };
 
+    // APENAS PARA CARRINHO
     const handleUpdateQuantidade = async (novaQuantidade: number) => {
         if (novaQuantidade < 1) {
             notify("A quantidade mínima é 1", "warning");
@@ -48,26 +49,30 @@ const CarrinhoItemCard = ({ item }: { item: CarrinhoItemProps; }) => {
                 <div className="sm:space-y-4 space-y-2">
                     <p className="font-bold sm:text-lg">Preço: <span className="font-medium">{item.produto.preco_calculado}</span></p>
 
-                    <div className="font-bold sm:text-lg flex items-center gap-3">
-                        <span>Quantidade:</span>
-                        <div className="flex items-center gap-2">
-                            <button 
-                                onClick={() => handleUpdateQuantidade(item.quantidade - 1)}
-                                disabled={isLoading}
-                                className="p-1 bg-gray-200 rounded-full disabled:opacity-50 cursor-pointer"
-                            >
-                                <Minus size={16} />
-                            </button>
-                            <span className="font-medium w-8 text-center">{item.quantidade}</span>
-                            <button 
-                                onClick={() => handleUpdateQuantidade(item.quantidade + 1)}
-                                disabled={isLoading}
-                                className="p-1 bg-gray-200 rounded-full disabled:opacity-50 cursor-pointer"
-                            >
-                                <Plus size={16} />
-                            </button>
+                    {pageName === "carrinho" ? (
+                        <div className="font-bold sm:text-lg flex items-center gap-3">
+                            <span>Quantidade:</span>
+                            <div className="flex items-center gap-2">
+                                <button 
+                                    onClick={() => handleUpdateQuantidade(item.quantidade - 1)}
+                                    disabled={isLoading}
+                                    className="p-1 bg-gray-200 rounded-full disabled:opacity-50 cursor-pointer"
+                                >
+                                    <Minus size={16} />
+                                </button>
+                                <span className="font-medium w-8 text-center">{item.quantidade}</span>
+                                <button 
+                                    onClick={() => handleUpdateQuantidade(item.quantidade + 1)}
+                                    disabled={isLoading}
+                                    className="p-1 bg-gray-200 rounded-full disabled:opacity-50 cursor-pointer"
+                                >
+                                    <Plus size={16} />
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <p className="font-bold sm:text-lg">Quantidade: <span className="font-medium">{item.quantidade}</span></p>
+                    )}
                     
                     <p className="font-bold sm:text-[22px] text-lg">Subtotal: <span className="font-medium">R$ {formatarPreco(item.subtotal)}</span></p>
                 </div>
@@ -81,4 +86,4 @@ const CarrinhoItemCard = ({ item }: { item: CarrinhoItemProps; }) => {
     )
 }
 
-export default CarrinhoItemCard;
+export default ItemCard;
