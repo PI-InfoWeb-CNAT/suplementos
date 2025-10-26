@@ -1,7 +1,9 @@
 import { X, Plus, Minus } from "lucide-react";
+
+import { useCarrinho } from "@/contexts/CarrinhoContext";
 import { CarrinhoItemProps } from "@/types/carrinho";
 import { notify } from "@/lib/toast";
-import { useCarrinho } from "@/contexts/CarrinhoContext";
+import { formatarPreco } from "@/lib/utils";
 
 const CarrinhoItemCard = ({ item }: { item: CarrinhoItemProps; }) => {
     const { removeItem, updateQuantidade, isLoading } = useCarrinho();
@@ -67,7 +69,7 @@ const CarrinhoItemCard = ({ item }: { item: CarrinhoItemProps; }) => {
                         </div>
                     </div>
                     
-                    <p className="font-bold sm:text-[22px] text-lg">Subtotal: <span className="font-medium">{item.subtotal}</span></p>
+                    <p className="font-bold sm:text-[22px] text-lg">Subtotal: <span className="font-medium">R$ {formatarPreco(item.subtotal)}</span></p>
                 </div>
             </div>
             <X 

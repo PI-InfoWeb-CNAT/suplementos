@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import { carrinhoReducer, initialState } from '@/reducers/carrinhoReducer';
-import { CarrinhoItemProps, CarrinhoContextState, CarrinhoContextProps, CarrinhoAction } from '@/types/carrinho';
+import { CarrinhoItemProps, CarrinhoContextProps } from '@/types/carrinho';
 import { ProductProps } from '@/types/products';
 import api from '@/services/api';
 
@@ -98,8 +98,11 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
             } else {
                 const localItems = getLocalCarrinho();
                 const itemIndex = localItems.findIndex(i => i.produto.id === product.id);
+                const precoNum = product.preco_calculado || 0;
+                
                 if (itemIndex > -1) {
                     localItems[itemIndex].quantidade += quantity;
+                    localItems[itemIndex].subtotal = precoNum * localItems[itemIndex].quantidade;
                 } else {
                     localItems.push({
                         id: 0,
@@ -107,7 +110,7 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
                         quantidade: quantity,
                         preco: product.preco,
                         imagem: product.imagem,
-                        subtotal: (product.preco || 0 ) * quantity,
+                        subtotal: (precoNum * quantity),
                     });
                 }
                 saveLocalCarrinho(localItems);
@@ -151,13 +154,19 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
                 await carregarCarrinho();
             } else {
                 const localItems = getLocalCarrinho();
-                const novosItems = localItems.map(i => 
-                    i.produto.id === item.produto.id 
-                        ? { ...i, quantidade: novaQuantidade } 
-                        : i
-                );
+                const novosItems = localItems.map(i => {
+                    if (i.produto.id === item.produto.id) {
+                        const precoNum = i.produto.preco_calculado || 0;
+                        
+                        return { 
+                            ...i, 
+                            quantidade: novaQuantidade,
+                            subtotal: precoNum * novaQuantidade
+                        };
+                    }
+                    return i; 
+                });
                 saveLocalCarrinho(novosItems);
-                // Atualiza o estado localmente
                 dispatch({ type: 'SET_CARRINHO', payload: novosItems });
             }
         } catch (error) {

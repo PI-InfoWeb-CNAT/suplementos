@@ -12,7 +12,7 @@ const calculateTotals = (items: CarrinhoItemProps[]) => {
     const totalItems = items.reduce((sum, item) => sum + item.quantidade, 0);
 
     const totalPrice = items.reduce((sum, item) => {
-        const price = item.produto?.preco || 0;
+        const price = item.produto?.preco_calculado ?? item.produto?.preco ?? 0;
         return sum + price * item.quantidade;
     }, 0);
 

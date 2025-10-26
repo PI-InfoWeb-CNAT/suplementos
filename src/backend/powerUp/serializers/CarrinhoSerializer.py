@@ -14,8 +14,7 @@ class CarrinhoItemSerializer(serializers.ModelSerializer):
         fields = ['id', 'produto', 'produto_nome', 'produto_imagem', 'quantidade', 'preco', 'subtotal']
 
     def get_subtotal(self, obj):
-        preco_calculado = float(obj.produto.preco_calculado())
-        return f'{preco_calculado * obj.quantidade:.2f}'.replace('.', ',')
+        return round(obj.produto.preco_calculado() * obj.quantidade, 2)
 
 
 class CarrinhoSerializer(serializers.ModelSerializer):
@@ -32,4 +31,4 @@ class CarrinhoSerializer(serializers.ModelSerializer):
             preco_final = Decimal(str(item.produto.preco_calculado()))
             total += Decimal(item.quantidade) * preco_final
 
-        return f"{total:.2f}".replace('.', ',')
+        return round(float(total), 2)

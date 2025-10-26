@@ -13,6 +13,7 @@ import { useProdutos } from "@/contexts/ProductContext";
 import { carrinhoSchema, CarrinhoSchemaType } from "@/schemas/carrinhoSchema";
 import { notify } from "@/lib/toast";
 import LoadingSpinner from "@/components/loading/LoadingSpinner"; 
+import { formatarPreco } from "@/lib/utils";
 
 export default function ProductClient({ id }: { id: string }) {
     const router = useRouter();
@@ -85,7 +86,7 @@ export default function ProductClient({ id }: { id: string }) {
                         <p className="font-medium mb-lg:text-base text-sm">{produto.descricao}</p>
                     </div>
                     <div className="flex tb:justify-start justify-center items-center gap-4">
-                        <p className="nt-sm:text-4xl mb-lg:text-3xl text-[26px] font-medium">R$<span>{produto.preco_calculado}</span></p>
+                        <p className="nt-sm:text-4xl mb-lg:text-3xl text-[26px] font-medium">R$<span>{formatarPreco(produto.preco_calculado)}</span></p>
                         <div className="bg-dark-grey text-light-green mb-lg:px-8 px-6 py-2 rounded-md">
                             <BsFillLightningChargeFill className="mb-lg:text-[25px] text-[20px]" />
                         </div>

@@ -6,6 +6,7 @@ import LoadingContainer from "@/components/loading/LoadingContainer";
 import CarrinhoItemCard from "@/components/CarrinhoItemCard";
 import { Button } from "@/components/ui/button";
 import { useCarrinho } from "@/contexts/CarrinhoContext";
+import { formatarPreco } from "@/lib/utils";
 
 
 export default function CarrinhoClient() {
@@ -33,7 +34,7 @@ export default function CarrinhoClient() {
                                     <div className="card-shadow rounded-3xl 2xl:w-[30%] xl:w-[35%] md:w-1/2 sm:w-3/4 px-7 py-5 h-max">
                                         <div className="flex justify-between items-center text-[22px] font-semibold">
                                             <p>Total:</p>
-                                            <span>R$ {totalPrice.toFixed(2).replace('.', ',')}</span>
+                                            <span>R$ {formatarPreco(totalPrice)}</span>
                                         </div>
                                         <a href="/finalizar-pedido" className="mt-10 mb-4 block">
                                             <Button type="button" variant="submit" size="submit" className="w-full py-2 rounded-lg">

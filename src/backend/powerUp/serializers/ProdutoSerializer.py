@@ -21,8 +21,8 @@ class ProdutoSerializer(serializers.ModelSerializer):
         ]
 
     def get_preco_calculado(self, obj):
-        preco = obj.preco_calculado()
-        return f'{preco:.2f}'.replace('.', ',')
+        return round(obj.preco_calculado(), 2)
+       
 
     def get_is_favorited(self, obj):
         request = self.context.get("request")
