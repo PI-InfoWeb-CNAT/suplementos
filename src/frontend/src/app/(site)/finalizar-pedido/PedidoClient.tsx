@@ -1,5 +1,7 @@
 'use client';
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useForm, FieldErrors, FieldValues } from "react-hook-form";
 
 import ItemCard from "@/components/ItemCard";
 import PageWrapper from "@/components/layout/PageWrapper";
@@ -11,26 +13,55 @@ import { useCartoes } from "@/contexts/CartaoContext";
 import { useEnderecos } from "@/contexts/EnderecoContext";
 import { capitalize, formatarPreco } from "@/lib/utils";
 import withAuth from "@/lib/withAuth";
+import { notify } from "@/lib/toast";
+import { PedidoFormData } from "@/types/pedido";
+import api from "@/services/api";
 
 function PedidoClient() {
-    const { loading: authLoading, isLogged } = useAuth();
+    const router = useRouter();
+    const { register, handleSubmit, formState: { errors } } = useForm<PedidoFormData>({ 
+        mode: "onChange" 
+    });
+
+    const { loading: authLoading } = useAuth();
     const { cartoes, loading: cartoesLoading } = useCartoes();
     const { enderecos, loading: enderecosLoading } = useEnderecos();
     const { items, totalPrice, isLoading: carrinhoLoading } = useCarrinho();
 
     const loading = authLoading || (!authLoading && (carrinhoLoading || enderecosLoading || cartoesLoading));
 
+
+    const onSubmit = async (data: PedidoFormData) => {
+        console.log(data);
+    };
+
+    const onError = (errors: FieldErrors<PedidoFormData>) => {
+        const firstError = Object.values(errors)[0];
+
+        if (firstError && "message" in firstError) {
+            notify(firstError.message as string, "warning");
+        } else {
+            notify("Erro ao validar dados", "warning");
+        }
+    };
+
     return (
         <PageWrapper pageName="Finalizar Pedido">
             <section className="space-y-10">
                 <h2 className="h2 lg:hidden">Finalizar Pedido</h2>
                 <LoadingContainer loading={loading}>
-                    <form className="w-full flex flex-col xl:flex-row justify-between">
-                        <section className="w-[62%] space-y-7">
-                            <div className="flex justify-between">
-                                <div className="card-shadow space-y-8 rounded-2xl px-6 py-6 max-w-sm">
+                    <form onSubmit={handleSubmit(onSubmit, onError)} className="w-full flex flex-col xl:flex-row justify-between xl:gap-0 gap-y-10">
+                        <section className="xl:w-[62%] space-y-7">
+                            <div className="flex flex-col sm:flex-row justify-between gap-5">
+                                <div className="card-shadow space-y-8 rounded-2xl px-6 py-6 sm:max-w-sm">
                                     <h4 className="h4">Endereço</h4>
-                                    <select name="enderecoSelect" id="enderecoSelect" defaultValue="" className="input w-full">
+                                    <select 
+                                        {...register("endereco", { 
+                                            required: "Por favor, selecione um endereço." 
+                                        })}
+                                        defaultValue="" 
+                                        className="input w-full"
+                                    >
                                         <option value="" disabled>Selecione um endereço</option>
                                         {enderecos.map(endereco => (
                                             <option key={endereco.id} value={endereco.id}>
@@ -39,9 +70,15 @@ function PedidoClient() {
                                         ))}
                                     </select>
                                 </div>
-                                <div className="card-shadow space-y-8 rounded-2xl px-6 py-6 max-w-sm">
+                                <div className="card-shadow space-y-8 rounded-2xl px-6 py-6 sm:max-w-sm">
                                     <h4 className="h4">Cartão</h4>
-                                    <select name="cartaoSelect" id="cartaoSelect" defaultValue="" className="input w-full">
+                                    <select 
+                                        {...register("cartao", { 
+                                            required: "Por favor, selecione um cartão." 
+                                        })}
+                                        defaultValue="" 
+                                        className="input w-full"
+                                    >
                                         <option value="" disabled>Selecione um cartão</option>
                                         {cartoes.map(cartao => (
                                             <option key={cartao.id} value={cartao.id}>
@@ -55,7 +92,7 @@ function PedidoClient() {
                             <div>
                                 <div className="card-shadow rounded-2xl p-6 space-y-6">
                                     <h4 className="h4">Produtos</h4>
-                                    <div className="space-y-6 max-h-128 overflow-auto p-2">
+                                    <div className="flex flex-col justify-center gap-y-6 sm:max-h-128 sm:overflow-auto p-2 xs:w-auto w-[240px] max-xs:mx-auto">
                                         {items.map(item => (
                                             <ItemCard 
                                                 key={item.produto.id} 
