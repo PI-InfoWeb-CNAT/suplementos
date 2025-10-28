@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useForm, FieldErrors, FieldValues } from "react-hook-form";
+import { useState } from "react";
 
 import ItemCard from "@/components/ItemCard";
 import PageWrapper from "@/components/layout/PageWrapper";
@@ -26,13 +27,35 @@ function PedidoClient() {
     const { loading: authLoading } = useAuth();
     const { cartoes, loading: cartoesLoading } = useCartoes();
     const { enderecos, loading: enderecosLoading } = useEnderecos();
-    const { items, totalPrice, isLoading: carrinhoLoading } = useCarrinho();
+    const { items, totalPrice, isLoading: carrinhoLoading, limparCarrinho } = useCarrinho();
 
     const loading = authLoading || (!authLoading && (carrinhoLoading || enderecosLoading || cartoesLoading));
 
 
+    const [submitting, setSubmitting] = useState(false);
+
     const onSubmit = async (data: PedidoFormData) => {
-        console.log(data);
+        setSubmitting(true);
+        try {
+            const payload: any = {};
+            if (data.endereco) payload.endereco = data.endereco;
+            if (data.cartao) payload.cartao = data.cartao;
+
+            await api.post('/pedidos/', payload);
+
+            // limpar carrinho local e no contexto
+            if (typeof limparCarrinho === 'function') {
+                limparCarrinho();
+            }
+
+            notify('Pedido realizado com sucesso!', 'success');
+            router.push('/meus-pedidos');
+        } catch (err: any) {
+            const message = err?.response?.data?.erro || err?.response?.data?.detail || 'Erro ao finalizar pedido';
+            notify(message, 'error');
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     const onError = (errors: FieldErrors<PedidoFormData>) => {
@@ -110,11 +133,11 @@ function PedidoClient() {
                                 <p>Total:</p>
                                 <span>R$ {formatarPreco(totalPrice)}</span>
                             </div>
-                            <a href="/finalizar-pedido" className="mt-10 mb-4 block">
-                                <Button type="submit" variant="submit" size="submit" className="w-full py-2 rounded-lg">
-                                    Confirmar compra
+                            <div className="mt-10 mb-4 block">
+                                <Button disabled={submitting} type="submit" variant="submit" size="submit" className="w-full py-2 rounded-lg">
+                                    {submitting ? 'Processando...' : 'Confirmar compra'}
                                 </Button>
-                            </a>
+                            </div>
                             <div className="w-full h-[1px] bg-gray-400"></div>
                             <div className="relative w-full 2xl:h-96 xl:h-80 h-92 mt-6">
                                 <Image src={'/imagem-compra.png'} alt="Imagem da Compra" fill className="object-cover"/>
