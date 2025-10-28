@@ -31,15 +31,29 @@ class PedidoAPIView(APIView):
         cartao = None
 
         if endereco_id:
-            endereco = get_object_or_404(Endereco, id=endereco_id, user=user)
+            endereco = get_object_or_404(Endereco, id=endereco_id)
+            # validar que o endereço pertence ao usuário
+            try:
+                if endereco.cliente.user != user:
+                    return Response({"erro": "Endereço não pertence ao usuário."}, status=status.HTTP_403_FORBIDDEN)
+            except Exception:
+                return Response({"erro": "Endereço inválido."}, status=status.HTTP_400_BAD_REQUEST)
 
         if cartao_id:
-            cartao = get_object_or_404(Cartao, id=cartao_id, user=user)
+            cartao = get_object_or_404(Cartao, id=cartao_id)
+            # validar que o cartão pertence ao usuário
+            try:
+                if cartao.cliente.user != user:
+                    return Response({"erro": "Cartão não pertence ao usuário."}, status=status.HTTP_403_FORBIDDEN)
+            except Exception:
+                return Response({"erro": "Cartão inválido."}, status=status.HTTP_400_BAD_REQUEST)
 
         total = Decimal('0.00')
-        for item in carrinho.itens.all():
-            preco = Decimal(str(item.preco))
-            total += preco * Decimal(item.quantidade)
+        # calcular total usando preço atual do produto e salvar preço calculado nos PedidoItem
+        itens = list(carrinho.itens.select_related('produto').all())
+        for item in itens:
+            preco_atual = Decimal(str(item.produto.preco_calculado()))
+            total += preco_atual * Decimal(item.quantidade)
 
         pedido = Pedido.objects.create(
             user=user,
@@ -49,7 +63,7 @@ class PedidoAPIView(APIView):
             status='1'
         )
 
-        for item in carrinho.itens.all():
+        for item in itens:
             imagem = None
             try:
                 # tenta pegar url da imagem, caso exista
@@ -58,11 +72,13 @@ class PedidoAPIView(APIView):
             except Exception:
                 imagem = None
 
+            preco_atual = Decimal(str(item.produto.preco_calculado()))
+
             PedidoItem.objects.create(
                 pedido=pedido,
                 produto=item.produto,
                 quantidade=item.quantidade,
-                preco=item.preco,
+                preco=preco_atual,
                 imagem=imagem
             )
 
