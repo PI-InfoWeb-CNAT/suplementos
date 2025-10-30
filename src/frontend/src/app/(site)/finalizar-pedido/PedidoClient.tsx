@@ -41,15 +41,17 @@ function PedidoClient() {
             if (data.endereco) payload.endereco = data.endereco;
             if (data.cartao) payload.cartao = data.cartao;
 
-            await api.post('/pedidos/', payload);
-
-            // limpar carrinho local e no contexto
-            if (typeof limparCarrinho === 'function') {
-                limparCarrinho();
-            }
+            await api.post('/finalizar-pedido/', payload);
 
             notify('Pedido realizado com sucesso!', 'success');
-            router.push('/meus-pedidos');
+
+            setTimeout(() => {
+                router.push('/meus-pedidos');
+
+                if (typeof limparCarrinho === 'function') {
+                    limparCarrinho();
+                }
+            }, 1500)
         } catch (err: any) {
             const message = err?.response?.data?.erro || err?.response?.data?.detail || 'Erro ao finalizar pedido';
             notify(message, 'error');
