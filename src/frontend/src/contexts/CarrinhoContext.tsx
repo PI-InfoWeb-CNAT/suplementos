@@ -180,6 +180,14 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
         addItem,
         removeItem,
         updateQuantidade,
+        limparCarrinho: () => {
+            try {
+                saveLocalCarrinho([]);
+            } catch (e) {
+                // ignore
+            }
+            dispatch({ type: 'LIMPAR_CARRINHO' });
+        },
     };
 
     return (
