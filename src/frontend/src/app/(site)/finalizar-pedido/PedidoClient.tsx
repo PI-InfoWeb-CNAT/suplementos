@@ -41,7 +41,7 @@ function PedidoClient() {
             if (data.endereco) payload.endereco = data.endereco;
             if (data.cartao) payload.cartao = data.cartao;
 
-            await api.post('/finalizar-pedido/', payload);
+            await api.post('/pedidos/', payload);
 
             notify('Pedido realizado com sucesso!', 'success');
 

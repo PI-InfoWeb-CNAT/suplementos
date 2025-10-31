@@ -32,6 +32,6 @@ urlpatterns = [
     path('carrinho/', CarrinhoAPIView.as_view(), name='carrinho'),
     path('carrinho/migracao/', CarrinhoMigracaoView.as_view(), name='carrinho-migracao'),
     path('carrinho/<int:item_id>/', CarrinhoAPIView.as_view(), name='carrinho-item-delete'),
-    path('finalizar-pedido/', PedidoAPIView.as_view(), name='finalizar-pedido'),
+    path('pedidos/', PedidoAPIView.as_view(), name='pedidos'),
     path('', include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

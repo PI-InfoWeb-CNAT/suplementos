@@ -1,13 +1,10 @@
 import { Metadata } from "next";
+import MeusPedidosClient from "./MeusPedidosClient";
 
 export const metadata: Metadata = {
-  title: "PowerUP - Meus Pedidos", 
+    title: "PowerUP - Meus Pedidos", 
 };
 
-export default function MeusPedidos() {
-  return (
-    <main>
-      Meus Pedidos
-    </main>
-  );
+export default function MeusPedidosPage() {
+    return <MeusPedidosClient />
 }

@@ -47,7 +47,7 @@ const ItemCard = ({ item, pageName }: { item: CarrinhoItemProps; pageName: strin
                     )}
                 </div>
                 <div className="sm:space-y-4 space-y-2">
-                    <p className="font-bold sm:text-lg">Preço: <span className="font-medium">{item.produto.preco_calculado}</span></p>
+                    <p className="font-bold sm:text-lg">Preço: <span className="font-medium">{formatarPreco(item.produto.preco_calculado)}</span></p>
 
                     {pageName === "carrinho" ? (
                         <div className="font-bold sm:text-lg flex items-center gap-3">

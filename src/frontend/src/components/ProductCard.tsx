@@ -13,6 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProdutos } from "@/contexts/ProductContext";
 import api from "@/services/api";
 import { notify } from "@/lib/toast";
+import { formatarPreco } from "@/lib/utils";
 
 const ProductCard = ({ product, onFavoriteChange }: ProductCardProps ) => {
     const router = useRouter();
@@ -85,10 +86,10 @@ const ProductCard = ({ product, onFavoriteChange }: ProductCardProps ) => {
                     <div className="flex justify-between items-center mt-2">
                         <div>
                             {product.porcentagem_desconto > 0 && (
-                                <p className="text-sm line-through">{product.preco} R$</p>
+                                <p className="text-sm line-through">{formatarPreco(product.preco)} R$</p>
                             )}
                             <p className="tb:text-xl text-lg font-semibold">
-                                {product.preco_calculado} R$
+                                {formatarPreco(product.preco_calculado)} R$
                             </p>
                         </div>
                         {product.porcentagem_desconto > 0 && (
