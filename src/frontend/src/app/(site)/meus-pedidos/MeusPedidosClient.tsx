@@ -1,20 +1,19 @@
 'use client';
 import { useState, useEffect } from "react";
-import Link from 'next/link'; 
-import { PackageSearch, Truck, Box, CheckCheck } from 'lucide-react';
+import { PackageSearch, Truck, Box, CheckCheck, List } from 'lucide-react';
 
 import FastAcess from "@/components/FastAcess";
 import PageWrapper from "@/components/layout/PageWrapper";
 import LoadingContainer from "@/components/loading/LoadingContainer";
 import withAuth from "@/lib/withAuth";
-import { PedidoProps, PEDIDO_STATUS_MAP, PedidoStatusType } from "@/types/pedido"; 
+import { PedidoProps, PEDIDO_STATUS_MAP, PedidoStatusType } from "@/types/pedido";
 import api from "@/services/api";
-import { formatarData, formatarPreco } from "@/lib/utils"; 
-import { Button } from "@/components/ui/button"; 
+import { formatarData, formatarPreco } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const getStatusInfo = (status: PedidoStatusType) => {
     switch (status) {
-        case '1': 
+        case '1':
             return {
                 icon: <PackageSearch className="text-yellow-500" size={24} />,
                 text: PEDIDO_STATUS_MAP[status],
@@ -26,10 +25,10 @@ const getStatusInfo = (status: PedidoStatusType) => {
                 text: PEDIDO_STATUS_MAP[status],
                 message: "Seu pedido foi enviado!"
             };
-        case '3': 
-            return { 
-                icon: <Box className="text-purple-500" size={24} />, 
-                text: PEDIDO_STATUS_MAP[status], 
+        case '3':
+            return {
+                icon: <Box className="text-purple-500" size={24} />,
+                text: PEDIDO_STATUS_MAP[status],
                 message: "Seu pedido foi entregue!"
             };
         case '4': // Recebido
@@ -47,25 +46,64 @@ const getStatusInfo = (status: PedidoStatusType) => {
     }
 }
 
+type StatusFiltro = PedidoStatusType | 'all';
+
+const abasFiltro: { id: StatusFiltro; nome: string; icon: React.ReactNode }[] = [
+    { id: 'all', nome: "Todos", icon: <List size={18} /> },
+    { id: '1', nome: "Processando", icon: <PackageSearch size={18} /> },
+    { id: '2', nome: "Enviado", icon: <Truck size={18} /> },
+    { id: '3', nome: "Entregues", icon: <CheckCheck size={18} /> },
+];
+
 function MeusPedidosClient() {
     const [pedidos, setPedidos] = useState<PedidoProps[]>([]);
     const [loading, setLoading] = useState(true);
+    const [statusFiltro, setStatusFiltro] = useState<StatusFiltro>('all');
 
     useEffect(() => {
-        api.get("/pedidos/") 
+        api.get("/pedidos/")
             .then(res => setPedidos(res.data))
             .catch(err => console.error("Erro ao carregar pedidos:", err))
             .finally(() => setLoading(false));
     }, []);
 
+    const pedidosFiltrados = pedidos.filter(pedido => {
+        if (statusFiltro === 'all') return true;
+        if (statusFiltro === '3') {
+            return pedido.status === '3' || pedido.status === '4';
+        }
+        return pedido.status === statusFiltro;
+    });
+
     return (
         <PageWrapper pageName="Meus Pedidos">
-            <div className="flex flex-col 2xl:flex-row nt-sm:justify-between gap-y-5 mx-auto">
+            <div className="flex flex-col 2xl:flex-row nt-sm:justify-between gap-y-5 mx-auto w-full">
                 <h2 className="h2 lg:hidden">Meus Pedidos</h2>
-                <section className="2xl:w-[58%] w-full">
+                <section className="2xl:w-[58%] w-full flex-shrink-0">
                     <LoadingContainer loading={loading}>
                         {pedidos.length > 0 ? (
                             <>
+                                {/* --- ABAS DE FILTRO --- */}
+                                <div className="w-full border-b border-gray-200 mb-6">
+                                    <nav className="flex sm:space-x-6 space-x-1" aria-label="Abas de Pedidos">
+                                        {abasFiltro.map((aba) => (
+                                            <button
+                                                key={aba.id}
+                                                onClick={() => setStatusFiltro(aba.id)}
+                                                className={`
+                                                        flex items-center gap-2 py-4 px-1 border-b-2 font-medium sm:text-sm text-xs cursor-pointer
+                                                        ${statusFiltro === aba.id
+                                                        ? 'border-dark-green text-dark-green'
+                                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                                    }
+                                                    `}
+                                            >
+                                                {aba.icon}
+                                                <span>{aba.nome}</span>
+                                            </button>
+                                        ))}
+                                    </nav>
+                                </div>
 
                                 <div className="hidden md:grid grid-cols-5 gap-4 p-4 font-bold text-gray-600 items-center">
                                     <h5>Pedido</h5>
@@ -75,63 +113,72 @@ function MeusPedidosClient() {
                                     <h5 className="text-center">Ação</h5>
                                 </div>
 
-                                {pedidos.map(pedido => {
-                                    const statusInfo = getStatusInfo(pedido.status);
-                                    return (
-                                        <div
-                                            key={pedido.id}
-                                            className="grid grid-cols-1 md:grid-cols-5 gap-4 p-5 mb-5 border border-gray-200 rounded-lg shadow-sm items-center text-sm"
-                                        >
 
-                                            {/* --- Coluna Pedido (ID e Data) --- */}
-                                            <div className="space-y-1">
-                                                {/* Label para mobile */}
-                                                <p className="font-bold text-dark-grey text-base">
-                                                    Pedido #{pedido.id}
-                                                </p>
-                                                <p className="text-gray-500 text-xs">{formatarData(pedido.dt_hora)}</p>
-                                            </div>
+                                {pedidosFiltrados.length > 0 ? (
+                                    pedidosFiltrados.map(pedido => {
+                                        const statusInfo = getStatusInfo(pedido.status);
+                                        return (
+                                            <div
+                                                key={pedido.id}
+                                                className="grid grid-cols-1 md:grid-cols-5 gap-4 p-5 mb-5 border border-gray-200 rounded-lg shadow-sm items-center text-sm"
+                                            >
 
-                                            {/* --- Coluna Valor --- */}
-                                            <div className="space-y-1">
-                                                <span className="font-bold text-dark-grey md:hidden">Valor</span>
-                                                <p className="font-semibold text-base">R$ {formatarPreco(pedido.total)}</p>
-                                            </div>
+                                                {/* --- Coluna Pedido (ID e Data) --- */}
+                                                <div className="space-y-1">
+                                                    {/* Label para mobile */}
+                                                    <p className="font-bold text-dark-grey text-base">
+                                                        Pedido #{pedido.id}
+                                                    </p>
+                                                    <p className="text-gray-500 text-xs">{formatarData(pedido.dt_hora)}</p>
+                                                </div>
 
-                                            {/* --- Coluna Status --- */}
-                                            <div className="space-y-1">
-                                                <span className="font-bold text-dark-grey md:hidden">Status</span>
-                                                <div className="flex items-center gap-2">
-                                                    {statusInfo.icon}
-                                                    <span className="font-semibold">{statusInfo.text}</span>
+                                                {/* --- Coluna Valor --- */}
+                                                <div className="space-y-1">
+                                                    <span className="font-bold text-dark-grey md:hidden">Valor</span>
+                                                    <p className="font-semibold text-base">R$ {formatarPreco(pedido.total)}</p>
+                                                </div>
+
+                                                {/* --- Coluna Status --- */}
+                                                <div className="space-y-1">
+                                                    <span className="font-bold text-dark-grey md:hidden">Status</span>
+                                                    <div className="flex items-center gap-2">
+                                                        {statusInfo.icon}
+                                                        <span className="font-semibold">{statusInfo.text}</span>
+                                                    </div>
+                                                </div>
+
+                                                {/* --- Coluna Mensagem --- */}
+                                                <div className="space-y-1">
+                                                    <span className="font-bold text-dark-grey md:hidden">Mensagem</span>
+                                                    <p className="text-dark-grey">{statusInfo.message}</p>
+                                                </div>
+
+                                                {/* --- Coluna Ação (Botão) --- */}
+                                                <div className="text-center flex flex-col max-md:w-50 gap-3">
+                                                    <Button variant="submit" size="sm" className="px-3 py-0 !text-sm">
+                                                        Ver detalhes
+                                                    </Button>
+                                                    {pedido.status === '1' && (
+                                                        <Button variant="destructive" size="sm" className="cursor-pointer">
+                                                            Cancelar pedido
+                                                        </Button>
+                                                    )}
+                                                    {pedido.status === '3' && (
+                                                        <Button variant="submit" size="sm" className="px-3 py-0 !text-sm">
+                                                            Confirmar entrega
+                                                        </Button>
+                                                    )}
                                                 </div>
                                             </div>
-
-                                            {/* --- Coluna Mensagem --- */}
-                                            <div className="space-y-1">
-                                                <span className="font-bold text-dark-grey md:hidden">Mensagem</span>
-                                                <p className="text-dark-grey">{statusInfo.message}</p>
-                                            </div>
-
-                                            {/* --- Coluna Ação (Botão) --- */}
-                                            <div className="text-center flex flex-col max-md:w-50 gap-3">
-                                                <Button variant="submit" size="sm" className="px-3 py-0 !text-sm">
-                                                    Ver detalhes
-                                                </Button>
-                                                {pedido.status === '1' && (
-                                                    <Button variant="destructive" size="sm" className="cursor-pointer">
-                                                        Cancelar pedido
-                                                    </Button>
-                                                )}
-                                                {pedido.status === '3' && (
-                                                    <Button variant="submit" size="sm" className="px-3 py-0 !text-sm">
-                                                        Confirmar entrega
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )
-                                })}
+                                        )
+                                    })
+                                ) : (
+                                    <div className="">
+                                        <p className="text-center text-gray-500 text-lg py-10">
+                                            Nenhum pedido encontrado com este status.
+                                        </p>
+                                    </div>
+                                )}
                             </>
                         ) : (
                             <p className="notFound">Nenhum pedido realizado.</p>
