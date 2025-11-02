@@ -10,7 +10,8 @@ import { PedidoProps, PEDIDO_STATUS_MAP, PedidoStatusType } from "@/types/pedido
 import api from "@/services/api";
 import { formatarData, formatarPreco } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import CancelarPedidoModal from "@/components/modals/CancelarPedidoModal";
+import CancelarPedidoModal from "@/components/modals/pedido/CancelarPedidoModal";
+import { notify } from "@/lib/toast";
 
 const getStatusInfo = (status: PedidoStatusType) => {
     switch (status) {
@@ -86,6 +87,29 @@ function MeusPedidosClient() {
         );
 
         setStatusFiltro('5');
+    };
+
+    const handleConfirmar = async (pedidoId: number) => {
+        setLoading(true);
+        try {
+            await api.post(`/pedidos/${pedidoId}/confirmar/`);
+
+            setPedidos(currentPedidos =>
+                currentPedidos.map(pedido =>
+                    pedido.id === pedidoId
+                        ? { ...pedido, status: '4' } 
+                        : pedido
+                )
+            );
+
+            notify("Entrega confirmada com sucesso!", "success");
+            setStatusFiltro('4');
+        } catch (error: any) {
+            notify("Erro ao confirmar entrega!", "error");
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const pedidosFiltrados = pedidos.filter(pedido => {
@@ -180,8 +204,14 @@ function MeusPedidosClient() {
                                                         <CancelarPedidoModal pedidoId={pedido.id} onCancelSuccess={handlePedidoCancelado} />
                                                     )}
                                                     {pedido.status === '3' && (
-                                                        <Button variant="submit" size="sm" className="px-3 py-0 !text-sm">
-                                                            Confirmar entrega
+                                                        <Button
+                                                            variant="submit"
+                                                            size="sm"
+                                                            className="px-3 py-0 !text-sm"
+                                                            disabled={loading}
+                                                            onClick={() => pedido.id && handleConfirmar(pedido.id)}
+                                                        >
+                                                            {loading ? "Confirmando..." : "Confirmar Entrega"}
                                                         </Button>
                                                     )}
                                                 </div>

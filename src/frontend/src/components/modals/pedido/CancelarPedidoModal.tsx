@@ -6,7 +6,7 @@ import { RiAlertFill } from "react-icons/ri";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
-import { Button } from "../ui/button"
+import { Button } from "../../ui/button"
 import { notify } from "@/lib/toast";
 import { CancelarPedidoProps } from "@/types/pedido";
 import api from "@/services/api";

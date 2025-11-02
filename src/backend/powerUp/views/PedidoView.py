@@ -103,3 +103,22 @@ class CancelarPedidoView(APIView):
 
         serializer = PedidoSerializer(pedido, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ConfirmarEntregaView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pedido_id):
+        user = request.user
+        pedido = get_object_or_404(Pedido, id=pedido_id)
+
+        if pedido.user != user:
+            return Response({"erro": "Pedido não pertence ao usuário."}, status=status.HTTP_403_FORBIDDEN)
+
+        if pedido.status != '3':
+            return Response({"erro": "Este pedido está na fase de confirmar entrega."}, status=status.HTTP_400_BAD_REQUEST)
+
+        pedido.status = '4'
+        pedido.save()
+
+        serializer = PedidoSerializer(pedido, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
