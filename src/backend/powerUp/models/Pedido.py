@@ -5,7 +5,8 @@ class Pedido(models.Model):
         ('1', 'Processando'),
         ('2', 'Enviado'),
         ('3', 'Entregue'),
-        ('4', 'Recebido')
+        ('4', 'Finalizado'),
+        ('5', 'Cancelado'),
     ]
 
     user = models.ForeignKey(User, null=True, related_name='pedidos', on_delete=models.CASCADE)

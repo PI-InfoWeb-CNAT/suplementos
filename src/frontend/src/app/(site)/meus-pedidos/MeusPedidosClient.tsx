@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from "react";
-import { PackageSearch, Truck, Box, CheckCheck, List } from 'lucide-react';
+import { PackageSearch, Truck, Box, CheckCheck, List, XCircle } from 'lucide-react';
 
 import FastAcess from "@/components/FastAcess";
 import PageWrapper from "@/components/layout/PageWrapper";
@@ -10,6 +10,7 @@ import { PedidoProps, PEDIDO_STATUS_MAP, PedidoStatusType } from "@/types/pedido
 import api from "@/services/api";
 import { formatarData, formatarPreco } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import CancelarPedidoModal from "@/components/modals/CancelarPedidoModal";
 
 const getStatusInfo = (status: PedidoStatusType) => {
     switch (status) {
@@ -19,7 +20,7 @@ const getStatusInfo = (status: PedidoStatusType) => {
                 text: PEDIDO_STATUS_MAP[status],
                 message: "Seu pedido está sendo preparado."
             };
-        case '2': // Enviado
+        case '2':
             return {
                 icon: <Truck className="text-blue-500" size={24} />,
                 text: PEDIDO_STATUS_MAP[status],
@@ -31,11 +32,17 @@ const getStatusInfo = (status: PedidoStatusType) => {
                 text: PEDIDO_STATUS_MAP[status],
                 message: "Seu pedido foi entregue!"
             };
-        case '4': // Recebido
+        case '4':
             return {
                 icon: <CheckCheck className="text-green-500" size={24} />,
                 text: PEDIDO_STATUS_MAP[status],
-                message: "Pedido recebido com sucesso!"
+                message: "Pedido finalizado com sucesso!"
+            };
+        case '5':
+            return {
+                icon: <XCircle className="text-red-500" size={24} />,
+                text: PEDIDO_STATUS_MAP[status],
+                message: "Seu pedido foi cancelado."
             };
         default:
             return {
@@ -52,7 +59,9 @@ const abasFiltro: { id: StatusFiltro; nome: string; icon: React.ReactNode }[] = 
     { id: 'all', nome: "Todos", icon: <List size={18} /> },
     { id: '1', nome: "Processando", icon: <PackageSearch size={18} /> },
     { id: '2', nome: "Enviado", icon: <Truck size={18} /> },
-    { id: '3', nome: "Entregues", icon: <CheckCheck size={18} /> },
+    { id: '3', nome: "Entregue", icon: <Box size={18} /> },
+    { id: '4', nome: "Finalizado", icon: <CheckCheck size={18} /> },
+    { id: '5', nome: "Cancelado", icon: <XCircle size={18} /> },
 ];
 
 function MeusPedidosClient() {
@@ -67,11 +76,20 @@ function MeusPedidosClient() {
             .finally(() => setLoading(false));
     }, []);
 
+    const handlePedidoCancelado = (pedidoId: number) => {
+        setPedidos(currentPedidos =>
+            currentPedidos.map(pedido =>
+                pedido.id === pedidoId
+                    ? { ...pedido, status: '5' }
+                    : pedido
+            )
+        );
+
+        setStatusFiltro('5');
+    };
+
     const pedidosFiltrados = pedidos.filter(pedido => {
         if (statusFiltro === 'all') return true;
-        if (statusFiltro === '3') {
-            return pedido.status === '3' || pedido.status === '4';
-        }
         return pedido.status === statusFiltro;
     });
 
@@ -79,13 +97,13 @@ function MeusPedidosClient() {
         <PageWrapper pageName="Meus Pedidos">
             <div className="flex flex-col 2xl:flex-row nt-sm:justify-between gap-y-5 mx-auto w-full">
                 <h2 className="h2 lg:hidden">Meus Pedidos</h2>
-                <section className="2xl:w-[58%] w-full flex-shrink-0">
+                <section className="2xl:w-[58%] w-full">
                     <LoadingContainer loading={loading}>
                         {pedidos.length > 0 ? (
                             <>
                                 {/* --- ABAS DE FILTRO --- */}
-                                <div className="w-full border-b border-gray-200 mb-6">
-                                    <nav className="flex sm:space-x-6 space-x-1" aria-label="Abas de Pedidos">
+                                <div className="border-b border-gray-200 mb-6 overflow-x-auto">
+                                    <nav className="flex sm:space-x-6 space-x-4 whitespace-nowrap sm:max-w-full mb-lg:max-w-[390px] max-w-[350px] overflow-x-auto hide-scrollbar" aria-label="Abas de Pedidos">
                                         {abasFiltro.map((aba) => (
                                             <button
                                                 key={aba.id}
@@ -159,9 +177,7 @@ function MeusPedidosClient() {
                                                         Ver detalhes
                                                     </Button>
                                                     {pedido.status === '1' && (
-                                                        <Button variant="destructive" size="sm" className="cursor-pointer">
-                                                            Cancelar pedido
-                                                        </Button>
+                                                        <CancelarPedidoModal pedidoId={pedido.id} onCancelSuccess={handlePedidoCancelado} />
                                                     )}
                                                     {pedido.status === '3' && (
                                                         <Button variant="submit" size="sm" className="px-3 py-0 !text-sm">

@@ -2,12 +2,13 @@ import { ProductProps } from './products';
 import { EnderecoProps } from './endereco';
 import { CartaoProps } from './cartao';
 
-export type PedidoStatusType = '1' | '2' | '3' | '4';
+export type PedidoStatusType = '1' | '2' | '3' | '4' | '5';
 export const PEDIDO_STATUS_MAP: Record<PedidoStatusType, string> = {
     '1': 'Processando',
     '2': 'Enviado',
     '3': 'Entregue',
     '4': 'Recebido',
+    '5': 'Cancelado',
 };
 
 export interface PedidoProps {
@@ -32,4 +33,9 @@ export interface PedidoItemProps {
 export interface PedidoFormData {
     endereco: string; 
     cartao: string;   
+}
+
+export interface CancelarPedidoProps {
+    pedidoId?: number;
+    onCancelSuccess: (pedidoId: number) => void; 
 }

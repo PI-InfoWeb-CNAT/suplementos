@@ -71,6 +71,15 @@
   transition: transform 0.3s ease-out;
 }
 
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
 @layer components {
   .bodyPadding {
     @apply dt:px-48 nt-lg:px-24 tb:px-15 mb-lg:px-8 px-5;

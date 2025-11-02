@@ -32,7 +32,6 @@ class PedidoAPIView(APIView):
 
         if endereco_id:
             endereco = get_object_or_404(Endereco, id=endereco_id)
-            # validar que o endereço pertence ao usuário
             try:
                 if endereco.cliente.user != user:
                     return Response({"erro": "Endereço não pertence ao usuário."}, status=status.HTTP_403_FORBIDDEN)
@@ -41,7 +40,6 @@ class PedidoAPIView(APIView):
 
         if cartao_id:
             cartao = get_object_or_404(Cartao, id=cartao_id)
-            # validar que o cartão pertence ao usuário
             try:
                 if cartao.cliente.user != user:
                     return Response({"erro": "Cartão não pertence ao usuário."}, status=status.HTTP_403_FORBIDDEN)
@@ -49,7 +47,6 @@ class PedidoAPIView(APIView):
                 return Response({"erro": "Cartão inválido."}, status=status.HTTP_400_BAD_REQUEST)
 
         total = Decimal('0.00')
-        # calcular total usando preço atual do produto e salvar preço calculado nos PedidoItem
         itens = list(carrinho.itens.select_related('produto').all())
         for item in itens:
             preco_atual = Decimal(str(item.produto.preco_calculado()))
@@ -66,7 +63,6 @@ class PedidoAPIView(APIView):
         for item in itens:
             imagem = None
             try:
-                # tenta pegar url da imagem, caso exista
                 if hasattr(item.produto, 'imagem') and item.produto.imagem:
                     imagem = getattr(item.produto.imagem, 'url', None) or str(item.produto.imagem)
             except Exception:
@@ -87,3 +83,23 @@ class PedidoAPIView(APIView):
 
         serializer = PedidoSerializer(pedido, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class CancelarPedidoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pedido_id):
+        user = request.user
+        pedido = get_object_or_404(Pedido, id=pedido_id)
+
+        if pedido.user != user:
+            return Response({"erro": "Pedido não pertence ao usuário."}, status=status.HTTP_403_FORBIDDEN)
+
+        if pedido.status != '1':
+            return Response({"erro": "Este pedido não pode mais ser cancelado."}, status=status.HTTP_400_BAD_REQUEST)
+
+        pedido.status = '5'
+        pedido.save()
+
+        serializer = PedidoSerializer(pedido, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)

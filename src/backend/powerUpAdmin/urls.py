@@ -14,7 +14,7 @@ from powerUp.views.CartaoView import CartaoViewSet
 from powerUp.views.RedefinirSenhaView import RedefinirSenhaView
 from powerUp.views.LoginView import CustomTokenObtainPairView
 from powerUp.views.CarrinhoView import CarrinhoAPIView, CarrinhoMigracaoView
-from powerUp.views.PedidoView import PedidoAPIView
+from powerUp.views.PedidoView import PedidoAPIView, CancelarPedidoView
 
 router = DefaultRouter()
 router.register(r'produtos', ProdutoViewSet)
@@ -33,5 +33,6 @@ urlpatterns = [
     path('carrinho/migracao/', CarrinhoMigracaoView.as_view(), name='carrinho-migracao'),
     path('carrinho/<int:item_id>/', CarrinhoAPIView.as_view(), name='carrinho-item-delete'),
     path('pedidos/', PedidoAPIView.as_view(), name='pedidos'),
+    path('pedidos/<int:pedido_id>/cancelar/', CancelarPedidoView.as_view(), name='cancelar-pedido'),
     path('', include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -30,7 +30,7 @@ class CarrinhoItemAdmin(admin.ModelAdmin):
     empty_value_display = 'Vazio'
 
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ('user', 'dt_hora', 'total')
+    list_display = ('user', 'status', 'dt_hora', 'total')
     empty_value_display = 'Vazio'
 
 class PedidoItemAdmin(admin.ModelAdmin):
