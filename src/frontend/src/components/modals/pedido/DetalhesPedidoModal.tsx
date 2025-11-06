@@ -43,9 +43,11 @@ export default function DetalhesPedidoModal({ pedido }: { pedido: PedidoProps })
                     <div className="space-y-3">
                         <div className="flex max-sm:flex-col sm:justify-between">
                             <h5 className="text-xl font-semibold mb-2">Itens do pedido:</h5>
-                            <Button variant="submit" size="sm" className="py-0 max-md:py-5 !text-sm max-sm:w-max max-sm:my-2">
-                                Solicitar devolução de itens
-                            </Button>
+                            {pedido.status === '4' && (
+                                <Button variant="submit" size="sm" className="py-0 max-md:py-5 !text-sm max-sm:w-max max-sm:my-2">
+                                    Solicitar devolução de itens
+                                </Button>
+                            )}
                         </div>
                         <div className="flex flex-col gap-y-6 p-2 xs:w-auto w-[240px] max-xs:mx-auto">
                             {pedido.itens.map(item => (
