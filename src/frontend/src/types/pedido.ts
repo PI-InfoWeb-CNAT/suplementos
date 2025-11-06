@@ -27,7 +27,7 @@ export interface PedidoItemProps {
     quantidade: number;
     preco: number; 
     imagem: string | null;
-    total: number; 
+    subtotal: number; 
 }
 
 export interface PedidoFormData {

@@ -7,13 +7,13 @@ from powerUp.serializers.CartaoSerializer import CartaoSerializer
 
 class PedidoItemSerializer(serializers.ModelSerializer):
     produto = ProdutoSerializer(read_only=True)
-    total = serializers.SerializerMethodField()
+    subtotal = serializers.SerializerMethodField()
 
     class Meta:
         model = PedidoItem
-        fields = ['id', 'produto', 'quantidade', 'preco', 'imagem', 'total']
+        fields = ['id', 'produto', 'quantidade', 'preco', 'imagem', 'subtotal']
 
-    def get_total(self, obj):
+    def get_subtotal(self, obj):
         return round(obj.quantidade * float(obj.preco), 2)
 
 

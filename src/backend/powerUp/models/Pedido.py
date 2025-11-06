@@ -27,7 +27,7 @@ class PedidoItem(models.Model):
     imagem = models.CharField(max_length=255, blank=True, null=True)
 
     @property
-    def total(self):
+    def subtotal(self):
         return self.quantidade * self.preco
 
     def __str__(self):

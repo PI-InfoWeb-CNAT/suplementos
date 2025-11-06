@@ -12,6 +12,7 @@ import { formatarData, formatarPreco } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import CancelarPedidoModal from "@/components/modals/pedido/CancelarPedidoModal";
 import { notify } from "@/lib/toast";
+import DetalhesPedidoModal from "@/components/modals/pedido/DetalhesPedidoModal";
 
 const getStatusInfo = (status: PedidoStatusType) => {
     switch (status) {
@@ -196,10 +197,8 @@ function MeusPedidosClient() {
                                                 </div>
 
                                                 {/* --- Coluna Ação (Botão) --- */}
-                                                <div className="text-center flex flex-col max-md:w-50 gap-3">
-                                                    <Button variant="submit" size="sm" className="px-3 py-0 !text-sm">
-                                                        Ver detalhes
-                                                    </Button>
+                                                <div className="text-center flex flex-col max-md:w-40 gap-3">
+                                                    <DetalhesPedidoModal pedido={pedido} />
                                                     {pedido.status === '1' && (
                                                         <CancelarPedidoModal pedidoId={pedido.id} onCancelSuccess={handlePedidoCancelado} />
                                                     )}
@@ -207,7 +206,7 @@ function MeusPedidosClient() {
                                                         <Button
                                                             variant="submit"
                                                             size="sm"
-                                                            className="px-3 py-0 !text-sm"
+                                                            className="py-0 max-md:py-5 !text-sm"
                                                             disabled={loading}
                                                             onClick={() => pedido.id && handleConfirmar(pedido.id)}
                                                         >
@@ -219,7 +218,7 @@ function MeusPedidosClient() {
                                         )
                                     })
                                 ) : (
-                                    <div className="">
+                                    <div>
                                         <p className="text-center text-gray-500 text-lg py-10">
                                             Nenhum pedido encontrado com este status.
                                         </p>

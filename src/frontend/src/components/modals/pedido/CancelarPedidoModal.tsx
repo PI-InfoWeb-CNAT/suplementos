@@ -34,7 +34,7 @@ export default function CancelarPedidoModal({ pedidoId, onCancelSuccess }: Cance
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="destructive" size="sm" className="cursor-pointer">
+                <Button variant="destructive" size="sm" className="cursor-pointer max-md:py-5">
                     Cancelar pedido
                 </Button>
             </DialogTrigger>
