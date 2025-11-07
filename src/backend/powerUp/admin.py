@@ -37,6 +37,14 @@ class PedidoItemAdmin(admin.ModelAdmin):
     list_display = ('produto', 'quantidade', 'pedido', 'preco', 'imagem')
     empty_value_display = 'Vazio'
     
+class SolicitacaoDevolucaoAdmin(admin.ModelAdmin):
+    list_display = ('user', 'status', 'data_solicitacao', 'motivo')
+    empty_value_display = 'Vazio'
+
+class ItemDevolvidoAdmin(admin.ModelAdmin):
+    list_display = ('pedido_item', 'quantidade', 'solicitacao')
+    empty_value_display = 'Vazio'
+    
 
 admin.site.register(Produto, ProdutoAdmin)
 admin.site.register(Cliente, ClienteAdmin)
@@ -47,3 +55,5 @@ admin.site.register(Carrinho, CarrinhoAdmin)
 admin.site.register(CarrinhoItem, CarrinhoItemAdmin)
 admin.site.register(Pedido, PedidoAdmin)
 admin.site.register(PedidoItem, PedidoItemAdmin)
+admin.site.register(SolicitacaoDevolucao, SolicitacaoDevolucaoAdmin)
+admin.site.register(ItemDevolvido, ItemDevolvidoAdmin)

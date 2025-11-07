@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, Controller, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -35,6 +36,8 @@ function DevolucaoClient({ id }: { id: string }) {
     const [pedido, setPedido] = useState<PedidoProps | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const router = useRouter();
     const itensSelecionados = watch("itens");
 
     const totalReembolso = pedido?.itens.reduce((acc, item) => {
@@ -81,9 +84,40 @@ function DevolucaoClient({ id }: { id: string }) {
         fetchPedido();
     }, [id, reset]);
 
-    const onSubmit = (data: DevolucaoFormData) => {
-        console.log(data)
-    }
+    const onSubmit = async (data: DevolucaoSchemaType) => {
+        if (!pedido) return; 
+
+        const formData = new FormData();
+
+        formData.append('motivo', data.motivo);
+
+        if (data.arquivo && data.arquivo.length > 0) {
+            formData.append('arquivo', data.arquivo[0]);
+        }
+
+        formData.append('itens', JSON.stringify(data.itens));
+
+        setIsSubmitting(true);
+        try {
+            const response = await api.post(
+                `/pedidos/${pedido.id}/solicitar_devolucao/`, formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+
+            notify("Solicitação de devolução enviada com sucesso!", "success");
+            router.push(`/minhas-devolucoes`);
+
+        } catch (error: any) {
+            console.error("Erro ao solicitar devolução:", error);
+            notify(error.response?.data?.erro || "Falha ao enviar solicitação.", "error");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const onError = (errors: FieldErrors<DevolucaoSchemaType>) => {
         const getFirstErrorMessage = (errObj: any): string | null => {
@@ -180,16 +214,35 @@ function DevolucaoClient({ id }: { id: string }) {
                                             {...register("motivo")}
                                         />
                                     </div>
-                                    <div>
-                                        <label htmlFor="arquivo" className="block font-medium mb-1">
+                                    <div className="flex flex-col gap-2">
+                                        <label htmlFor="arquivo" className="block font-medium">
                                             Anexar foto ou vídeo (opcional):
                                         </label>
-                                        <input
-                                            id="arquivo"
-                                            type="file"
-                                            accept="image/*,video/*"
-                                            {...register("arquivo")}
-                                        />
+
+                                        <div className="relative flex items-center justify-between border border-green rounded-lg p-2 cursor-pointer">
+                                            {/* Botão de escolher arquivo */}
+                                            <span className="bg-dark-grey text-green px-4 py-2 rounded-md text-sm font-medium">
+                                                Escolher arquivo
+                                            </span>
+
+                                            {/* Nome do arquivo (ou texto padrão) */}
+                                            <span className="text-gray-500 truncate ml-2" id="file-name">
+                                                Nenhum arquivo escolhido
+                                            </span>
+
+                                            {/* Input invisível */}
+                                            <input
+                                                id="arquivo"
+                                                type="file"
+                                                accept="image/*,video/*"
+                                                {...register("arquivo")}
+                                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                                onChange={(e) => {
+                                                    const fileName = e.target.files?.[0]?.name || "Nenhum arquivo escolhido"
+                                                    document.getElementById("file-name")!.textContent = fileName
+                                                }}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -215,7 +268,7 @@ function DevolucaoClient({ id }: { id: string }) {
                                                 <span className="text-gray-700">{item.produto.nome}</span>
                                                 <span className="font-medium">x{itensSelecionados[item.id].quantity}</span>
                                             </div>
-                                    ))}
+                                        ))}
 
                                     {/* Caso nenhum item tenha sido selecionado */}
                                     {pedido.itens.every(
@@ -237,8 +290,9 @@ function DevolucaoClient({ id }: { id: string }) {
                                     variant="submit"
                                     size="lg"
                                     className="w-full mt-4"
+                                    disabled={isSubmitting}
                                 >
-                                    Enviar Solicitação
+                                    {isSubmitting ? "Enviando..." : "Enviar Solicitação"}
                                 </Button>
                             </div>
                         </div>

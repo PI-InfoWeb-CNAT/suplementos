@@ -45,11 +45,29 @@ export default function DetalhesPedidoModal({ pedido }: { pedido: PedidoProps })
                         <div className="flex max-sm:flex-col sm:justify-between">
                             <h5 className="text-xl font-semibold mb-2">Itens do pedido:</h5>
                             {pedido.status === '4' && (
-                                <Link href={`/meus-pedidos/${pedido.id}/devolucao`} passHref>
-                                    <Button variant="submit" size="sm" className="py-0 max-md:py-5 !text-sm max-sm:w-max max-sm:my-2">
-                                        Solicitar devolução de itens
-                                    </Button>
-                                </Link>
+                                <>
+                                    {pedido.devolucao ? (
+                                        <Link href={`/minhas-devolucoes`} passHref>
+                                            <Button
+                                                variant="submit" 
+                                                size="sm"
+                                                className="py-0 max-md:py-5 !text-sm max-sm:w-max max-sm:my-2"
+                                            >
+                                                Ver solicitação de devolução
+                                            </Button>
+                                        </Link>
+                                    ) : (
+                                        <Link href={`/meus-pedidos/${pedido.id}/devolucao`} passHref>
+                                            <Button
+                                                variant="submit"
+                                                size="sm"
+                                                className="py-0 max-md:py-5 !text-sm max-sm:w-max max-sm:my-2"
+                                            >
+                                                Solicitar devolução de itens
+                                            </Button>
+                                        </Link>
+                                    )}
+                                </>
                             )}
                         </div>
                         <div className="flex flex-col gap-y-6 p-2 xs:w-auto w-[240px] max-xs:mx-auto">

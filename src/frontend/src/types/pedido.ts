@@ -19,6 +19,7 @@ export interface PedidoProps {
     status: PedidoStatusType; 
     dt_hora: string;     
     itens: PedidoItemProps[]; 
+    devolucao: any;
 }
 
 export interface PedidoItemProps {

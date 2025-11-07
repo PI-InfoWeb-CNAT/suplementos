@@ -3,6 +3,7 @@ from powerUp.models import Pedido, PedidoItem
 from powerUp.serializers.ProdutoSerializer import ProdutoSerializer
 from powerUp.serializers.EnderecoSerializer import EnderecoSerializer
 from powerUp.serializers.CartaoSerializer import CartaoSerializer
+from powerUp.serializers.DevolucaoSerializer import SolicitacaoDevolucaoSerializer
 
 
 class PedidoItemSerializer(serializers.ModelSerializer):
@@ -21,8 +22,16 @@ class PedidoSerializer(serializers.ModelSerializer):
     itens = PedidoItemSerializer(many=True, read_only=True)
     endereco = EnderecoSerializer(read_only=True)
     cartao = CartaoSerializer(read_only=True)
+    devolucao = serializers.SerializerMethodField()
 
     class Meta:
         model = Pedido
-        fields = ['id', 'user', 'endereco', 'cartao', 'total', 'status', 'dt_hora', 'itens']
+        fields = ['id', 'user', 'endereco', 'cartao', 'total', 'status', 'dt_hora', 'itens', 'devolucao']
         read_only_fields = ['user', 'total', 'status', 'dt_hora', 'itens']
+        
+    def get_devolucao(self, obj):
+        solicitacao = obj.devolucoes.first()
+        if solicitacao:
+            return SolicitacaoDevolucaoSerializer(solicitacao).data
+        
+        return None

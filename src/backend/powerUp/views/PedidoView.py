@@ -1,12 +1,15 @@
+import json
 from rest_framework import viewsets, mixins, status
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action 
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
 
-from powerUp.models import Carrinho, CarrinhoItem, Pedido, PedidoItem, Endereco, Cartao
+from powerUp.models import Carrinho, Pedido, PedidoItem, Endereco, Cartao, SolicitacaoDevolucao, ItemDevolvido
 from powerUp.serializers.PedidoSerializer import PedidoSerializer
+from powerUp.serializers.DevolucaoSerializer import SolicitacaoDevolucaoSerializer
 
 class PedidoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticated]
@@ -92,5 +95,57 @@ class PedidoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.G
     @action(detail=True, methods=['post'])
     def solicitar_devolucao(self, request, pk=None):
         pedido = self.get_object()
+
+        if pedido.status != '4':
+            return Response(
+                {"erro": "Este pedido não pode ter itens devolvidos (status não é 'Recebido')."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         
-        return Response({"message": "Solicitação de devolução recebida."}, status=status.HTTP_201_CREATED)
+        motivo = request.data.get('motivo')
+        arquivo = request.data.get('arquivo', None) 
+        itens_json_string = request.data.get('itens')
+
+        if not motivo or not itens_json_string:
+            return Response({"erro": "Motivo e itens são obrigatórios."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            itens_data = json.loads(itens_json_string) 
+        except json.JSONDecodeError:
+            return Response({"erro": "Formato de itens inválido."}, status=status.HTTP_400_BAD_REQUEST)
+
+        itens_para_devolver = []
+        for item_id_str, info in itens_data.items():
+            if info.get('selected') and info.get('quantity', 0) > 0:
+                try:
+                    itens_para_devolver.append({
+                        'pedido_item_id': int(item_id_str),
+                        'quantidade': int(info.get('quantity'))
+                    })
+                except (ValueError, TypeError):
+                     return Response({"erro": f"Dados inválidos para o item {item_id_str}."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not itens_para_devolver:
+            return Response({"erro": "Nenhum item válido foi selecionado para devolução."}, status=status.HTTP_400_BAD_REQUEST)
+
+        solicitacao = SolicitacaoDevolucao.objects.create(pedido=pedido, user=request.user, motivo=motivo, arquivo=arquivo,  status='1')
+
+        for item_data in itens_para_devolver:
+            pedido_item_id = item_data['pedido_item_id']
+            quantidade = item_data['quantidade']
+            
+            try:
+                pedido_item = PedidoItem.objects.get(id=pedido_item_id, pedido=pedido)
+                
+                if quantidade > pedido_item.quantidade:
+                    solicitacao.delete() 
+                    return Response({"erro": f"Quantidade inválida para o item {pedido_item.produto.nome}."}, status=status.HTTP_400_BAD_REQUEST)
+                
+                ItemDevolvido.objects.create(solicitacao=solicitacao, pedido_item=pedido_item, quantidade=quantidade)
+                
+            except PedidoItem.DoesNotExist:
+                solicitacao.delete() 
+                return Response({"erro": "Item de pedido inválido ou não pertence a este pedido."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = SolicitacaoDevolucaoSerializer(solicitacao) 
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

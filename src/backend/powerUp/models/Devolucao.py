@@ -13,7 +13,7 @@ class SolicitacaoDevolucao(models.Model):
     user = models.ForeignKey(User, related_name='devolucoes', on_delete=models.CASCADE)
     status = models.CharField(max_length=50, choices=STATUS_DEVOLUCAO, default='1')
     motivo = models.TextField(null=False)
-    foto_video = models.FileField(upload_to='devolucoes/', blank=True, null=True)
+    arquivo = models.FileField(upload_to='devolucoes/', blank=True, null=True)
     data_solicitacao = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
