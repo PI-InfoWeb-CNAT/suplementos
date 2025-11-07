@@ -8,23 +8,23 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
 import { Button } from "../../ui/button"
 import { notify } from "@/lib/toast";
-import { CancelarPedidoProps } from "@/types/pedido";
+import { CancelarDevolucaoProps } from "@/types/devolucao";
 import api from "@/services/api";
 
-export default function CancelarPedidoModal({ pedidoId, onCancelSuccess }: CancelarPedidoProps) {
+export default function CancelarDevolucaoModal({ devolucaoId, onCancelSuccess }: CancelarDevolucaoProps) {
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
 
-    const handleCancelar = async (pedidoId: number) => {
+    const handleCancelar = async (devolucaoId: number) => {
         setLoading(true);
         try {
-            await api.post(`/pedidos/${pedidoId}/cancelar/`);
+            await api.post(`/devolucoes/${devolucaoId}/cancelar/`);
             
-            notify("Pedido cancelado com sucesso!", "success");
-            onCancelSuccess(pedidoId);
+            notify("Devolução cancelada com sucesso!", "success");
+            onCancelSuccess(devolucaoId);
             setOpen(false);
         } catch (error: any) {
-            notify("Erro ao cancelar o pedido!", "error");
+            notify("Erro ao cancelar a devolução!", "error");
             console.error(error);
         } finally {
             setLoading(false);
@@ -35,21 +35,21 @@ export default function CancelarPedidoModal({ pedidoId, onCancelSuccess }: Cance
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="destructive" className="cursor-pointer max-md:py-5">
-                    Cancelar pedido
+                    Cancelar solicitação
                 </Button>
             </DialogTrigger>
 
             <DialogContent className="w-180 h-80 flex flex-col justify-center items-center" aria-describedby={undefined}>
                 <DialogHeader>
                     <VisuallyHidden>
-                        <DialogTitle>Cancelar pedido</DialogTitle>
-                        <DialogDescription>Confirme abaixo o seu desejo de cancelar o pedido</DialogDescription>
+                        <DialogTitle>Cancelar solicitação</DialogTitle>
+                        <DialogDescription>Confirme abaixo o seu desejo de cancelar a solicitação</DialogDescription>
                     </VisuallyHidden>
                 </DialogHeader>
 
                 <div className="flex flex-col items-center gap-5 px-10 text-center tb:text-xl text-lg font-semibold">
                     <div>
-                        <p>Deseja realmente cancelar o pedido #{pedidoId}?</p>
+                        <p>Deseja realmente cancelar a solicitação #{devolucaoId}?</p>
                         <strong>Essa é uma ação permanente.</strong>
                     </div>
                     <RiAlertFill size={60} />
@@ -61,7 +61,7 @@ export default function CancelarPedidoModal({ pedidoId, onCancelSuccess }: Cance
                             variant="submit"
                             size="submit"
                             disabled={loading}
-                            onClick={() => pedidoId && handleCancelar(pedidoId)}
+                            onClick={() => devolucaoId && handleCancelar(devolucaoId)}
                         >
                             {loading ? "Cancelando..." : "Cancelar"}
                         </Button>

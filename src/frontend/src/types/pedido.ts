@@ -1,6 +1,7 @@
 import { ProductProps } from './products';
 import { EnderecoProps } from './endereco';
 import { CartaoProps } from './cartao';
+import { DevolucaoProps } from './devolucao';
 
 export type PedidoStatusType = '1' | '2' | '3' | '4' | '5';
 export const PEDIDO_STATUS_MAP: Record<PedidoStatusType, string> = {
@@ -19,7 +20,7 @@ export interface PedidoProps {
     status: PedidoStatusType; 
     dt_hora: string;     
     itens: PedidoItemProps[]; 
-    devolucao: any;
+    devolucao: DevolucaoProps | null;
 }
 
 export interface PedidoItemProps {

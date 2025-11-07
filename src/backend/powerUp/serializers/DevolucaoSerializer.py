@@ -17,5 +17,5 @@ class SolicitacaoDevolucaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = SolicitacaoDevolucao
         
-        fields = ['id', 'pedido_id', 'status', 'status_display', 'motivo', 'arquivo', 'data_solicitacao', 'itens']
+        fields = ['id', 'pedido_id', 'status', 'status_display', 'motivo', 'arquivo', 'data_solicitacao', 'itens', 'total']
         read_only_fields = ['id',  'pedido_id',  'status',  'status_display',  'data_solicitacao',  'itens']

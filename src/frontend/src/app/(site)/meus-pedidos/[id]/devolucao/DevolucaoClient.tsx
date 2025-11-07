@@ -43,7 +43,7 @@ function DevolucaoClient({ id }: { id: string }) {
     const totalReembolso = pedido?.itens.reduce((acc, item) => {
         const selecionado = itensSelecionados?.[item.id];
         if (selecionado?.selected && selecionado.quantity > 0) {
-            return acc + item.produto.preco * selecionado.quantity;
+            return acc + item.produto.preco_calculado * selecionado.quantity;
         }
         return acc;
     }, 0) || 0;
@@ -99,7 +99,7 @@ function DevolucaoClient({ id }: { id: string }) {
 
         setIsSubmitting(true);
         try {
-            const response = await api.post(
+            await api.post(
                 `/pedidos/${pedido.id}/solicitar_devolucao/`, formData,
                 {
                     headers: {
@@ -144,159 +144,159 @@ function DevolucaoClient({ id }: { id: string }) {
                 )}
 
                 {pedido && (
-                    <form onSubmit={handleSubmit(onSubmit, onError)} className="grid grid-cols-1 xl:grid-cols-3 gap-8 w-full max-w-7xl mx-auto">
+                    <>
+                        <h2 className="h2 lg:hidden">Devolução do pedido #{id}</h2>
+                        <form onSubmit={handleSubmit(onSubmit, onError)} className="grid grid-cols-1 xl:grid-cols-3 gap-8 w-full max-w-7xl mx-auto">
 
-                        {/* --- COLUNA DA ESQUERDA (Formulário) --- */}
-                        <div className="lg:col-span-2 space-y-6">
+                            {/* --- COLUNA DA ESQUERDA (Formulário) --- */}
+                            <div className="lg:col-span-2 space-y-6">
 
-                            {/* Card 1: Lista de Itens */}
-                            <div className="bg-white p-6 rounded-lg card-shadow">
-                                <h2 className="text-xl font-semibold border-b pb-3 mb-4">
-                                    1. Selecione os itens para devolver
-                                </h2>
-                                <div className="space-y-4">
-                                    {pedido.itens.map((item) => (
-                                        <div key={item.id} className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 border rounded-md">
-                                            <Controller
-                                                name={`itens.${item.id}.selected`}
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <Checkbox
-                                                        id={`item-${item.id}`}
-                                                        checked={field.value}
-                                                        onCheckedChange={field.onChange}
-                                                    />
-                                                )}
-                                            />
-                                            <label htmlFor={`item-${item.id}`} className="flex-1 font-medium text-sm sm:text-base">
-                                                {item.produto.nome} - {formatarPreco(item.produto.preco_calculado)}
-                                                <span className="block text-sm text-gray-500 font-normal">
-                                                    Comprado: {item.quantidade} un.
-                                                </span>
-                                            </label>
-                                            <div className="flex items-center gap-2">
-                                                <input
-                                                    type="number"
-                                                    className="input text-lg pl-1 pr-0 py-0 w-[50px]"
-                                                    {...register(`itens.${item.id}.quantity`, {
-                                                        valueAsNumber: true,
-                                                        min: 0,
-                                                        max: item.quantidade,
-                                                    })}
-                                                    onInput={(e) => {
-                                                        const target = e.target as HTMLInputElement;
-                                                        const value = Number(target.value);
-                                                        if (value > item.quantidade) target.value = String(item.quantidade);
-                                                        if (value < 0) target.value = "0";
-                                                    }}
+                                {/* Card 1: Lista de Itens */}
+                                <div className="bg-white p-6 rounded-lg card-shadow">
+                                    <h2 className="text-xl font-semibold border-b pb-3 mb-4">
+                                        1. Selecione os itens para devolver
+                                    </h2>
+                                    <div className="space-y-4">
+                                        {pedido.itens.map((item) => (
+                                            <div key={item.id} className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 border rounded-md">
+                                                <Controller
+                                                    name={`itens.${item.id}.selected`}
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <Checkbox
+                                                            id={`item-${item.id}`}
+                                                            checked={field.value}
+                                                            onCheckedChange={field.onChange}
+                                                        />
+                                                    )}
                                                 />
-                                                <span className="text-gray-500 text-sm">/ {item.quantidade}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Card 2: Motivo e Upload */}
-                            <div className="bg-white p-6 rounded-lg card-shadow">
-                                <h2 className="text-xl font-semibold border-b pb-3 mb-4">
-                                    2. Detalhes da Devolução
-                                </h2>
-                                <div className="space-y-4">
-                                    <div>
-                                        <label htmlFor="motivo" className="block font-medium mb-1">
-                                            Motivo da devolução (obrigatório):
-                                        </label>
-                                        <Textarea
-                                            id="motivo"
-                                            rows={4}
-                                            placeholder="Ex: O produto veio com o lacre rompido."
-                                            {...register("motivo")}
-                                        />
-                                    </div>
-                                    <div className="flex flex-col gap-2">
-                                        <label htmlFor="arquivo" className="block font-medium">
-                                            Anexar foto ou vídeo (opcional):
-                                        </label>
-
-                                        <div className="relative flex items-center justify-between border border-green rounded-lg p-2 cursor-pointer">
-                                            {/* Botão de escolher arquivo */}
-                                            <span className="bg-dark-grey text-green px-4 py-2 rounded-md text-sm font-medium">
-                                                Escolher arquivo
-                                            </span>
-
-                                            {/* Nome do arquivo (ou texto padrão) */}
-                                            <span className="text-gray-500 truncate ml-2" id="file-name">
-                                                Nenhum arquivo escolhido
-                                            </span>
-
-                                            {/* Input invisível */}
-                                            <input
-                                                id="arquivo"
-                                                type="file"
-                                                accept="image/*,video/*"
-                                                {...register("arquivo")}
-                                                className="absolute inset-0 opacity-0 cursor-pointer"
-                                                onChange={(e) => {
-                                                    const fileName = e.target.files?.[0]?.name || "Nenhum arquivo escolhido"
-                                                    document.getElementById("file-name")!.textContent = fileName
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* --- COLUNA DA DIREITA (Resumo) --- */}
-                        <div className="lg:col-span-1">
-                            <div className="bg-white p-6 rounded-lg card-shadow space-y-4">
-                                <h2 className="text-xl font-semibold border-b pb-3 mb-4">
-                                    Resumo da Devolução
-                                </h2>
-                                {/* Lista dos itens selecionados */}
-                                <div className="space-y-2">
-                                    <h5 className="text-lg font-semibold m-0">Itens:</h5>
-                                    {pedido.itens
-                                        .filter(
-                                            (item) =>
-                                                itensSelecionados?.[item.id]?.selected &&
-                                                itensSelecionados?.[item.id]?.quantity > 0
-                                        )
-                                        .map((item) => (
-                                            <div key={item.id} className="flex justify-between">
-                                                <span className="text-gray-700">{item.produto.nome}</span>
-                                                <span className="font-medium">x{itensSelecionados[item.id].quantity}</span>
+                                                <label htmlFor={`item-${item.id}`} className="flex-1 font-medium text-sm sm:text-base">
+                                                    {item.produto.nome} - {formatarPreco(item.produto.preco_calculado)}
+                                                    <span className="block text-sm text-gray-500 font-normal">
+                                                        Comprado: {item.quantidade} un.
+                                                    </span>
+                                                </label>
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="number"
+                                                        className="input text-lg pl-1 pr-0 py-0 w-[50px]"
+                                                        {...register(`itens.${item.id}.quantity`, {
+                                                            valueAsNumber: true,
+                                                            min: 0,
+                                                            max: item.quantidade,
+                                                        })}
+                                                        onInput={(e) => {
+                                                            const target = e.target as HTMLInputElement;
+                                                            const value = Number(target.value);
+                                                            if (value > item.quantidade) target.value = String(item.quantidade);
+                                                            if (value < 0) target.value = "0";
+                                                        }}
+                                                    />
+                                                    <span className="text-gray-500 text-sm">/ {item.quantidade}</span>
+                                                </div>
                                             </div>
                                         ))}
+                                    </div>
+                                </div>
 
-                                    {/* Caso nenhum item tenha sido selecionado */}
-                                    {pedido.itens.every(
-                                        (item) =>
-                                            !itensSelecionados?.[item.id]?.selected ||
-                                            !itensSelecionados?.[item.id]?.quantity
-                                    ) && (
-                                            <p className="text-gray-500 italic">
-                                                Nenhum item selecionado ainda.
-                                            </p>
-                                        )}
+                                {/* Card 2: Motivo e Upload */}
+                                <div className="bg-white p-6 rounded-lg card-shadow">
+                                    <h2 className="text-xl font-semibold border-b pb-3 mb-4">
+                                        2. Detalhes da Devolução
+                                    </h2>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label htmlFor="motivo" className="block font-medium mb-1">
+                                                Motivo da devolução (obrigatório):
+                                            </label>
+                                            <Textarea
+                                                id="motivo"
+                                                rows={4}
+                                                placeholder="Ex: O produto veio com o lacre rompido."
+                                                {...register("motivo")}
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label htmlFor="arquivo" className="block font-medium">
+                                                Anexar foto ou vídeo (opcional):
+                                            </label>
+
+                                            <div className="relative flex items-center justify-between border border-green rounded-lg p-2 cursor-pointer">
+                                                <span className="bg-dark-grey text-green px-4 py-2 rounded-md text-sm font-medium">
+                                                    Escolher arquivo
+                                                </span>
+
+                                                <span className="text-gray-500 truncate ml-2" id="file-name">
+                                                    Nenhum arquivo escolhido
+                                                </span>
+
+                                                <input
+                                                    id="arquivo"
+                                                    type="file"
+                                                    accept="image/*,video/*"
+                                                    {...register("arquivo")}
+                                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                                    onChange={(e) => {
+                                                        const fileName = e.target.files?.[0]?.name || "Nenhum arquivo escolhido"
+                                                        document.getElementById("file-name")!.textContent = fileName
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex justify-between font-bold text-lg">
-                                    <span>Total a reembolsar:</span>
-                                    <span>R$ {formatarPreco(totalReembolso)}</span>
-                                </div>
-                                <Button
-                                    type="submit"
-                                    variant="submit"
-                                    size="lg"
-                                    className="w-full mt-4"
-                                    disabled={isSubmitting}
-                                >
-                                    {isSubmitting ? "Enviando..." : "Enviar Solicitação"}
-                                </Button>
                             </div>
-                        </div>
-                    </form>
+
+                            {/* --- COLUNA DA DIREITA (Resumo) --- */}
+                            <div className="lg:col-span-1">
+                                <div className="bg-white p-6 rounded-lg card-shadow space-y-4">
+                                    <h2 className="text-xl font-semibold border-b pb-3 mb-4">
+                                        Resumo da Devolução
+                                    </h2>
+                                    {/* Lista dos itens selecionados */}
+                                    <div className="space-y-2">
+                                        <h5 className="text-lg font-semibold m-0">Itens:</h5>
+                                        {pedido.itens
+                                            .filter(
+                                                (item) =>
+                                                    itensSelecionados?.[item.id]?.selected &&
+                                                    itensSelecionados?.[item.id]?.quantity > 0
+                                            )
+                                            .map((item) => (
+                                                <div key={item.id} className="flex justify-between">
+                                                    <span className="text-gray-700">{item.produto.nome}</span>
+                                                    <span className="font-medium">x{itensSelecionados[item.id].quantity}</span>
+                                                </div>
+                                            ))}
+
+                                        {/* Caso nenhum item tenha sido selecionado */}
+                                        {pedido.itens.every(
+                                            (item) =>
+                                                !itensSelecionados?.[item.id]?.selected ||
+                                                !itensSelecionados?.[item.id]?.quantity
+                                        ) && (
+                                                <p className="text-gray-500 italic">
+                                                    Nenhum item selecionado ainda.
+                                                </p>
+                                            )}
+                                    </div>
+                                    <div className="flex justify-between font-bold text-lg">
+                                        <span>Total a reembolsar:</span>
+                                        <span>R$ {formatarPreco(totalReembolso)}</span>
+                                    </div>
+                                    <Button
+                                        type="submit"
+                                        variant="submit"
+                                        size="lg"
+                                        className="w-full mt-4"
+                                        disabled={isSubmitting}
+                                    >
+                                        {isSubmitting ? "Enviando..." : "Enviar Solicitação"}
+                                    </Button>
+                                </div>
+                            </div>
+                        </form>
+                    </>
                 )}
             </LoadingContainer>
         </PageWrapper>

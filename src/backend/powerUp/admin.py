@@ -38,7 +38,7 @@ class PedidoItemAdmin(admin.ModelAdmin):
     empty_value_display = 'Vazio'
     
 class SolicitacaoDevolucaoAdmin(admin.ModelAdmin):
-    list_display = ('user', 'status', 'data_solicitacao', 'motivo')
+    list_display = ('user', 'status', 'total', 'data_solicitacao', 'motivo')
     empty_value_display = 'Vazio'
 
 class ItemDevolvidoAdmin(admin.ModelAdmin):

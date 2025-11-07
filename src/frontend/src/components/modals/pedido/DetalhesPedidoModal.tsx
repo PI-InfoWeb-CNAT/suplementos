@@ -16,12 +16,12 @@ export default function DetalhesPedidoModal({ pedido }: { pedido: PedidoProps })
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="submit" size="sm" className="py-0 max-md:py-5 !text-sm">
+                <Button variant="submit" className="py-0 max-md:py-5 !text-sm">
                     Ver detalhes
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="w-200 max-w-[90dvw] min-h-138 max-h-[90dvh] overflow-y-auto flex flex-col" aria-describedby={undefined}>
+            <DialogContent className="!w-200 !max-w-[90dvw] !min-h-138 !max-h-[90dvh] overflow-y-auto flex flex-col" aria-describedby={undefined}>
                 <DialogHeader>
                     <VisuallyHidden>
                         <DialogTitle>Cancelar pedido</DialogTitle>

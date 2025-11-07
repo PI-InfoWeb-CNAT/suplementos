@@ -130,6 +130,8 @@ class PedidoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.G
 
         solicitacao = SolicitacaoDevolucao.objects.create(pedido=pedido, user=request.user, motivo=motivo, arquivo=arquivo,  status='1')
 
+        total_a_devolver = Decimal('0.00')
+
         for item_data in itens_para_devolver:
             pedido_item_id = item_data['pedido_item_id']
             quantidade = item_data['quantidade']
@@ -143,9 +145,14 @@ class PedidoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.G
                 
                 ItemDevolvido.objects.create(solicitacao=solicitacao, pedido_item=pedido_item, quantidade=quantidade)
                 
+                total_a_devolver += (Decimal(pedido_item.preco) * quantidade)
+                
             except PedidoItem.DoesNotExist:
                 solicitacao.delete() 
                 return Response({"erro": "Item de pedido inválido ou não pertence a este pedido."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        solicitacao.total = total_a_devolver
+        solicitacao.save()
 
         serializer = SolicitacaoDevolucaoSerializer(solicitacao) 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
