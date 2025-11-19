@@ -1,5 +1,6 @@
 from powerUp.models import *
 from decimal import Decimal
+from django.db.models import Sum
 
 class Produto(models.Model):
     CATEGORIAS = [
@@ -20,6 +21,10 @@ class Produto(models.Model):
             return self.preco
         else:
             return Decimal(self.preco * (1 - (self.porcentagem_desconto / 100)))
+        
+    @property
+    def estoque(self):
+        return self.lotes.aggregate(total=Sum('quantidade'))['total'] or 0
 
     def __str__(self):
         return f'{self.nome}'

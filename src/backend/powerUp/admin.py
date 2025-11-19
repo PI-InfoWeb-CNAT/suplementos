@@ -45,6 +45,10 @@ class ItemDevolvidoAdmin(admin.ModelAdmin):
     list_display = ('pedido_item', 'quantidade', 'solicitacao')
     empty_value_display = 'Vazio'
     
+class LoteAdmin(admin.ModelAdmin):
+    list_display = ('produto', 'quantidade', 'validade', 'data_entrada')
+    empty_value_display = 'Vazio'
+    
 
 admin.site.register(Produto, ProdutoAdmin)
 admin.site.register(Cliente, ClienteAdmin)
@@ -57,3 +61,4 @@ admin.site.register(Pedido, PedidoAdmin)
 admin.site.register(PedidoItem, PedidoItemAdmin)
 admin.site.register(SolicitacaoDevolucao, SolicitacaoDevolucaoAdmin)
 admin.site.register(ItemDevolvido, ItemDevolvidoAdmin)
+admin.site.register(Lote, LoteAdmin)

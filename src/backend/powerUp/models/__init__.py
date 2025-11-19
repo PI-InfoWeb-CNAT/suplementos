@@ -9,3 +9,4 @@ from .Cartao import Cartao
 from .Carrinho import Carrinho, CarrinhoItem
 from .Pedido import Pedido, PedidoItem
 from .Devolucao import SolicitacaoDevolucao, ItemDevolvido
+from .Lote import Lote

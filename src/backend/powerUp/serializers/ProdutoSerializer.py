@@ -5,6 +5,7 @@ class ProdutoSerializer(serializers.ModelSerializer):
     preco_calculado = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
     imagem = serializers.SerializerMethodField() 
+    estoque = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Produto
@@ -18,6 +19,7 @@ class ProdutoSerializer(serializers.ModelSerializer):
             'categoria',
             'preco_calculado', 
             'is_favorited',
+            'estoque',
         ]
 
     def get_preco_calculado(self, obj):
