@@ -1,8 +1,8 @@
 'use client';
-import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useForm, FieldErrors, FieldValues } from "react-hook-form";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm, FieldErrors } from "react-hook-form";
 
 import ItemCard from "@/components/ItemCard";
 import PageWrapper from "@/components/layout/PageWrapper";
@@ -54,7 +54,7 @@ function PedidoClient() {
             }, 1500)
         } catch (err: any) {
             const message = err?.response?.data?.erro || err?.response?.data?.detail || 'Erro ao finalizar pedido';
-            notify(message, 'error');
+            notify(message, 'warning');
         } finally {
             setSubmitting(false);
         }

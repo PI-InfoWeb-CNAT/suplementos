@@ -8,6 +8,7 @@ export interface ProductProps {
   categoria: string;
   preco_calculado: number;
   is_favorited: boolean;
+  estoque?: number;
 }
 
 export interface ProductCardProps {

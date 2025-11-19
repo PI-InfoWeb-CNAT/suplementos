@@ -1,13 +1,15 @@
 import json
 from rest_framework import viewsets, mixins, status
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action 
-from django.shortcuts import get_object_or_404
+from django.db import transaction
+from django.db.models import Sum, F, Q
+from django.utils import timezone
 from decimal import Decimal
 
-from powerUp.models import Carrinho, Pedido, PedidoItem, Endereco, Cartao, SolicitacaoDevolucao, ItemDevolvido
+from powerUp.models import Carrinho, Pedido, PedidoItem, Endereco, Cartao, SolicitacaoDevolucao, ItemDevolvido, Lote
 from powerUp.serializers.PedidoSerializer import PedidoSerializer
 from powerUp.serializers.DevolucaoSerializer import SolicitacaoDevolucaoSerializer
 
@@ -37,36 +39,88 @@ class PedidoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.G
         except Cartao.DoesNotExist:
             return Response({"erro": "Cartão inválido ou não pertence ao usuário."}, status=status.HTTP_403_FORBIDDEN)
 
-        total = Decimal('0.00')
-        itens = list(carrinho.itens.select_related('produto').all())
-        for item in itens:
-            preco_atual = Decimal(str(item.produto.preco_calculado()))
-            total += preco_atual * Decimal(item.quantidade)
+        try:
+            with transaction.atomic():
+                total = Decimal('0.00')
+                itens_carrinho = list(carrinho.itens.select_related('produto').all())
+                
+                for item in itens_carrinho:
+                    preco_atual = Decimal(str(item.produto.preco_calculado()))
+                    total += preco_atual * Decimal(item.quantidade)
 
-        pedido = Pedido.objects.create(
-            user=user,
-            endereco=endereco,
-            cartao=cartao,
-            total=round(total, 2),
-            status='1'
-        )
+                pedido = Pedido.objects.create(
+                    user=user,
+                    endereco=endereco,
+                    cartao=cartao,
+                    total=round(total, 2),
+                    status='1'
+                )
 
-        for item in itens:
-            imagem = None
-            try:
-                if hasattr(item.produto, 'imagem') and item.produto.imagem:
-                    imagem = getattr(item.produto.imagem, 'url', None) or str(item.produto.imagem)
-            except Exception:
-                imagem = None
-            
-            preco_atual = Decimal(str(item.produto.preco_calculado()))
+                for item_carrinho in itens_carrinho:
+                    produto = item_carrinho.produto
+                    qtd_necessaria = item_carrinho.quantidade
 
-            PedidoItem.objects.create(pedido=pedido, produto=item.produto, quantidade=item.quantidade, preco=preco_atual, imagem=imagem)
+                    hoje = timezone.now().date()
+                    
+                    lotes_query = Lote.objects.select_for_update().filter(
+                    produto=produto, 
+                    quantidade__gt=0
+                    ).filter(
+                        Q(validade__gte=hoje) | Q(validade__isnull=True)
+                    )
 
-        carrinho.itens.all().delete()
-        
-        serializer = self.get_serializer(pedido) 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    estoque_total = lotes_query.aggregate(soma=Sum('quantidade'))['soma'] or 0
+                    if estoque_total < qtd_necessaria:
+                        raise ValidationError(
+                            {"erro": f"O produto '{produto.nome}' só tem {estoque_total} unidades disponíveis."}
+                        )
+
+                    lotes_ordenados = lotes_query.order_by(
+                        F('validade').asc(nulls_last=True), 
+                        'quantidade'
+                    )
+
+                    qtd_restante_para_abater = qtd_necessaria
+
+                    for lote in lotes_ordenados:
+                        if qtd_restante_para_abater <= 0:
+                            break
+                        
+                        if lote.quantidade >= qtd_restante_para_abater:
+                            lote.quantidade -= qtd_restante_para_abater
+                            lote.save()
+                            qtd_restante_para_abater = 0
+                        else:
+                            qtd_abatida = lote.quantidade
+                            lote.delete()
+                            qtd_restante_para_abater -= qtd_abatida
+
+                    imagem = None
+                    try:
+                        if hasattr(produto, 'imagem') and produto.imagem:
+                            imagem = getattr(produto.imagem, 'url', None) or str(produto.imagem)
+                    except Exception:
+                        imagem = None
+                    
+                    preco_atual = Decimal(str(produto.preco_calculado()))
+
+                    PedidoItem.objects.create(
+                        pedido=pedido, 
+                        produto=produto, 
+                        quantidade=qtd_necessaria, 
+                        preco=preco_atual, 
+                        imagem=imagem
+                    )
+
+                carrinho.itens.all().delete()
+                
+                serializer = self.get_serializer(pedido)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except ValidationError as e:
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"erro": f"Erro ao processar pedido: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['post'])
     def cancelar(self, request, pk=None): 

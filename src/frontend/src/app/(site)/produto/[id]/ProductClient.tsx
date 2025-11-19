@@ -19,7 +19,7 @@ export default function ProductClient({ id }: { id: string }) {
     const router = useRouter();
     const { register, handleSubmit, formState: { errors } } = useForm<CarrinhoSchemaType>({
         resolver: zodResolver(carrinhoSchema),
-        defaultValues: { quantidade: 0 }
+        defaultValues: { quantidade: 0 } 
     });
     const idNumber = Number(id);
 
@@ -46,9 +46,17 @@ export default function ProductClient({ id }: { id: string }) {
         );
     }
 
+    const estoqueDisponivel = produto.estoque || 0;
+    const isEsgotado = estoqueDisponivel === 0;
+
     const produtos_relacionados = produtos.filter(p => p.categoria === produto.categoria && p.id !== produto.id);
 
     const onSubmit = async (data: CarrinhoSchemaType) => {
+        if (data.quantidade > estoqueDisponivel) {
+            notify(`Apenas ${estoqueDisponivel} unidades disponíveis do produto.`, "warning");
+            return;
+        }
+
         try {
             await addItem(produto!, Number(data.quantidade));
 
@@ -85,29 +93,55 @@ export default function ProductClient({ id }: { id: string }) {
                         <h5 className="font-semibold mb-lg:text-xl text-lg">Informações do produto</h5>
                         <p className="font-medium mb-lg:text-base text-sm">{produto.descricao}</p>
                     </div>
+                    
                     <div className="flex tb:justify-start justify-center items-center gap-4">
                         <p className="nt-sm:text-4xl mb-lg:text-3xl text-[26px] font-medium">R$<span>{formatarPreco(produto.preco_calculado)}</span></p>
                         <div className="bg-dark-grey text-light-green mb-lg:px-8 px-6 py-2 rounded-md">
                             <BsFillLightningChargeFill className="mb-lg:text-[25px] text-[20px]" />
                         </div>
                     </div>
+
                     <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col tb:items-start items-center space-y-5">
-                        <div className="space-x-4">
-                            <label htmlFor="qtd_produto" className="text-lg font-medium">Quantidade:</label>
-                            <input
-                                {...register("quantidade", { valueAsNumber: true })} 
-                                type="number"
-                                id="qtd_produto"
-                                placeholder="0"
-                                className="input text-lg pl-1 pr-0 py-0 w-[50px]"
-                            />
+                        <div className="flex flex-col gap-1">
+                            <div className="space-x-4 flex items-center">
+                                <label htmlFor="qtd_produto" className="text-lg font-medium">Quantidade:</label>
+                                <input
+                                    {...register("quantidade", { 
+                                        valueAsNumber: true,
+                                    })} 
+                                    type="number"
+                                    id="qtd_produto"
+                                    min="1"
+                                    disabled={isEsgotado}
+                                    className="input text-lg pl-1 pr-0 py-0 w-[60px] disabled:bg-gray-200 disabled:cursor-not-allowed"
+                                />
+                            </div>
+                            
+                            {!isEsgotado && estoqueDisponivel < 5 && (
+                                <span className="text-orange-600 text-sm font-medium">
+                                    Corra! Restam apenas {estoqueDisponivel} unidades.
+                                </span>
+                            )}
+                             {isEsgotado && (
+                                <span className="text-red-600 text-sm font-medium">
+                                    Produto indisponível no momento.
+                                </span>
+                            )}
                         </div>
-                        <Button type="submit" variant="submit" size="submit">
-                            Adicionar ao carrinho
+
+                        <Button 
+                            type="submit" 
+                            variant="submit" 
+                            size="submit"
+                            disabled={isEsgotado}
+                            className="disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {isEsgotado ? "Esgotado" : "Adicionar ao carrinho"}
                         </Button>
                     </form>
                 </div>
             </section>
+            
             {produtos_relacionados.length > 0 && (
                 <section className="mt-10 space-y-8">
                     <h2 className="h2">Produtos Relacionados</h2>

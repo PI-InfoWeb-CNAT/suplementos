@@ -122,7 +122,7 @@ function MeusPedidosClient() {
         <PageWrapper pageName="Meus Pedidos">
             <div className="flex flex-col 2xl:flex-row nt-sm:justify-between gap-y-5 mx-auto w-full">
                 <h2 className="h2 lg:hidden">Meus Pedidos</h2>
-                <section className="2xl:w-[58%] w-full">
+                <section className="2xl:w-[58%] w-full 2xl:max-h-[700px] 2xl:overflow-y-auto 2xl:pr-1">
                     <LoadingContainer loading={loading}>
                         {pedidos.length > 0 ? (
                             <>
