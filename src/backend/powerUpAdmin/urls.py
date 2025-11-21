@@ -16,6 +16,7 @@ from powerUp.views.LoginView import CustomTokenObtainPairView
 from powerUp.views.CarrinhoView import CarrinhoAPIView, CarrinhoMigracaoView
 from powerUp.views.PedidoView import PedidoViewSet
 from powerUp.views.DevolucaoView import DevolucaoViewSet
+from powerUp.views.NotificacaoView import NotificacaoViewSet
 
 router = DefaultRouter()
 router.register(r'produtos', ProdutoViewSet)
@@ -26,6 +27,7 @@ router.register(r'favoritos', FavoritoViewSet, basename='favorito')
 router.register(r'promocoes', PromocoesViewSet, basename='promocoes')
 router.register(r'pedidos', PedidoViewSet, basename='pedido')
 router.register(r'devolucoes', DevolucaoViewSet, basename='devolucao')
+router.register(r'notificacoes', NotificacaoViewSet, basename='notificacao')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { MenuProvider } from "@/contexts/MenuContext";
 import { CarrinhoProvider } from "@/contexts/CarrinhoContext";
+import { NotificacaoProvider } from "@/contexts/NotificacaoContext";
 
 const baiJamjuree = Bai_Jamjuree({
   subsets: ["latin"],
@@ -37,7 +38,9 @@ export default function RootLayout({ children }:
         <MenuProvider>
           <AuthProvider>
             <CarrinhoProvider>
-              {children}  
+              <NotificacaoProvider>
+                {children}  
+              </NotificacaoProvider>
             </CarrinhoProvider>
             <Toaster />
           </AuthProvider>

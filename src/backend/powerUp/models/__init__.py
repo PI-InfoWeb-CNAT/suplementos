@@ -10,3 +10,4 @@ from .Carrinho import Carrinho, CarrinhoItem
 from .Pedido import Pedido, PedidoItem
 from .Devolucao import SolicitacaoDevolucao, ItemDevolvido
 from .Lote import Lote
+from .Notificacao import Notificacao

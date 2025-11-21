@@ -12,11 +12,13 @@ import Icon from '@/components/Icon';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMenu } from '@/contexts/MenuContext';
 import { useCarrinho } from '@/contexts/CarrinhoContext'; 
+import { useNotificacao } from '@/contexts/NotificacaoContext';
 
 const Topbar = ({ page }: { page: string }) => {
     const { setMenuOpen } = useMenu();
     const { isLogged, user, loading: authLoading } = useAuth();
     const { totalItems, isInitialized } = useCarrinho();
+    const { count } = useNotificacao();
 
     return (
         <header className="flex items-center justify-between">
@@ -48,7 +50,14 @@ const Topbar = ({ page }: { page: string }) => {
                     null
                 ) : isLogged && user ? (
                     <>
-                        <Icon icon={<BiSolidBell className='text-[18px] tb:text-[22px]' />} href="/notificacoes" />
+                        <div className='relative mr-2'>
+                            <Icon icon={<BiSolidBell className='text-[18px] tb:text-[22px]' />} href="/notificacoes" />
+                            {count > 0 && (
+                                <span className="tb:w-6 tb:h-6 w-5 h-5 flex justify-center items-center absolute -top-2 -right-2 bg-red-500 text-white tb:text-sm text-xs font-semibold px-1.5 py-0.5 rounded-full">
+                                    {count}
+                                </span>
+                            )}
+                        </div>
                         <div className='hidden nt-sm:block'>
                             <UserDropdown user={user} />
                         </div>
