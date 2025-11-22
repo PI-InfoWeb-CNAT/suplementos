@@ -113,7 +113,7 @@ export default function ProductClient({ id }: { id: string }) {
                                     id="qtd_produto"
                                     min="1"
                                     disabled={isEsgotado}
-                                    className="input text-lg pl-1 pr-0 py-0 w-[60px] disabled:bg-gray-200 disabled:cursor-not-allowed"
+                                    className="input text-lg pl-1 pr-0 py-0 w-[60px] disabled:cursor-not-allowed"
                                 />
                             </div>
                             

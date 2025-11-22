@@ -25,3 +25,9 @@ class NotificacaoViewSet(viewsets.ReadOnlyModelViewSet):
     def nao_lidas_count(self, request):
         count = self.get_queryset().filter(lida=False).count()
         return Response({'count': count}, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['delete'])
+    def limpar_notificacoes(self, request):
+        self.get_queryset().delete()
+        
+        return Response(status=status.HTTP_204_NO_CONTENT)

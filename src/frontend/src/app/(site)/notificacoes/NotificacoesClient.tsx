@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import FastAcess from "@/components/FastAcess";
 import PageWrapper from "@/components/layout/PageWrapper";
 import LoadingContainer from "@/components/loading/LoadingContainer";
-import withAuth from "@/lib/withAuth";
+import NotificacaoCard from '@/components/NotificacaoCard';
 import api from '@/services/api';
 import { useNotificacao } from '@/contexts/NotificacaoContext'; 
 import { Notificacao } from '@/types/notificacao';
-import NotificacaoCard from '@/components/NotificacaoCard';
+import withAuth from "@/lib/withAuth";
+import { notify } from "@/lib/toast";
 
 function NotificacoesClient() {
     const [notificacoes, setNotificacoes] = useState<Notificacao[]>([]);
@@ -34,6 +35,19 @@ function NotificacoesClient() {
         fetchNotificacoes();
     }, [atualizarContador]);
 
+    const handleLimparNotificacoes = async () => {
+        try {
+            await api.delete('/notificacoes/limpar_notificacoes/');
+            
+            setNotificacoes([]);
+            
+            notify("Todas as notificações foram removidas com sucesso.", "success");
+        } catch (error) {
+            console.error("Erro ao limpar notificações", error);
+            notify("Erro ao limpar notificações.", "error");
+        }
+    };
+
     return (
         <PageWrapper pageName="Notificações">
             <div className="flex flex-col 2xl:flex-row nt-sm:justify-between gap-y-5 mx-auto w-full">
@@ -42,10 +56,16 @@ function NotificacoesClient() {
                     
                     <LoadingContainer loading={loading}>
                         {notificacoes.length > 0 ? (
-                            <div className="bg-white rounded-lg card-shadow overflow-hidden">
-                                {notificacoes.map((notificacao) => (
-                                    <NotificacaoCard key={notificacao.id} notificacao={notificacao} />
-                                ))}
+                            <div className='flex flex-col gap-3 items-end'>
+                                <button onClick={handleLimparNotificacoes}>
+                                    <p className='text-gray text-sm hover:underline cursor-pointer'>Limpar todas as notificações</p>
+                                </button>
+                                
+                                <div className="2xl:max-h-[700px] overflow-auto p-1 pr-2 space-y-5">
+                                    {notificacoes.map((notificacao) => (
+                                        <NotificacaoCard key={notificacao.id} notificacao={notificacao} />
+                                    ))}
+                                </div>
                             </div>
                         ) : (
                             <p className="notFound">Sem notificações.</p>
