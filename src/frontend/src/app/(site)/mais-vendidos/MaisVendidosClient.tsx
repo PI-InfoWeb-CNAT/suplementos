@@ -5,17 +5,16 @@ import PageWrapper from "@/components/layout/PageWrapper";
 import ProductCard from "@/components/ProductCard";
 import LoadingContainer from "@/components/loading/LoadingContainer";
 import api from "@/services/api";
-import withAuth from "@/lib/withAuth"; 
 import { ProductProps } from "@/types/products";
 import Filter from "@/components/Filter";
 
-function ComprarNovamenteClient() {
+export default function MaisVendidosClient() {
     const [produtos, setProdutos] = useState<ProductProps[]>([]);
     const [produtosOrdenados, setProdutosOrdenados] = useState<ProductProps[]>([]); 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        api.get('/produtos/comprar_novamente/')
+        api.get('/produtos/mais_vendidos/')
             .then(response => {
                 setProdutos(response.data);
             })
@@ -28,7 +27,7 @@ function ComprarNovamenteClient() {
     }, [produtos]);
 
     return (
-        <PageWrapper pageName="Comprar Novamente">
+        <PageWrapper pageName="Mais Vendidos">
             {produtos.length > 0 ? (
                 <>
                     <h2 className="h2 lg:hidden">Meus Favoritos</h2>
@@ -37,25 +36,14 @@ function ComprarNovamenteClient() {
                     <LoadingContainer loading={loading}>
                         <div className="productsContainer">
                             {produtosOrdenados.map(produto => (
-                                <ProductCard
-                                    key={produto.id}
-                                    product={produto}
-                                    onFavoriteChange={(produtoId, isFavorited) => {
-                                        if (!isFavorited) {
-                                            setProdutos(prev => prev.filter(p => p.id !== produtoId));
-                                            setProdutosOrdenados(prev => prev.filter(p => p.id !== produtoId));
-                                        }
-                                    }}
-                                />
+                                <ProductCard key={produto.id} product={produto} />
                             ))}
                         </div>
                     </LoadingContainer>
                 </>
             ) : (
-                <p className="notFound">Nenhum produto favoritado.</p>
+                <p className="notFound">Nenhuma venda realizada.</p>
             )}
         </PageWrapper>
     );
 }
-
-export default withAuth(ComprarNovamenteClient);

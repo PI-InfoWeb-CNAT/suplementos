@@ -1,88 +1,143 @@
-from django.core.management.base import BaseCommand
-from powerUp.models import Produto, Lote
-from django.utils import timezone
+import random
 from datetime import timedelta
+from decimal import Decimal
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+from django.db import transaction
+from powerUp.models import Produto, Lote, Cliente, Pedido, PedidoItem
 
 class Command(BaseCommand):
-    help = 'Popula o banco de dados com dados iniciais (Produtos e Lotes)'
+    help = 'Gera histórico de pedidos usando Clientes e Produtos já existentes'
 
     def handle(self, *args, **kwargs):
-        self.stdout.write("Iniciando população do banco...")
+        self.stdout.write("--- INICIANDO GERAÇÃO DE PEDIDOS ---")
+        
+        # Verifica se existem dados prévios necessários
+        if not Cliente.objects.exists() or not Produto.objects.exists():
+            self.stdout.write(self.style.ERROR("ERRO: É necessário ter Clientes e Produtos cadastrados antes de gerar pedidos."))
+            return
 
-        self.criar_lotes()
+        with transaction.atomic():
+            self.criar_pedidos()
 
-        self.stdout.write(self.style.SUCCESS('Banco populado com sucesso!'))
+        self.stdout.write(self.style.SUCCESS('--- PEDIDOS GERADOS COM SUCESSO! ---'))
 
-    def criar_lotes(self):
-        # Formato: ('Parte do Nome do Produto', Quantidade, Dias para Vencer)
-        lotes_data = [
-            # --- SUPLEMENTOS (Alta rotatividade, múltiplos lotes) ---
-            ('Whey Concentrado', 12, 365),  # Lote 1
-            ('Whey Concentrado', 10, 730),  # Lote 2 (mais novo)
-            ('Creatina 300g', 15, 730),
-            ('Creatina 300g', 10, 400),     # Lote mais antigo
-            ('BCAA', 8, 500),
-            ('Glutamina', 10, 600),
-            ('Cafeína', 20, 730),
+    def criar_pedidos(self):
+        self.stdout.write("Gerando 50 pedidos aleatórios...")
+        
+        clientes = list(Cliente.objects.all())
+        produtos = list(Produto.objects.all())
+        
+        # Produtos "Mais Vendidos" (Whey e Creatina - IDs 1 e 2 no seu JSON original)
+        # Ajuste os IDs aqui se no seu banco forem diferentes
+        produtos_populares = [p for p in produtos if p.id in [1, 2]]
 
-            # --- ALIMENTOS (Snacks e Barras - Validade mais curta) ---
-            ('Snack Protein - Cebola', 15, 180),
-            ('Snack Protein - Queijo', 15, 180),
-            ('Snack Protein - Requeijão', 10, 120), # Vence logo
-            ('Snack Protein - Requeijão', 10, 180), # Lote novo
-            ('Bebida Proteica', 24, 90),            # Vence rápido
+        # Status possíveis com pesos diferentes (Mais chance de estar Entregue ou Finalizado)
+        # 1: Processando, 2: Enviado, 3: Entregue, 4: Finalizado, 5: Cancelado
+        status_choices = ['1', '2', '3', '3', '4', '4', '4', '5'] 
 
-            # Barras de Proteína (Vários sabores)
-            ('Barra de Proteína - Chocolate', 20, 240),
-            ('Barra de Proteína - Chocolate', 15, 365), # Mais um lote de chocolate
-            ('Barra de Proteína - Morango', 20, 240),
-            ('Barra de Proteína - Frutas Vermelhas', 15, 240),
-            ('Barra de Proteína - Pistache', 15, 240),
-            ('Barra de Proteína - Tradicional', 25, 240),
+        for i in range(50):
+            # 1. Escolhe um cliente aleatório e seus dados
+            cliente = random.choice(clientes)
+            endereco = cliente.enderecos.first()
+            cartao = cliente.cartoes.first()
+            
+            if not endereco or not cartao:
+                continue # Pula cliente se faltar dados
 
-            # --- ACESSÓRIOS (Validade longa/infinita simulada) ---
-            ('Bolsa Esportiva', 3, 3650),
-            ('Bolsa Esportiva', 2, 3650), # Reposição
-            ('Strap', 10, 3650),
-            ('Garrafa 500ml preta', 8, 3650),
-            ('Garrafa 500ml branca', 8, 3650),
-            ('Boné preto', 6, 3650),
-            ('Boné branco', 6, 3650),
+            # 2. Define uma data aleatória nos últimos 60 dias
+            dias_atras = random.randint(0, 60)
+            data_pedido = timezone.now() - timedelta(days=dias_atras)
 
-            # --- ROUPAS ---
-            ('Casaco branco', 3, 3650),
-            ('Bermuda preta', 5, 3650),
-            ('Bermuda preta', 5, 3650),   # Mais um lote P ou M (simulado)
-            ('Bermuda branca', 5, 3650),
-            ('Camiseta Preta', 10, 3650),
-            ('Camiseta Branca', 10, 3650),
-        ]
+            # 3. Cria o Pedido (Total 0 inicial)
+            pedido = Pedido.objects.create(
+                user=cliente.user,
+                endereco=endereco,
+                cartao=cartao,
+                total=0,
+                status=random.choice(status_choices)
+            )
+            # Força a data retroativa
+            pedido.dt_hora = data_pedido
+            pedido.save()
 
-        print(f"Processando {len(lotes_data)} entradas de lotes...")
+            # 4. Escolhe os itens
+            itens_pedido = []
+            
+            # 60% de chance de incluir um "Mais Vendido"
+            if random.random() < 0.6 and produtos_populares:
+                itens_pedido.append(random.choice(produtos_populares))
+            
+            # Adiciona mais 1 a 4 produtos aleatórios do catálogo geral
+            qtd_extras = random.randint(1, 4)
+            itens_pedido.extend(random.sample(produtos, min(len(produtos), qtd_extras)))
+            
+            # Remove duplicatas na lista de itens do mesmo pedido
+            itens_pedido = list(set(itens_pedido))
 
-        for nome_prod, qtd, dias_validade in lotes_data:
-            try:
-                # O icontains busca qualquer produto que contenha esse texto no nome
-                # Se houver ambiguidade (ex: 'Camiseta' pode ser preta ou branca),
-                # o código pegará o primeiro ou dará erro se usar .get() estrito.
-                # Aqui usamos filter().first() para pegar o primeiro correspondente e evitar travar o script.
+            total_pedido = Decimal('0.00')
+
+            # 5. Processa cada item (Baixa de Estoque simplificada)
+            for produto in itens_pedido:
+                # Quantidade aleatória (1 a 3). Se for popular, até 5.
+                qtd = random.randint(1, 3)
+                if produto.id in [1, 2]: 
+                    qtd = random.randint(1, 5)
+
+                # Busca lotes disponíveis (FIFO)
+                lotes = Lote.objects.filter(produto=produto, quantidade__gt=0).order_by('validade')
                 
-                produtos_encontrados = Produto.objects.filter(nome__icontains=nome_prod)
+                qtd_para_abater = qtd
                 
-                if produtos_encontrados.exists():
-                    # Pega o primeiro que encontrar (útil se vc tiver nomes muito parecidos)
-                    produto = produtos_encontrados.first()
+                # Loop de baixa no estoque
+                for lote in lotes:
+                    if qtd_para_abater <= 0: break
                     
-                    validade = timezone.now().date() + timedelta(days=dias_validade)
+                    if lote.quantidade >= qtd_para_abater:
+                        lote.quantidade -= qtd_para_abater
+                        lote.save()
+                        qtd_para_abater = 0
+                    else:
+                        qtd_para_abater -= lote.quantidade
+                        lote.quantidade = 0 # Zera o lote
+                        lote.save()
+
+                # Calcula quanto realmente conseguiu comprar (caso falte estoque)
+                qtd_final = qtd - qtd_para_abater 
+                
+                if qtd_final > 0:
+                    try:
+                        if hasattr(produto, 'preco_calculado'):
+                            valor_bruto = produto.preco_calculado
+                            # Se for um método (callable), executa com ()
+                            if callable(valor_bruto):
+                                valor_final = valor_bruto()
+                            else:
+                                valor_final = valor_bruto
+                        else:
+                            valor_final = produto.preco
+                        
+                        preco_momento = Decimal(str(valor_final))
+                    except Exception:
+                        # Fallback de segurança se tudo falhar
+                        preco_momento = Decimal(str(produto.preco))
+                    # --------------------------------
                     
-                    Lote.objects.create(
+                    imagem_url = None
+                    if hasattr(produto, 'imagem') and produto.imagem:
+                        imagem_url = getattr(produto.imagem, 'url', None)
+
+                    PedidoItem.objects.create(
+                        pedido=pedido,
                         produto=produto,
-                        quantidade=qtd,
-                        validade=validade
+                        quantidade=qtd_final,
+                        preco=preco_momento,
+                        imagem=imagem_url
                     )
-                    self.stdout.write(f"- Lote criado: {qtd}x {produto.nome}")
-                else:
-                    self.stdout.write(self.style.WARNING(f"Aviso: Produto '{nome_prod}' não encontrado no banco."))
+                    total_pedido += preco_momento * qtd_final
 
-            except Exception as e:
-                self.stdout.write(self.style.ERROR(f"Erro ao criar lote para '{nome_prod}': {str(e)}"))
+            # 6. Atualiza o total final do pedido
+            pedido.total = round(total_pedido, 2)
+            pedido.save()
+            
+            self.stdout.write(f"   + Pedido #{pedido.id} criado para {cliente.nome} ({cliente.user.email}) - Total: R$ {pedido.total}")
