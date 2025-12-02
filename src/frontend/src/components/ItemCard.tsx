@@ -1,13 +1,21 @@
+'use client';
+import { useState } from "react";
 import { X, Plus, Minus } from "lucide-react";
 
 import { useCarrinho } from "@/contexts/CarrinhoContext";
-import { CarrinhoItemProps } from "@/types/carrinho";
+import { ItemCardProps } from "@/types";
 import { notify } from "@/lib/toast";
 import { formatarPreco } from "@/lib/utils";
+import { Button } from "./ui/button";
+import AvaliarProdutoModal from "./modals/AvaliarProdutoModal";
 
-const ItemCard = ({ item, pageName }: { item: CarrinhoItemProps; pageName: string }) => {
+const ItemCard = ({ item, pageName, statusPedido }: ItemCardProps) => {
     const { removeItem, updateQuantidade, isLoading } = useCarrinho();
 
+    const [jaAvaliou, setJaAvaliou] = useState<boolean>(!!item.produto.minha_avaliacao);
+    const mostrarBotaoAvaliar = pageName === "Meus Pedidos" && statusPedido === '4' && !jaAvaliou;
+
+    // APENAS PARA CARRINHO
     const handleRemoveItem = async () => {
         try {
             await removeItem(item);
@@ -37,7 +45,7 @@ const ItemCard = ({ item, pageName }: { item: CarrinhoItemProps; pageName: strin
             <div className="2xl:w-60 xl:w-50 md:w-60 sm:w-50 xs:w-40 w-full">
                 <img src={item.produto.imagem} alt={`Imagem do produto ${item.produto.nome}`} className="w-full h-full rounded-3xl object-cover object-center" />
             </div>
-            <div className="pl-6 pr-10 py-4 flex flex-col flex-1 justify-between gap-4">
+            <div className="xs:pl-6 xs:pr-10 px-6 py-4 flex flex-col flex-1 justify-between gap-4">
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                     <h3 className="sm:text-2xl text-xl font-medium">{item.produto.nome}</h3>
                     {item.produto.porcentagem_desconto > 0 && (
@@ -75,13 +83,22 @@ const ItemCard = ({ item, pageName }: { item: CarrinhoItemProps; pageName: strin
                     )}
                     
                     <p className="font-bold sm:text-[22px] text-lg">Subtotal: <span className="font-medium">R$ {formatarPreco(item.subtotal)}</span></p>
+
+                    {mostrarBotaoAvaliar && (
+                        <AvaliarProdutoModal 
+                            item={item} 
+                            onSuccess={() => setJaAvaliou(true)} 
+                        />
+                    )}
                 </div>
             </div>
-            <X 
-                size={30} 
-                onClick={handleRemoveItem}
-                className="absolute top-4 right-4 bg-dark-grey text-green rounded-full p-1 cursor-pointer hover:bg-[#2E2E2E] transition-colors"
-            />
+            {pageName === "carrinho" && (
+                <X 
+                    size={30} 
+                    onClick={handleRemoveItem}
+                    className="absolute top-4 right-4 bg-dark-grey text-green rounded-full p-1 cursor-pointer hover:bg-[#2E2E2E] transition-colors"
+                />
+            )}
         </div>
     )
 }

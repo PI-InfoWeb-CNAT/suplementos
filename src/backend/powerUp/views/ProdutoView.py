@@ -1,9 +1,9 @@
 from django.db.models import Sum
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from powerUp.models import Produto
+from powerUp.models import Produto, PedidoItem, Cliente, AvaliacaoProduto
 from powerUp.serializers.ProdutoSerializer import ProdutoSerializer
 
 class ProdutoViewSet(viewsets.ModelViewSet):
@@ -32,3 +32,26 @@ class ProdutoViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(top_produtos, many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def avaliar(self, request, pk=None):
+        produto = self.get_object()
+        user = request.user
+        nota = request.data.get('nota')
+
+        if not nota:
+            return Response({"erro": "A nota é obrigatória."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            cliente = Cliente.objects.get(user=user)
+        except Cliente.DoesNotExist:
+            return Response({"erro": "Perfil de cliente não encontrado."}, status=status.HTTP_403_FORBIDDEN)
+
+        avaliacao, created = AvaliacaoProduto.objects.update_or_create(
+            cliente=cliente,
+            produto=produto,
+            defaults={'nota': nota}
+        )
+
+        msg = "Avaliação criada com sucesso!" if created else "Avaliação atualizada com sucesso!"
+        return Response({"mensagem": msg, "nota": avaliacao.nota}, status=status.HTTP_200_OK)

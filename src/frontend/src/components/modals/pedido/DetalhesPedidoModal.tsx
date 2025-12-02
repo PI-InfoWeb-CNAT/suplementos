@@ -76,6 +76,7 @@ export default function DetalhesPedidoModal({ pedido }: { pedido: PedidoProps })
                                     key={item.produto.id}
                                     item={item}
                                     pageName="Meus Pedidos"
+                                    statusPedido={pedido.status}
                                 />
                             ))}
                         </div>

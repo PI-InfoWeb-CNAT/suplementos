@@ -1,143 +1,77 @@
 import random
 from datetime import timedelta
-from decimal import Decimal
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 from django.db import transaction
-from powerUp.models import Produto, Lote, Cliente, Pedido, PedidoItem
+from powerUp.models import Cliente, Pedido, AvaliacaoProduto
 
 class Command(BaseCommand):
-    help = 'Gera histórico de pedidos usando Clientes e Produtos já existentes'
+    help = 'Gera Avaliações para Pedidos já finalizados existentes no banco'
 
     def handle(self, *args, **kwargs):
-        self.stdout.write("--- INICIANDO GERAÇÃO DE PEDIDOS ---")
+        self.stdout.write("--- INICIANDO GERAÇÃO DE AVALIAÇÕES ---")
         
-        # Verifica se existem dados prévios necessários
-        if not Cliente.objects.exists() or not Produto.objects.exists():
-            self.stdout.write(self.style.ERROR("ERRO: É necessário ter Clientes e Produtos cadastrados antes de gerar pedidos."))
+        # Verifica se existem pedidos finalizados para avaliar
+        if not Pedido.objects.filter(status='4').exists():
+            self.stdout.write(self.style.ERROR("ERRO: Não existem pedidos com status 'Finalizado' (4) no banco para serem avaliados."))
             return
 
         with transaction.atomic():
-            self.criar_pedidos()
+            self.criar_avaliacoes()
 
-        self.stdout.write(self.style.SUCCESS('--- PEDIDOS GERADOS COM SUCESSO! ---'))
+        self.stdout.write(self.style.SUCCESS('--- AVALIAÇÕES GERADAS COM SUCESSO! ---'))
 
-    def criar_pedidos(self):
-        self.stdout.write("Gerando 50 pedidos aleatórios...")
+    def criar_avaliacoes(self):
+        self.stdout.write("Gerando avaliações para produtos comprados...")
         
-        clientes = list(Cliente.objects.all())
-        produtos = list(Produto.objects.all())
+        # Filtra apenas pedidos FINALIZADOS (Status '4')
+        # Pedidos em processamento ou envio não devem ter avaliação ainda
+        pedidos_validos = Pedido.objects.filter(status='4')
         
-        # Produtos "Mais Vendidos" (Whey e Creatina - IDs 1 e 2 no seu JSON original)
-        # Ajuste os IDs aqui se no seu banco forem diferentes
-        produtos_populares = [p for p in produtos if p.id in [1, 2]]
+        count_avaliacoes = 0
 
-        # Status possíveis com pesos diferentes (Mais chance de estar Entregue ou Finalizado)
-        # 1: Processando, 2: Enviado, 3: Entregue, 4: Finalizado, 5: Cancelado
-        status_choices = ['1', '2', '3', '3', '4', '4', '4', '5'] 
+        for pedido in pedidos_validos:
+            try:
+                # Tenta pegar o cliente dono do pedido
+                cliente = Cliente.objects.get(user=pedido.user)
+            except Cliente.DoesNotExist:
+                continue
 
-        for i in range(50):
-            # 1. Escolhe um cliente aleatório e seus dados
-            cliente = random.choice(clientes)
-            endereco = cliente.enderecos.first()
-            cartao = cliente.cartoes.first()
-            
-            if not endereco or not cartao:
-                continue # Pula cliente se faltar dados
-
-            # 2. Define uma data aleatória nos últimos 60 dias
-            dias_atras = random.randint(0, 60)
-            data_pedido = timezone.now() - timedelta(days=dias_atras)
-
-            # 3. Cria o Pedido (Total 0 inicial)
-            pedido = Pedido.objects.create(
-                user=cliente.user,
-                endereco=endereco,
-                cartao=cartao,
-                total=0,
-                status=random.choice(status_choices)
-            )
-            # Força a data retroativa
-            pedido.dt_hora = data_pedido
-            pedido.save()
-
-            # 4. Escolhe os itens
-            itens_pedido = []
-            
-            # 60% de chance de incluir um "Mais Vendido"
-            if random.random() < 0.6 and produtos_populares:
-                itens_pedido.append(random.choice(produtos_populares))
-            
-            # Adiciona mais 1 a 4 produtos aleatórios do catálogo geral
-            qtd_extras = random.randint(1, 4)
-            itens_pedido.extend(random.sample(produtos, min(len(produtos), qtd_extras)))
-            
-            # Remove duplicatas na lista de itens do mesmo pedido
-            itens_pedido = list(set(itens_pedido))
-
-            total_pedido = Decimal('0.00')
-
-            # 5. Processa cada item (Baixa de Estoque simplificada)
-            for produto in itens_pedido:
-                # Quantidade aleatória (1 a 3). Se for popular, até 5.
-                qtd = random.randint(1, 3)
-                if produto.id in [1, 2]: 
-                    qtd = random.randint(1, 5)
-
-                # Busca lotes disponíveis (FIFO)
-                lotes = Lote.objects.filter(produto=produto, quantidade__gt=0).order_by('validade')
+            # Itera sobre os itens do pedido
+            for item in pedido.itens.all():
+                produto = item.produto
                 
-                qtd_para_abater = qtd
-                
-                # Loop de baixa no estoque
-                for lote in lotes:
-                    if qtd_para_abater <= 0: break
+                # Regra: 70% de chance de o cliente avaliar o produto se o pedido foi finalizado
+                if random.random() < 0.7:
                     
-                    if lote.quantidade >= qtd_para_abater:
-                        lote.quantidade -= qtd_para_abater
-                        lote.save()
-                        qtd_para_abater = 0
-                    else:
-                        qtd_para_abater -= lote.quantidade
-                        lote.quantidade = 0 # Zera o lote
-                        lote.save()
-
-                # Calcula quanto realmente conseguiu comprar (caso falte estoque)
-                qtd_final = qtd - qtd_para_abater 
-                
-                if qtd_final > 0:
-                    try:
-                        if hasattr(produto, 'preco_calculado'):
-                            valor_bruto = produto.preco_calculado
-                            # Se for um método (callable), executa com ()
-                            if callable(valor_bruto):
-                                valor_final = valor_bruto()
-                            else:
-                                valor_final = valor_bruto
-                        else:
-                            valor_final = produto.preco
+                    # Verifica se já avaliou esse produto antes (Unique Together)
+                    if not AvaliacaoProduto.objects.filter(cliente=cliente, produto=produto).exists():
                         
-                        preco_momento = Decimal(str(valor_final))
-                    except Exception:
-                        # Fallback de segurança se tudo falhar
-                        preco_momento = Decimal(str(produto.preco))
-                    # --------------------------------
-                    
-                    imagem_url = None
-                    if hasattr(produto, 'imagem') and produto.imagem:
-                        imagem_url = getattr(produto.imagem, 'url', None)
+                        # Decide a nota (Pesos: mais chances de 5 e 4 estrelas)
+                        nota = random.choices([5, 4, 3, 2, 1], weights=[50, 30, 10, 5, 5])[0]
+                        
+                        # Define uma data de avaliação aleatória (entre 5 e 15 dias após a compra)
+                        dias_depois = random.randint(5, 15)
+                        data_avaliacao = pedido.dt_hora + timedelta(days=dias_depois)
 
-                    PedidoItem.objects.create(
-                        pedido=pedido,
-                        produto=produto,
-                        quantidade=qtd_final,
-                        preco=preco_momento,
-                        imagem=imagem_url
-                    )
-                    total_pedido += preco_momento * qtd_final
+                        try:
+                            # Cria a avaliação (Apenas Nota, conforme seu modelo atual)
+                            avaliacao = AvaliacaoProduto.objects.create(
+                                cliente=cliente,
+                                produto=produto,
+                                nota=nota
+                            )
+                            
+                            # Hack para atualizar a data de criação (auto_now_add) para o passado
+                            AvaliacaoProduto.objects.filter(id=avaliacao.id).update(data_avaliacao=data_avaliacao)
 
-            # 6. Atualiza o total final do pedido
-            pedido.total = round(total_pedido, 2)
-            pedido.save()
-            
-            self.stdout.write(f"   + Pedido #{pedido.id} criado para {cliente.nome} ({cliente.user.email}) - Total: R$ {pedido.total}")
+                            count_avaliacoes += 1
+                            self.stdout.write(f"   * Avaliação criada: {nota} estrela(s) para '{produto.nome}' por {cliente.nome}")
+                        
+                        except Exception as e:
+                            # Ignora silenciosamente erros de duplicidade ou validação para não parar o script
+                            pass
+
+        if count_avaliacoes == 0:
+            self.stdout.write(self.style.WARNING("Nenhuma nova avaliação foi criada (talvez os pedidos existentes já tenham sido avaliados)."))
+        else:
+            self.stdout.write(f"-> Total de {count_avaliacoes} novas avaliações geradas.")

@@ -9,6 +9,9 @@ export interface ProductProps {
   preco_calculado: number;
   is_favorited: boolean;
   estoque?: number;
+  media_avaliacoes?: number;
+  total_avaliacoes?: number;
+  minha_avaliacao?: number | null;
 }
 
 export interface ProductCardProps {
