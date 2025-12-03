@@ -14,6 +14,7 @@ import { carrinhoSchema, CarrinhoSchemaType } from "@/schemas/carrinhoSchema";
 import { notify } from "@/lib/toast";
 import LoadingSpinner from "@/components/loading/LoadingSpinner"; 
 import { formatarPreco } from "@/lib/utils";
+import AvaliacoesProduto from "@/components/AvaliacoesProduto";
 
 export default function ProductClient({ id }: { id: string }) {
     const router = useRouter();
@@ -140,6 +141,11 @@ export default function ProductClient({ id }: { id: string }) {
                         </Button>
                     </form>
                 </div>
+            </section>
+
+            <section>
+                <h2 className="h2 mt-10 mb-6">Avaliação do Produto</h2>
+                <AvaliacoesProduto produto={produto} />
             </section>
             
             {produtos_relacionados.length > 0 && (

@@ -26,17 +26,20 @@ export default function HomeClient() {
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const pesquisa = pesquisarProduto.toLowerCase().trim();
+        const removeAcentos = (texto: string) =>
+            texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+        const pesquisa = removeAcentos(pesquisarProduto.toLowerCase().trim());
 
         setResultado([]);
-        
+
         if (pesquisa === '') {
             setShowResults(false);
-        return;
+            return;
         }
 
         const resultados = produtos.filter(produto =>
-            produto.nome.toLowerCase().includes(pesquisa)
+            removeAcentos(produto.nome.toLowerCase()).includes(pesquisa)
         );
 
         setResultado(resultados);
@@ -46,7 +49,7 @@ export default function HomeClient() {
     useEffect(() => {
         if (pesquisarProduto === '') {
             setShowResults(false);
-        } 
+        }
     }, [pesquisarProduto]);
 
     return (
@@ -55,15 +58,15 @@ export default function HomeClient() {
                 <form onSubmit={handleSearch}>
                     <div className="relative">
                         <input
-                        type="text"
-                        placeholder="Encontre o seu produto"
-                        value={pesquisarProduto}
-                        onChange={(e) => setPesquisarProduto(e.target.value)}
-                        className="bg-dark-grey text-white text-sm mb-lg:text-base w-full mb-lg:px-15 px-12 py-3 outline-none rounded-lg"
+                            type="text"
+                            placeholder="Encontre o seu produto"
+                            value={pesquisarProduto}
+                            onChange={(e) => setPesquisarProduto(e.target.value)}
+                            className="bg-dark-grey text-white text-sm mb-lg:text-base w-full mb-lg:px-15 px-12 py-3 outline-none rounded-lg"
                         />
                         <button
-                        type="submit"
-                        className="cursor-pointer absolute left-0 mb-lg:top-[25%] top-[28%] ml-3 text-light-green mb-lg:text-2xl text-xl"
+                            type="submit"
+                            className="cursor-pointer absolute left-0 mb-lg:top-[25%] top-[28%] ml-3 text-light-green mb-lg:text-2xl text-xl"
                         >
                             <FaMagnifyingGlass />
                         </button>
@@ -130,7 +133,7 @@ export default function HomeClient() {
                                 </div>
                                 <LoadingContainer loading={loading}>
                                     <div className="productsContainer">
-                                        {produtos_promocoes.slice(0,5).map(produto =>
+                                        {produtos_promocoes.slice(0, 5).map(produto =>
                                             <ProductCard key={produto.id} product={produto} />
                                         )}
                                     </div>
@@ -148,7 +151,7 @@ export default function HomeClient() {
                             </div>
                             <LoadingContainer loading={loading}>
                                 <div className="productsContainer">
-                                    {produtos.slice(0,5).map(produto => (
+                                    {produtos.slice(0, 5).map(produto => (
                                         <ProductCard key={produto.id} product={produto} />
                                     ))}
                                 </div>

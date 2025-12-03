@@ -12,6 +12,7 @@ export interface ProductProps {
   media_avaliacoes?: number;
   total_avaliacoes?: number;
   minha_avaliacao?: number | null;
+  distribuicao_avaliacoes?: Record<string, number>;
 }
 
 export interface ProductCardProps {
