@@ -19,8 +19,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites', 
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken', 
+    'djoser',
+    'anymail', 
     'powerUp',
 ]
 
@@ -30,6 +34,35 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
 }
+
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': 'recuperar/{uid}/{token}',
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
+    'SEND_ACTIVATION_EMAIL': False,
+    'SEND_CONFIRMATION_EMAIL': False,
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SET_PASSWORD_RETYPE': True,
+    'DOMAIN': 'localhost:3000', 
+    'SITE_NAME': 'PowerUp',
+}
+
+# --- CONFIGURAÇÃO DE E-MAIL (RESEND) ---
+
+# Define que o Anymail vai cuidar do envio
+EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
+
+ANYMAIL = {
+    # COLE SUA CHAVE DO RESEND AQUI (Começa com 're_')
+    "RESEND_API_KEY": "re_jZSYKraq_67R9MZ92rKnibkeNhyFm85ts", 
+}
+
+# Remetente Padrão
+# Se você NÃO configurou domínio no Resend, use exatamente este e-mail:
+DEFAULT_FROM_EMAIL = "onboarding@resend.dev"
+# Se já configurou domínio, use: "PowerUp <contato@seudominio.com>"
+
+# ---------------------------------------
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', 
@@ -73,19 +106,20 @@ DATABASES = {
     }
 }
 
+# Validadores de senha (Comentados para facilitar testes em DEV)
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
 ]
 
 LANGUAGE_CODE = 'pt-br'
@@ -104,3 +138,5 @@ MEDIA_ROOT= os.path.join(BASE_DIR, 'media')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SITE_ID = 1

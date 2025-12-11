@@ -31,11 +31,19 @@ router.register(r'notificacoes', NotificacaoViewSet, basename='notificacao')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
     path('login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('redefinir-senha/', RedefinirSenhaView.as_view(), name='redefinir-senha'),
+    
+    # --- ROTAS DE NEGÓCIO ---
     path('carrinho/', CarrinhoAPIView.as_view(), name='carrinho'),
     path('carrinho/migracao/', CarrinhoMigracaoView.as_view(), name='carrinho-migracao'),
     path('carrinho/<int:item_id>/', CarrinhoAPIView.as_view(), name='carrinho-item-delete'),
+    
+    # --- DJOSER (Adicionado para Recuperação de Senha) ---
+    path('auth/', include('djoser.urls')),
+
     path('', include(router.urls)),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

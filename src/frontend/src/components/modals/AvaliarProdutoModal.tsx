@@ -17,7 +17,7 @@ export default function AvaliarProdutoModal({ item, onSuccess }: { item: Carrinh
             resolver: zodResolver(avaliacaoProdutoSchema),
             mode: "onChange",
             defaultValues: { nota: 0 } 
-        });
+    });
 
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);

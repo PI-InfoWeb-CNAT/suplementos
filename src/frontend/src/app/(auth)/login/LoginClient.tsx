@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { notify } from "@/lib/toast";
 import api from "@/services/api";
+import EsqueceuSenhaModal from "@/components/modals/EsqueceuSenhaModal";
 
 export default function LoginClient() {
     const { login } = useAuth();
@@ -65,8 +66,9 @@ export default function LoginClient() {
             <section className="relative nt-sm:w-[60%] w-full flex flex-col justify-center items-center bg-white rounded-r-3xl z-20">
                 <div className="nt-lg:w-[50%] w-3/4 space-y-15 flex flex-col items-center">
                     <h3 className="mb-lg:text-2xl text-xl text-center font-semibold">BEM VINDO DE VOLTA!</h3>
-                    <form onSubmit={handleSubmit(onSubmit, onError)} className="w-full space-y-15">
-                        <div className="space-y-7">
+                    <div className="w-full space-y-15">
+                        
+                        <form id="login-form" onSubmit={handleSubmit(onSubmit, onError)} className="space-y-7">
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="email" className="font-semibold mb-lg:text-lg">E-MAIL</label>
                                 <input {...register("email")} type="email" name="email" id="email" placeholder="Digite seu e-mail" className="input px-3 py-2.5 rounded-md" />
@@ -75,12 +77,22 @@ export default function LoginClient() {
                                 <label htmlFor="senha" className="font-semibold mb-lg:text-lg">SENHA</label>
                                 <input {...register("senha")} type="password" name="senha" id="senha" placeholder="Digite sua senha" className="input px-3 py-2.5 rounded-md" />
                             </div>
+                        </form>
+
+                        <div className="flex justify-between items-center">
+                            <Button 
+                                type="submit" 
+                                form="login-form" 
+                                variant="submit" 
+                                size="submit"
+                            >
+                                Entrar
+                            </Button>
+                            
+                            <EsqueceuSenhaModal />
                         </div>
-                        <Button type="submit" variant="submit" size="submit">
-                            Entrar
-                        </Button>
-                    </form>
-                    <a href="/cadastro" className="text-center mb-lg:text-lg font-semibold text-dark-green hover:underline transition-all duration-300">
+                    </div>
+                    <a href="/cadastro" className="text-center mb-lg:text-lg font-semibold text-dark-green hover:underline">
                         Não tem uma conta? Cadastre-se
                     </a>
                 </div>

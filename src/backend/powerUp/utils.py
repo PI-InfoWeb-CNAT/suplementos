@@ -9,15 +9,22 @@ def custom_exception_handler(exc, context):
     if isinstance(exc, ValidationError) and response is not None:
         custom_errors = []
 
-        for field, messages in response.data.items():
-            if isinstance(messages, list):
-                for message in messages:
-                    if field == "non_field_errors":
-                        custom_errors.append(f"{message}")
-                    else:
-                        custom_errors.append(f"{message}")
-            else:
-                custom_errors.append(f"{field.capitalize()}: {messages}")
+        # 1. CASO DJOSER (Lista)
+        if isinstance(response.data, list):
+            for message in response.data:
+                custom_errors.append(f"{message}")
+
+        # 2. CASO PADRÃO (Dicionário)
+        elif isinstance(response.data, dict):
+            for field, messages in response.data.items():
+                if isinstance(messages, list):
+                    for message in messages:
+                        if field == "non_field_errors":
+                            custom_errors.append(f"{message}")
+                        else:
+                            custom_errors.append(f"{message}") 
+                else:
+                    custom_errors.append(f"{field.capitalize()}: {messages}")
 
         return Response(
             {
