@@ -20,10 +20,12 @@ export default function MobileSidebar() {
     const pathname = usePathname();
     const { menuOpen, setMenuOpen } = useMenu();
     const [openExcluir, setOpenExcluir] = useState(false);
-    const { isLogged, logout } = useAuth();
+    const { isLogged, logout } = useAuth(); 
     
     const [showSidebar, setShowSidebar] = useState(false);
     const [shouldAnimate, setShouldAnimate] = useState(false);
+
+    const isAdminRoute = pathname?.startsWith('/admin');
 
     useEffect(() => {
         if (menuOpen) {
@@ -38,7 +40,7 @@ export default function MobileSidebar() {
 
     useEffect(() => {
         setMenuOpen(false);
-    }, [pathname]);
+    }, [pathname, setMenuOpen]); 
 
     return (
         <>
@@ -66,14 +68,23 @@ export default function MobileSidebar() {
                     </button>
 
                     <nav className='flex flex-col gap-10 mt-12'>
-                        <ul className="flex flex-col gap-6">
-                            <NavLink href="/" icon={<IoHomeSharp />} name="Página Inicial" />
-                            <NavLink href="/promocoes" icon={<BsFillLightningChargeFill />} name="Promoções" />
-                            <NavLink href="/mais-vendidos" icon={<FaTrophy />} name="Mais Vendidos" />
-                            <NavLink href="/meus-pedidos" icon={<BsBasket3Fill />} name="Meus Pedidos" />
-                            <NavLink href="/meus-favoritos" icon={<FaHeart />} name="Meus Favoritos" />
-                            <NavLink href="/perfil" icon={<BiSolidUser />} name="Meu Perfil" />
-                        </ul>
+                        
+                        {!isAdminRoute ? (
+                            <ul className="flex flex-col gap-6">
+                                <NavLink href="/" icon={<IoHomeSharp />} name="Página Inicial" />
+                                <NavLink href="/promocoes" icon={<BsFillLightningChargeFill />} name="Promoções" />
+                                <NavLink href="/mais-vendidos" icon={<FaTrophy />} name="Mais Vendidos" />
+                                <NavLink href="/meus-pedidos" icon={<BsBasket3Fill />} name="Meus Pedidos" />
+                                <NavLink href="/meus-favoritos" icon={<FaHeart />} name="Meus Favoritos" />
+                                <NavLink href="/perfil" icon={<BiSolidUser />} name="Meu Perfil" />
+                            </ul>
+                        ) : (
+                            <ul className="flex flex-col gap-6">
+                                <NavLink href="/admin" icon={<IoHomeSharp />} name="Painel Admin" />
+                                <NavLink href="/perfil" icon={<BiSolidUser />} name="Meu Perfil" />
+                            </ul>
+                        )}
+
                         {isLogged ? (
                             <ul className="flex flex-col gap-3">
                                 <div onClick={() => logout()}>

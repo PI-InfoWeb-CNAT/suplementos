@@ -13,7 +13,7 @@ import api from "@/services/api";
 import EsqueceuSenhaModal from "@/components/modals/EsqueceuSenhaModal";
 
 export default function LoginClient() {
-    const { login } = useAuth();
+    const { login, user } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirect = searchParams.get("redirect");
@@ -30,13 +30,29 @@ export default function LoginClient() {
                 password: data.senha,
             });
 
-            const { access, refresh, id, nome, email, perfil, cpf, telefone } = response.data;
+            const novoUsuario = response.data;
 
-            localStorage.setItem("access", access);
-            localStorage.setItem("refresh", refresh);
+            // --- LÓGICA DE VERIFICAÇÃO DE ADMIN ---
+            if (redirect && redirect.includes("/admin")) {
+                if (novoUsuario.perfil !== 'admin') {
+                    notify("Esta conta não possui permissão de administrador.", "error");
+                    return; 
+                }
+            }
+            
+            localStorage.setItem("access", novoUsuario.access);
+            localStorage.setItem("refresh", novoUsuario.refresh);
 
-            login({ id, nome, email, perfil, cpf, telefone });
-            notify(`Bem-vindo, ${nome}!`, "success");
+            login({ 
+                id: novoUsuario.id, 
+                nome: novoUsuario.nome, 
+                email: novoUsuario.email, 
+                perfil: novoUsuario.perfil, 
+                cpf: novoUsuario.cpf, 
+                telefone: novoUsuario.telefone 
+            });
+            
+            notify(`Bem-vindo, ${novoUsuario.nome}!`, "success");
 
             setTimeout(() => {
                 if (redirect) {
@@ -44,7 +60,8 @@ export default function LoginClient() {
                 } else {
                     router.push("/");
                 }
-            }, 2000);
+            }, 1000);
+
         } catch (error: any) {
             console.error("Erro ao fazer login:", error.response?.data || error.message);
             notify("Email ou senha incorretos.", "error");
@@ -67,7 +84,7 @@ export default function LoginClient() {
                 <div className="nt-lg:w-[50%] w-3/4 space-y-15 flex flex-col items-center">
                     <h3 className="mb-lg:text-2xl text-xl text-center font-semibold">BEM VINDO DE VOLTA!</h3>
                     <div className="w-full space-y-15">
-                        
+
                         <form id="login-form" onSubmit={handleSubmit(onSubmit, onError)} className="space-y-7">
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="email" className="font-semibold mb-lg:text-lg">E-MAIL</label>
@@ -80,15 +97,15 @@ export default function LoginClient() {
                         </form>
 
                         <div className="flex justify-between items-center">
-                            <Button 
-                                type="submit" 
-                                form="login-form" 
-                                variant="submit" 
+                            <Button
+                                type="submit"
+                                form="login-form"
+                                variant="submit"
                                 size="submit"
                             >
                                 Entrar
                             </Button>
-                            
+
                             <EsqueceuSenhaModal />
                         </div>
                     </div>

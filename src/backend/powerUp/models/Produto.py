@@ -1,6 +1,7 @@
 from powerUp.models import *
 from decimal import Decimal
-from django.db.models import Sum
+from django.db.models import Sum, Q
+from django.utils import timezone
 
 class Produto(models.Model):
     CATEGORIAS = [
@@ -24,7 +25,12 @@ class Produto(models.Model):
         
     @property
     def estoque(self):
-        return self.lotes.aggregate(total=Sum('quantidade'))['total'] or 0
+        hoje = timezone.now().date()
+        
+        # Lógica: Vencimento >= Hoje OU Vencimento é Nulo (não perecível)
+        return self.lotes.filter(
+            Q(validade__gte=hoje) | Q(validade__isnull=True)
+        ).aggregate(total=Sum('quantidade'))['total'] or 0
 
     def __str__(self):
         return f'{self.nome}'

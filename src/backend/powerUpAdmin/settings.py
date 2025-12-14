@@ -1,5 +1,8 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,6 +28,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken', 
     'djoser',
     'anymail', 
+    'django_filters',
     'powerUp',
 ]
 
@@ -49,20 +53,14 @@ DJOSER = {
 
 # --- CONFIGURAÇÃO DE E-MAIL (RESEND) ---
 
-# Define que o Anymail vai cuidar do envio
 EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
 
 ANYMAIL = {
-    # COLE SUA CHAVE DO RESEND AQUI (Começa com 're_')
-    "RESEND_API_KEY": "re_jZSYKraq_67R9MZ92rKnibkeNhyFm85ts", 
+    "RESEND_API_KEY": os.getenv("RESEND_API_KEY"),
 }
 
-# Remetente Padrão
-# Se você NÃO configurou domínio no Resend, use exatamente este e-mail:
 DEFAULT_FROM_EMAIL = "onboarding@resend.dev"
-# Se já configurou domínio, use: "PowerUp <contato@seudominio.com>"
 
-# ---------------------------------------
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', 

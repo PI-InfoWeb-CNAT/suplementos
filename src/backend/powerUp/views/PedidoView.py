@@ -86,13 +86,13 @@ class PedidoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.G
                         if qtd_restante_para_abater <= 0:
                             break
                         
-                        if lote.quantidade >= qtd_restante_para_abater:
+                        if lote.quantidade > qtd_restante_para_abater:
                             lote.quantidade -= qtd_restante_para_abater
                             lote.save()
                             qtd_restante_para_abater = 0
                         else:
                             qtd_abatida = lote.quantidade
-                            lote.delete()
+                            lote.delete() 
                             qtd_restante_para_abater -= qtd_abatida
 
                     imagem = None

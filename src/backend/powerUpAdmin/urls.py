@@ -17,6 +17,8 @@ from powerUp.views.CarrinhoView import CarrinhoAPIView, CarrinhoMigracaoView
 from powerUp.views.PedidoView import PedidoViewSet
 from powerUp.views.DevolucaoView import DevolucaoViewSet
 from powerUp.views.NotificacaoView import NotificacaoViewSet
+from powerUp.views.LoteAlertaView import LoteAlertaView
+from powerUp.views.LoteView import LoteViewSet
 
 router = DefaultRouter()
 router.register(r'produtos', ProdutoViewSet)
@@ -28,6 +30,7 @@ router.register(r'promocoes', PromocoesViewSet, basename='promocoes')
 router.register(r'pedidos', PedidoViewSet, basename='pedido')
 router.register(r'devolucoes', DevolucaoViewSet, basename='devolucao')
 router.register(r'notificacoes', NotificacaoViewSet, basename='notificacao')
+router.register(r'lotes', LoteViewSet, basename='lote')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,6 +46,9 @@ urlpatterns = [
     
     # --- DJOSER (Adicionado para Recuperação de Senha) ---
     path('auth/', include('djoser.urls')),
+    
+    # ADMIN
+    path('lote/alerta/', LoteAlertaView.as_view(), name='lote-alerta'),
 
     path('', include(router.urls)),
 
