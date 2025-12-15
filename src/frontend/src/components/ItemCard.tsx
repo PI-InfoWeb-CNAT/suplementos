@@ -6,7 +6,6 @@ import { useCarrinho } from "@/contexts/CarrinhoContext";
 import { ItemCardProps } from "@/types";
 import { notify } from "@/lib/toast";
 import { formatarPreco } from "@/lib/utils";
-import { Button } from "./ui/button";
 import AvaliarProdutoModal from "./modals/AvaliarProdutoModal";
 
 const ItemCard = ({ item, pageName, statusPedido }: ItemCardProps) => {

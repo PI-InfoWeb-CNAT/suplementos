@@ -93,7 +93,7 @@ function MeusPedidosClient() {
     const handleConfirmar = async (pedidoId: number) => {
         setLoading(true);
         try {
-            await api.post(`/pedidos/${pedidoId}/confirmar/`);
+            await api.post(`/pedidos/${pedidoId}/confirmar_entrega/`);
 
             setPedidos(currentPedidos =>
                 currentPedidos.map(pedido =>
