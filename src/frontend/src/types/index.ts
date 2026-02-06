@@ -1,4 +1,5 @@
 import { CarrinhoItemProps } from "./carrinho";
+export * from './pedido';
 
 export interface IconProps {
     icon: React.ReactNode;
@@ -32,7 +33,7 @@ export interface LoadingSpinnerProps {
 }
 
 export interface ItemCardProps {
-    item: CarrinhoItemProps; 
+    item: CarrinhoItemProps;
     pageName: string;
     statusPedido?: string;
 }

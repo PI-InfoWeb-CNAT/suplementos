@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import PageWrapper from "@/components/layout/PageWrapper";
 import Sidebar from "@/components/layout/Sidebar";
 import Footer from "@/components/layout/Footer";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
@@ -25,7 +24,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }, [user, loading, router]);
 
     if (loading || !isAuthorized) {
-        return <LoadingSpinner />;
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     return (

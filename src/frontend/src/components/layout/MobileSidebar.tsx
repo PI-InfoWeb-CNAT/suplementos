@@ -20,8 +20,8 @@ export default function MobileSidebar() {
     const pathname = usePathname();
     const { menuOpen, setMenuOpen } = useMenu();
     const [openExcluir, setOpenExcluir] = useState(false);
-    const { isLogged, logout } = useAuth(); 
-    
+    const { isLogged, logout } = useAuth();
+
     const [showSidebar, setShowSidebar] = useState(false);
     const [shouldAnimate, setShouldAnimate] = useState(false);
 
@@ -33,23 +33,22 @@ export default function MobileSidebar() {
             setTimeout(() => setShouldAnimate(true), 10);
         } else {
             setShouldAnimate(false);
-            const timeout = setTimeout(() => setShowSidebar(false), 300); 
+            const timeout = setTimeout(() => setShowSidebar(false), 300);
             return () => clearTimeout(timeout);
         }
     }, [menuOpen]);
 
     useEffect(() => {
         setMenuOpen(false);
-    }, [pathname, setMenuOpen]); 
+    }, [pathname, setMenuOpen]);
 
     return (
         <>
             {/* Overlay escuro */}
             {(menuOpen || showSidebar) && (
                 <div
-                    className={`fixed inset-0 bg-black z-20 transition-opacity duration-300 ease-in-out ${
-                        menuOpen ? 'opacity-50' : 'opacity-0 pointer-events-none'
-                    }`}
+                    className={`fixed inset-0 bg-black z-20 transition-opacity duration-300 ease-in-out ${menuOpen ? 'opacity-50' : 'opacity-0 pointer-events-none'
+                        }`}
                     onClick={() => setMenuOpen(false)}
                 />
             )}
@@ -68,7 +67,7 @@ export default function MobileSidebar() {
                     </button>
 
                     <nav className='flex flex-col gap-10 mt-12'>
-                        
+
                         {!isAdminRoute ? (
                             <ul className="flex flex-col gap-6">
                                 <NavLink href="/" icon={<IoHomeSharp />} name="Página Inicial" />
@@ -81,7 +80,8 @@ export default function MobileSidebar() {
                         ) : (
                             <ul className="flex flex-col gap-6">
                                 <NavLink href="/admin" icon={<IoHomeSharp />} name="Painel Admin" />
-                                <NavLink href="/perfil" icon={<BiSolidUser />} name="Meu Perfil" />
+                                <NavLink href="/admin/pedidos" icon={<BsBasket3Fill />} name="Pedidos" />
+                                <NavLink href="/admin/perfil" icon={<BiSolidUser />} name="Meu Perfil" />
                             </ul>
                         )}
 

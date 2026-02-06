@@ -18,7 +18,10 @@ class PedidoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.G
     serializer_class = PedidoSerializer
 
     def get_queryset(self):
-        return Pedido.objects.filter(user=self.request.user).order_by('-dt_hora')
+        user = self.request.user
+        if hasattr(user, 'cliente') and user.cliente.perfil == 'admin':
+            return Pedido.objects.all().order_by('-dt_hora')
+        return Pedido.objects.filter(user=user).order_by('-dt_hora')
 
     def create(self, request, *args, **kwargs):
         user = request.user

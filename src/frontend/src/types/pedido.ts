@@ -14,30 +14,31 @@ export const PEDIDO_STATUS_MAP: Record<PedidoStatusType, string> = {
 
 export interface PedidoProps {
     id: number;
-    endereco: EnderecoProps | null; 
-    cartao: CartaoProps | null;     
-    total: number;        
-    status: PedidoStatusType; 
-    dt_hora: string;     
-    itens: PedidoItemProps[]; 
+    user_nome: string;
+    endereco: EnderecoProps | null;
+    cartao: CartaoProps | null;
+    total: number;
+    status: PedidoStatusType;
+    dt_hora: string;
+    itens: PedidoItemProps[];
     devolucao: DevolucaoProps | null;
 }
 
 export interface PedidoItemProps {
     id: number;
-    produto: ProductProps; 
+    produto: ProductProps;
     quantidade: number;
-    preco: number; 
+    preco: number;
     imagem: string | null;
-    subtotal: number; 
+    subtotal: number;
 }
 
 export interface PedidoFormData {
-    endereco: string; 
-    cartao: string;   
+    endereco: string;
+    cartao: string;
 }
 
 export interface CancelarPedidoProps {
     pedidoId?: number;
-    onCancelSuccess: (pedidoId: number) => void; 
+    onCancelSuccess: (pedidoId: number) => void;
 }

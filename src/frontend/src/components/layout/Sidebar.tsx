@@ -44,6 +44,7 @@ const Sidebar = () => {
                         ) : (
                             <ul className="flex flex-col gap-6">
                                 <NavLink href="/admin" icon={<IoHomeSharp size={24} />} name="Painel Admin" />
+                                <NavLink href="/admin/pedidos" icon={<BsBasket3Fill size={24} />} name="Pedidos" />
                                 <NavLink href="/admin/perfil" icon={<BiSolidUser size={24} />} name="Meu Perfil" />
                             </ul>
                         )}
